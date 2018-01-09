@@ -39,64 +39,8 @@ validate_dnm <- function(x, mu, sigma, order) {
     .Call('_coda_count_validate_dnm', PACKAGE = 'coda.count', x, mu, sigma, order)
 }
 
-#' @export
-dnm <- function(x, mu, sigma, order) {
-    .Call('_coda_count_dnm', PACKAGE = 'coda.count', x, mu, sigma, order)
-}
-
-#' @export
-m1_dnm <- function(x, mu, sigma, order) {
-    .Call('_coda_count_m1_dnm', PACKAGE = 'coda.count', x, mu, sigma, order)
-}
-
-#' @export
-m2_dnm <- function(x, mu, sigma, order) {
-    .Call('_coda_count_m2_dnm', PACKAGE = 'coda.count', x, mu, sigma, order)
-}
-
-#' @export
-hermite_integration <- function(order, d) {
-    .Call('_coda_count_hermite_integration', PACKAGE = 'coda.count', order, d)
-}
-
-#' @export
-gaussian_hermite <- function(order, mu, sigma) {
-    .Call('_coda_count_gaussian_hermite', PACKAGE = 'coda.count', order, mu, sigma)
-}
-
-#' @export
-hermite <- function(order) {
-    .Call('_coda_count_hermite', PACKAGE = 'coda.count', order)
-}
-
-#' @export
-ldnormal <- function(H, mu, inv_sigma) {
-    .Call('_coda_count_ldnormal', PACKAGE = 'coda.count', H, mu, inv_sigma)
-}
-
-#' @export
-lpmultinomial_const <- function(x) {
-    .Call('_coda_count_lpmultinomial_const', PACKAGE = 'coda.count', x)
-}
-
-#' @export
-lpmultinomial <- function(x, p, lconst) {
-    .Call('_coda_count_lpmultinomial', PACKAGE = 'coda.count', x, p, lconst)
-}
-
-#' @export
-lpnm_join <- function(x, mu, inv_sigma, P, H) {
-    .Call('_coda_count_lpnm_join', PACKAGE = 'coda.count', x, mu, inv_sigma, P, H)
-}
-
-#' @export
-lpmultinomial_mult <- function(P, x) {
-    .Call('_coda_count_lpmultinomial_mult', PACKAGE = 'coda.count', P, x)
-}
-
-#' @export
-lpnm_join_no_constant <- function(x, mu, inv_sigma, p, h) {
-    .Call('_coda_count_lpnm_join_no_constant', PACKAGE = 'coda.count', x, mu, inv_sigma, p, h)
+c_dlrnm_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
+    .Call('_coda_count_c_dlrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
 }
 
 #' @export
@@ -187,22 +131,15 @@ c_rnormal <- function(n, mu, sigma) {
     .Call('_coda_count_c_rnormal', PACKAGE = 'coda.count', n, mu, sigma)
 }
 
-#' @export
 c_rnormalSimplex <- function(n, mu, sigma) {
     .Call('_coda_count_c_rnormalSimplex', PACKAGE = 'coda.count', n, mu, sigma)
 }
 
-#' @export
 c_rnormalmultinomial <- function(mu, sigma, size) {
     .Call('_coda_count_c_rnormalmultinomial', PACKAGE = 'coda.count', mu, sigma, size)
 }
 
-lattice_elements <- function(K, SIZE) {
-    .Call('_coda_count_lattice_elements', PACKAGE = 'coda.count', K, SIZE)
-}
-
-#' @export
-lattice_simplex <- function(K, SIZE) {
-    .Call('_coda_count_lattice_simplex', PACKAGE = 'coda.count', K, SIZE)
+c_simplex_lattice <- function(K, SIZE) {
+    .Call('_coda_count_c_simplex_lattice', PACKAGE = 'coda.count', K, SIZE)
 }
 

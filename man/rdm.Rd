@@ -12,6 +12,8 @@ rdm(alpha, size, n = length(size), probs = FALSE)
 \item{size}{vector to set the multinomial sampling size. vector is reused to have length equal parameter n}
 
 \item{n}{sample size}
+
+\item{probs}{logical indicating whether multinomial probabilities should be returned}
 }
 \value{
 Dirichlet-multinomial random sample

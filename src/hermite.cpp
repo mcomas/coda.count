@@ -71,9 +71,7 @@ double validate_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int ord
   return(0);
 }
 
-//' @export
-// [[Rcpp::export]]
-double dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
+double c_dnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order){
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
@@ -120,8 +118,6 @@ double dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
   return integral;
 }
 
-//' @export
-// [[Rcpp::export]]
 arma::vec m1_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
@@ -169,8 +165,6 @@ arma::vec m1_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order)
   return integral;
 }
 
-//' @export
-// [[Rcpp::export]]
 arma::mat m2_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
@@ -219,8 +213,6 @@ arma::mat m2_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order)
   return integral;
 }
 
-//' @export
-// [[Rcpp::export]]
 double hermite_integration(unsigned int order, unsigned int d){
   arma::mat uni_hermite = hermite(order);
 
@@ -250,8 +242,6 @@ double hermite_integration(unsigned int order, unsigned int d){
   return integral;
 }
 
-//' @export
-// [[Rcpp::export]]
 arma::mat gaussian_hermite(int order, arma::vec mu, arma::mat sigma) {
   int d = mu.n_elem;
   arma::mat uni_hermite = hermite(order);
@@ -292,8 +282,6 @@ arma::mat gaussian_hermite(int order, arma::vec mu, arma::mat sigma) {
   return quad;
 }
 
-//' @export
-// [[Rcpp::export]]
 arma::mat hermite(int order) {
 
   double a = 0;

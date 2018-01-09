@@ -1,16 +1,13 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-
-// [[Rcpp::export]]
-int lattice_elements(int K, int SIZE){
+int simplex_lattice_elements(int K, int SIZE){
   return R::choose(K+SIZE-1,SIZE);
 }
 
-//' @export
 // [[Rcpp::export]]
-NumericMatrix lattice_simplex(int K, int SIZE) {
-  int nrow = lattice_elements(K,SIZE);
+NumericMatrix c_simplex_lattice(int K, int SIZE) {
+  int nrow = simplex_lattice_elements(K,SIZE);
   int k = K - 1;
   int k1 = k - 1;
   NumericMatrix out(nrow, K);

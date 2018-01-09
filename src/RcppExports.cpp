@@ -100,160 +100,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// dnm
-double dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order);
-RcppExport SEXP _coda_count_dnm(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP) {
+// c_dlrnm_hermite
+double c_dlrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order, int step_by, double eps, int max_steps);
+RcppExport SEXP _coda_count_c_dlrnm_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type order(orderSEXP);
-    rcpp_result_gen = Rcpp::wrap(dnm(x, mu, sigma, order));
-    return rcpp_result_gen;
-END_RCPP
-}
-// m1_dnm
-arma::vec m1_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order);
-RcppExport SEXP _coda_count_m1_dnm(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type order(orderSEXP);
-    rcpp_result_gen = Rcpp::wrap(m1_dnm(x, mu, sigma, order));
-    return rcpp_result_gen;
-END_RCPP
-}
-// m2_dnm
-arma::mat m2_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order);
-RcppExport SEXP _coda_count_m2_dnm(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type order(orderSEXP);
-    rcpp_result_gen = Rcpp::wrap(m2_dnm(x, mu, sigma, order));
-    return rcpp_result_gen;
-END_RCPP
-}
-// hermite_integration
-double hermite_integration(unsigned int order, unsigned int d);
-RcppExport SEXP _coda_count_hermite_integration(SEXP orderSEXP, SEXP dSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< unsigned int >::type order(orderSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type d(dSEXP);
-    rcpp_result_gen = Rcpp::wrap(hermite_integration(order, d));
-    return rcpp_result_gen;
-END_RCPP
-}
-// gaussian_hermite
-arma::mat gaussian_hermite(int order, arma::vec mu, arma::mat sigma);
-RcppExport SEXP _coda_count_gaussian_hermite(SEXP orderSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type order(orderSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(gaussian_hermite(order, mu, sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
-// hermite
-arma::mat hermite(int order);
-RcppExport SEXP _coda_count_hermite(SEXP orderSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
-    rcpp_result_gen = Rcpp::wrap(hermite(order));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ldnormal
-arma::vec ldnormal(arma::mat H, arma::vec mu, arma::mat inv_sigma);
-RcppExport SEXP _coda_count_ldnormal(SEXP HSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type H(HSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type inv_sigma(inv_sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(ldnormal(H, mu, inv_sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
-// lpmultinomial_const
-double lpmultinomial_const(arma::vec x);
-RcppExport SEXP _coda_count_lpmultinomial_const(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(lpmultinomial_const(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// lpmultinomial
-double lpmultinomial(arma::vec x, arma::vec p, double lconst);
-RcppExport SEXP _coda_count_lpmultinomial(SEXP xSEXP, SEXP pSEXP, SEXP lconstSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type lconst(lconstSEXP);
-    rcpp_result_gen = Rcpp::wrap(lpmultinomial(x, p, lconst));
-    return rcpp_result_gen;
-END_RCPP
-}
-// lpnm_join
-arma::mat lpnm_join(arma::vec x, arma::vec mu, arma::mat inv_sigma, arma::mat P, arma::mat H);
-RcppExport SEXP _coda_count_lpnm_join(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP PSEXP, SEXP HSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type inv_sigma(inv_sigmaSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type P(PSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type H(HSEXP);
-    rcpp_result_gen = Rcpp::wrap(lpnm_join(x, mu, inv_sigma, P, H));
-    return rcpp_result_gen;
-END_RCPP
-}
-// lpmultinomial_mult
-arma::vec lpmultinomial_mult(arma::mat P, arma::vec x);
-RcppExport SEXP _coda_count_lpmultinomial_mult(SEXP PSEXP, SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type P(PSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(lpmultinomial_mult(P, x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// lpnm_join_no_constant
-double lpnm_join_no_constant(arma::vec x, arma::vec mu, arma::mat inv_sigma, arma::vec p, arma::vec h);
-RcppExport SEXP _coda_count_lpnm_join_no_constant(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP pSEXP, SEXP hSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type inv_sigma(inv_sigmaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type p(pSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
-    rcpp_result_gen = Rcpp::wrap(lpnm_join_no_constant(x, mu, inv_sigma, p, h));
+    Rcpp::traits::input_parameter< int >::type step_by(step_bySEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_dlrnm_hermite(x, mu, sigma, order, step_by, eps, max_steps));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -559,27 +419,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// lattice_elements
-int lattice_elements(int K, int SIZE);
-RcppExport SEXP _coda_count_lattice_elements(SEXP KSEXP, SEXP SIZESEXP) {
+// c_simplex_lattice
+NumericMatrix c_simplex_lattice(int K, int SIZE);
+RcppExport SEXP _coda_count_c_simplex_lattice(SEXP KSEXP, SEXP SIZESEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type K(KSEXP);
     Rcpp::traits::input_parameter< int >::type SIZE(SIZESEXP);
-    rcpp_result_gen = Rcpp::wrap(lattice_elements(K, SIZE));
-    return rcpp_result_gen;
-END_RCPP
-}
-// lattice_simplex
-NumericMatrix lattice_simplex(int K, int SIZE);
-RcppExport SEXP _coda_count_lattice_simplex(SEXP KSEXP, SEXP SIZESEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type K(KSEXP);
-    Rcpp::traits::input_parameter< int >::type SIZE(SIZESEXP);
-    rcpp_result_gen = Rcpp::wrap(lattice_simplex(K, SIZE));
+    rcpp_result_gen = Rcpp::wrap(c_simplex_lattice(K, SIZE));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -593,18 +441,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_ddm", (DL_FUNC) &_coda_count_c_ddm, 2},
     {"_coda_count_c_dm_fit", (DL_FUNC) &_coda_count_c_dm_fit, 3},
     {"_coda_count_validate_dnm", (DL_FUNC) &_coda_count_validate_dnm, 4},
-    {"_coda_count_dnm", (DL_FUNC) &_coda_count_dnm, 4},
-    {"_coda_count_m1_dnm", (DL_FUNC) &_coda_count_m1_dnm, 4},
-    {"_coda_count_m2_dnm", (DL_FUNC) &_coda_count_m2_dnm, 4},
-    {"_coda_count_hermite_integration", (DL_FUNC) &_coda_count_hermite_integration, 2},
-    {"_coda_count_gaussian_hermite", (DL_FUNC) &_coda_count_gaussian_hermite, 3},
-    {"_coda_count_hermite", (DL_FUNC) &_coda_count_hermite, 1},
-    {"_coda_count_ldnormal", (DL_FUNC) &_coda_count_ldnormal, 3},
-    {"_coda_count_lpmultinomial_const", (DL_FUNC) &_coda_count_lpmultinomial_const, 1},
-    {"_coda_count_lpmultinomial", (DL_FUNC) &_coda_count_lpmultinomial, 3},
-    {"_coda_count_lpnm_join", (DL_FUNC) &_coda_count_lpnm_join, 5},
-    {"_coda_count_lpmultinomial_mult", (DL_FUNC) &_coda_count_lpmultinomial_mult, 2},
-    {"_coda_count_lpnm_join_no_constant", (DL_FUNC) &_coda_count_lpnm_join_no_constant, 5},
+    {"_coda_count_c_dlrnm_hermite", (DL_FUNC) &_coda_count_c_dlrnm_hermite, 7},
     {"_coda_count_expected_hermite", (DL_FUNC) &_coda_count_expected_hermite, 4},
     {"_coda_count_expected_montecarlo", (DL_FUNC) &_coda_count_expected_montecarlo, 7},
     {"_coda_count_expected_metropolis", (DL_FUNC) &_coda_count_expected_metropolis, 6},
@@ -626,8 +463,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_rnormal", (DL_FUNC) &_coda_count_c_rnormal, 3},
     {"_coda_count_c_rnormalSimplex", (DL_FUNC) &_coda_count_c_rnormalSimplex, 3},
     {"_coda_count_c_rnormalmultinomial", (DL_FUNC) &_coda_count_c_rnormalmultinomial, 3},
-    {"_coda_count_lattice_elements", (DL_FUNC) &_coda_count_lattice_elements, 2},
-    {"_coda_count_lattice_simplex", (DL_FUNC) &_coda_count_lattice_simplex, 2},
+    {"_coda_count_c_simplex_lattice", (DL_FUNC) &_coda_count_c_simplex_lattice, 2},
     {NULL, NULL, 0}
 };
 

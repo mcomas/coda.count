@@ -1,4 +1,4 @@
-#' Probability mass function of a Dirichlet-multinomial distributions
+#' Probability mass function of a Dirichlet-multinomial distribution
 #'
 #' @param x count vector
 #' @param alpha Parameter alpha of a Dirichlet-Multinomial distribution

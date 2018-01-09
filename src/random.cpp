@@ -71,13 +71,11 @@ arma::mat c_rnormal(int n, arma::vec mu, arma::mat sigma) {
   return arma::repmat(mu, 1, n).t() + Y * arma::chol(sigma);
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat c_rnormalSimplex(int n, arma::vec mu, arma::mat sigma) {
   return inv_ilr_coordinates(c_rnormal(n, mu, sigma));
 }
 
-//' @export
 // [[Rcpp::export]]
 List c_rnormalmultinomial(arma::vec mu, arma::mat sigma, arma::vec size){
   int n = size.n_elem;

@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
 
-double dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order);
+double c_dnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order);
 
 arma::vec m1_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order);
 
