@@ -128,6 +128,40 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_m1_hermite
+arma::vec c_m1_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order, int step_by, double eps, int max_steps);
+RcppExport SEXP _coda_count_c_m1_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type step_by(step_bySEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_m1_hermite(x, mu, sigma, order, step_by, eps, max_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_lrnm_fit_hermite
+arma::vec c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0, int order, int step_by, double eps, int max_steps);
+RcppExport SEXP _coda_count_c_lrnm_fit_hermite(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma0(sigma0SEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type step_by(step_bySEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_hermite(X, mu0, sigma0, order, step_by, eps, max_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
 // expected_hermite
 Rcpp::List expected_hermite(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, int order);
 RcppExport SEXP _coda_count_expected_hermite(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP orderSEXP) {
@@ -454,6 +488,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_validate_dnm", (DL_FUNC) &_coda_count_validate_dnm, 4},
     {"_coda_count_lpmultinomial_const", (DL_FUNC) &_coda_count_lpmultinomial_const, 1},
     {"_coda_count_c_dlrnm_hermite", (DL_FUNC) &_coda_count_c_dlrnm_hermite, 7},
+    {"_coda_count_c_m1_hermite", (DL_FUNC) &_coda_count_c_m1_hermite, 7},
+    {"_coda_count_c_lrnm_fit_hermite", (DL_FUNC) &_coda_count_c_lrnm_fit_hermite, 7},
     {"_coda_count_expected_hermite", (DL_FUNC) &_coda_count_expected_hermite, 4},
     {"_coda_count_expected_montecarlo", (DL_FUNC) &_coda_count_expected_montecarlo, 7},
     {"_coda_count_expected_metropolis", (DL_FUNC) &_coda_count_expected_metropolis, 6},

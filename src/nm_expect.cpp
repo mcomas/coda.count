@@ -24,8 +24,8 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 Rcpp::List expected_hermite(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, int order){
   double M0 = c_dnm_hermite(x, mu_ilr, sigma_ilr, order);
-  arma::vec M1 = m1_dnm(x, mu_ilr, sigma_ilr, order)/M0;
-  arma::mat M2 = m2_dnm(x, mu_ilr, sigma_ilr, order)/M0;
+  arma::vec M1 = m1_lrnm_hermite(x, mu_ilr, sigma_ilr, order)/M0;
+  arma::mat M2 = m2_lrnm_hermite(x, mu_ilr, sigma_ilr, order)/M0;
   return(Rcpp::List::create(M0, M1, M2));
 }
 

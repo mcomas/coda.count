@@ -82,6 +82,36 @@ double c_dlrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
   return(vnext);
 }
 
+//' @export
+// [[Rcpp::export]]
+arma::vec c_m1_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
+                       int order = 100, int step_by = 100,
+                       double eps = 0.000001, int max_steps = 10){
+  arma::vec vcurrent(mu.n_elem);
+  arma::vec vnext = m1_lrnm_hermite(x, mu, sigma, order);
+  int step = 1;
+  while(max(abs(vcurrent - vnext)) > eps &  step < max_steps){
+    step++;
+    order+=step_by;
+    vcurrent = vnext;
+    vnext = m1_lrnm_hermite(x, mu, sigma, order);
+  }
+  return(vnext);
+}
+
+
+//' @export
+// [[Rcpp::export]]
+arma::vec c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0,
+                   int order = 100, int step_by = 100,
+                   double eps = 0.000001, int max_steps = 10){
+  X = X.t();
+  arma::vec prob(X.n_cols);
+  for(int i = 0; i < X.n_cols; i++){
+    prob(i) = c_dlrnm_hermite(X.col(i), mu0, sigma0, order, step_by, eps, max_steps);
+  }
+  return(prob);
+}
 
 // //' @export
 // // [[Rcpp::export]]

@@ -2,6 +2,8 @@
 
 export(alr_basis)
 export(alr_to_ilr)
+export(c_lrnm_fit_hermite)
+export(c_m1_hermite)
 export(ddm)
 export(dlrnm)
 export(expected_hermite)

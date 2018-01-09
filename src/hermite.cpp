@@ -118,7 +118,7 @@ double c_dnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order){
   return integral;
 }
 
-arma::vec m1_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
+arma::vec m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
@@ -165,7 +165,7 @@ arma::vec m1_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order)
   return integral;
 }
 
-arma::mat m2_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
+arma::mat m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));

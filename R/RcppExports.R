@@ -49,6 +49,16 @@ c_dlrnm_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.
 }
 
 #' @export
+c_m1_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
+    .Call('_coda_count_c_m1_hermite', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
+}
+
+#' @export
+c_lrnm_fit_hermite <- function(X, mu0, sigma0, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
+    .Call('_coda_count_c_lrnm_fit_hermite', PACKAGE = 'coda.count', X, mu0, sigma0, order, step_by, eps, max_steps)
+}
+
+#' @export
 expected_hermite <- function(x, mu_ilr, sigma_ilr, order) {
     .Call('_coda_count_expected_hermite', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, order)
 }
