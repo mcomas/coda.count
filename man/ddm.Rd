@@ -2,7 +2,7 @@
 % Please edit documentation in R/dm.R
 \name{ddm}
 \alias{ddm}
-\title{Probability mass function of a Dirichlet-multinomial distributions}
+\title{Probability mass function of a Dirichlet-multinomial distribution}
 \usage{
 ddm(x, alpha)
 }
@@ -15,7 +15,7 @@ ddm(x, alpha)
 probability mass function evaluated in x
 }
 \description{
-Probability mass function of a Dirichlet-multinomial distributions
+Probability mass function of a Dirichlet-multinomial distribution
 }
 \examples{
 X = lattice_simplex(3,10)

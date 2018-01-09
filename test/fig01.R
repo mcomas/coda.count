@@ -1,5 +1,5 @@
 SEED = 1000
-library(coda.dist)
+library(coda.count)
 library(randtoolbox)
 
 x = c(1,0)
@@ -77,7 +77,10 @@ r4 = f4()
 r5 = f5()
 r6 = f6()
 
-plot(r1[,1], type='l', xlim = c(200,1000), ylim = c(0.40,0.57),
+XLIM = 200:1000
+YLIM = range(r1[XLIM,1], r2[XLIM,1], r3[XLIM,1],
+             r4[XLIM,1], r5[XLIM,1], r6[XLIM,1])
+plot(r1[,1], type='l', xlim = range(XLIM), ylim = YLIM,
      xlab = 'Iteration', ylab = 'Estimation')
 segments(x0 = 1, x1 = NSIM, y0 = r0[[2]], y1 = r0[[2]], col='red')
 points(r2[,1], col='blue', type='l')
@@ -91,7 +94,11 @@ legend('bottomright',
        col= c('black', 'blue', 'green', 'orange', 'brown', 'purple'),
        bty = 'n', lty=1, cex = 0.8)
 
-plot(r1[,2], type='l', xlim = c(200,1000), ylim = c(0.7,1.15),
+# WIDTH = 6.5, HEIGHT = 5.5
+XLIM = 200:1000
+YLIM = range(r1[XLIM,2], r2[XLIM,2], r3[XLIM,2],
+             r4[XLIM,2], r5[XLIM,2], r6[XLIM,2])
+plot(r1[,2], type='l', xlim = range(XLIM), ylim = YLIM,
      xlab = 'Iteration', ylab = 'Estimation')
 segments(x0 = 1, x1 = NSIM, y0 = r0[[3]], y1 = r0[[3]], col='red')
 points(r2[,2], col='blue', type='l')

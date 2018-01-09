@@ -27,6 +27,8 @@ arma::vec ldnormal(arma::mat H, arma::vec mu, arma::mat inv_sigma){
   return(norm);
 }
 
+//' @export
+// [[Rcpp::export]]
 double lpmultinomial_const(arma::vec x){
   int K = x.size();
   double x_total = 0;
@@ -38,6 +40,7 @@ double lpmultinomial_const(arma::vec x){
   for(int i = 0; i < K; i++) constant -= log_sums[x[i]];
   return(constant);
 }
+
 
 double lpmultinomial(arma::vec x, arma::vec p, double lconst){
   //double lconst = lpmultinomial_const(x);

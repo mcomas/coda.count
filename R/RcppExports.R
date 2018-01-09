@@ -39,6 +39,11 @@ validate_dnm <- function(x, mu, sigma, order) {
     .Call('_coda_count_validate_dnm', PACKAGE = 'coda.count', x, mu, sigma, order)
 }
 
+#' @export
+lpmultinomial_const <- function(x) {
+    .Call('_coda_count_lpmultinomial_const', PACKAGE = 'coda.count', x)
+}
+
 c_dlrnm_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
     .Call('_coda_count_c_dlrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
 }

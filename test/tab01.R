@@ -1,7 +1,7 @@
 SEED = 1
 library(coda.dist)
 library(randtoolbox)
-
+library(dplyr)
 x = c(1,0)
 MU = 0
 SIGMA = matrix(1)
@@ -133,10 +133,34 @@ f6 = function(){
 
 }
 
-r1 = f1()
-r2 = f2()
-r3 = f3()
-r4 = f4()
-r5 = f5()
-r6 = f6()
+add_time = function(f){
+  t0 = proc.time()
+  res = f()
+  attr(res, 'time') = proc.time() - t0
+  res
+}
+r1 = add_time(f1)
+r2 = add_time(f2)
+r3 = add_time(f3)
+r4 = add_time(f4)
+r5 = add_time(f5)
+r6 = add_time(f6)
 
+r = list(r1, r2, r3, r4, r5, r6)
+M = sapply(r, nth, 1)
+V = sapply(r, nth, 2)
+TIME = sapply(r, attr, 'time')[3,]
+TIME = TIME / TIME[1]
+tab.out = data.frame(
+  'Method' = c('MC', 'MC (Antithetic variates)','QMC', 'QMC (Antithetic variates)',
+               'MCMC (Metropolis)', 'MCMC (Hamiltonian)'),
+  'First moment' = sprintf("%8.7f (%6.5f)", M[1,], V[1,]),
+  'Second momenth' = sprintf("%8.7f (%6.5f)", M[2,], V[2,]),
+  'Time' = sprintf("x%.2f", TIME))
+tab.out
+
+# sink(file='tex/convergence01-quasi.tex')
+cat(Hmisc::latexTabular(tab.out,
+                        headings = sprintf("\\textbf{%s}", names(tab.out)),
+                        hline = 1, align = 'l | r r | l', helvetica = F, translate = F))
+# sink()

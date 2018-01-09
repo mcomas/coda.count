@@ -100,6 +100,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// lpmultinomial_const
+double lpmultinomial_const(arma::vec x);
+RcppExport SEXP _coda_count_lpmultinomial_const(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(lpmultinomial_const(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_dlrnm_hermite
 double c_dlrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order, int step_by, double eps, int max_steps);
 RcppExport SEXP _coda_count_c_dlrnm_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP) {
@@ -441,6 +452,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_ddm", (DL_FUNC) &_coda_count_c_ddm, 2},
     {"_coda_count_c_dm_fit", (DL_FUNC) &_coda_count_c_dm_fit, 3},
     {"_coda_count_validate_dnm", (DL_FUNC) &_coda_count_validate_dnm, 4},
+    {"_coda_count_lpmultinomial_const", (DL_FUNC) &_coda_count_lpmultinomial_const, 1},
     {"_coda_count_c_dlrnm_hermite", (DL_FUNC) &_coda_count_c_dlrnm_hermite, 7},
     {"_coda_count_expected_hermite", (DL_FUNC) &_coda_count_expected_hermite, 4},
     {"_coda_count_expected_montecarlo", (DL_FUNC) &_coda_count_expected_montecarlo, 7},
