@@ -3,6 +3,8 @@
 #include <RcppArmadillo.h>
 # include "nm.h"
 # include "nm_expect.h"
+# include "nm_optimise.h"
+# include "nm_expect_mc_variations.h"
 # include "coda.h"
 #include "hermite.h"
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
@@ -83,8 +85,7 @@ double c_dlrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
   return(vnext);
 }
 
-//' @export
-// [[Rcpp::export]]
+
 arma::vec c_m1_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
                        int order = 100, int step_by = 100,
                        double eps = 0.000001, int max_steps = 10){
@@ -100,8 +101,7 @@ arma::vec c_m1_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
   return(vnext);
 }
 
-//' @export
-// [[Rcpp::export]]
+
 arma::mat c_m2_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
                        int order = 100, int step_by = 100,
                        double eps = 0.000001, int max_steps = 10){
@@ -153,14 +153,103 @@ Rcpp::List c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0,
   return Rcpp::List::create(mu, sigma, inv_ilr_coordinates(H.t()));
 }
 
-// //' @export
-// // [[Rcpp::export]]
-// Rcpp::List c_nm_fit_1(arma::mat X, arma::vec mu_ilr, arma::mat sigma_ilr, arma::mat Z,
-//                       arma::mat mu_exp, arma::vec var_exp){
-//
-//   int n = X.n_rows;
-//   for(int i = 0; i++; i < n){
-//     E = expected_montecarlo_01(X.row(i), mu_ilr, sigma_ilr, Z, mu_exp = H.row(i));
-//   }
-//   return Rcpp::List::create(alpha, iter);
-// }
+//' @export
+// [[Rcpp::export]]
+Rcpp::List c_lrnm_fit_maximum(arma::mat X, arma::vec mu0, arma::mat sigma0,
+                              double tol = 10e-6, int em_max_steps = 10){
+  X = X.t();
+  int n = X.n_cols;
+  int K = X.n_rows;
+  arma::mat B = ilr_basis(K);
+
+  arma::mat H(mu0.n_elem, n);
+  arma::vec M1(mu0.n_elem);
+  arma::mat M2(mu0.n_elem, mu0.n_elem);
+  arma::vec mu = mu0;
+  arma::mat sigma = sigma0;
+  arma::vec mu_prev = mu0 + 1;
+
+  int step = 0;
+  while(max(abs(mu_prev - mu)) > tol & step < em_max_steps){
+    // Rcpp::Rcout << mu << std::endl;
+    step++;
+    for(int i = 0; i < n; i++){
+      H.col(i) = mvf_maximum(X.col(i), mu, sigma, B, 10e-6, 50, 0.66);
+    }
+    mu_prev = mu;
+    mu = mean(H,1);
+    sigma = cov(H.t());
+  }
+  return Rcpp::List::create(mu, sigma, inv_ilr_coordinates(H.t()));
+}
+
+//' @export
+// [[Rcpp::export]]
+Rcpp::List c_lrnm_fit_mc(arma::mat X, arma::vec mu0, arma::mat sigma0, arma::mat Z,
+                         double tol = 0.001, int em_max_steps = 10){
+  X = X.t();
+  int n = X.n_cols;
+  int K = X.n_rows;
+  arma::mat B = ilr_basis(K);
+
+  arma::mat H(mu0.n_elem, n);
+
+  arma::vec M1(mu0.n_elem);
+  arma::mat M2(mu0.n_elem, mu0.n_elem);
+
+  arma::mat M1i(mu0.n_elem, n);
+  arma::cube M2i(mu0.n_elem, mu0.n_elem, n);
+
+  arma::vec mu_prev = mu0 + 1;
+  arma::vec mu = mu0;
+  arma::mat sigma = sigma0;
+
+  arma::mat Hs(Z.n_rows, Z.n_cols);
+
+  M1.zeros();
+  M2.zeros();
+  for(int i = 0; i < n; i++){
+    arma::vec x = X.col(i);
+    arma::vec sampling_mu = mvf_maximum(x, mu, sigma, B, 0.0001, 50, 0.66);
+    arma::vec lik_std = expected_mc_01_init(x, mu, sigma, Z, sampling_mu, Hs);
+    arma::vec mu_exp  = expected_mc_mean(x, Hs, lik_std);
+
+    M1 += mu_exp;
+    M2 += expected_mc_var(x, mu, Hs, lik_std);
+
+    M1i.col(i) = mu_exp;
+    M2i.slice(i) = expected_mc_var(x, mu_exp, Hs, lik_std);
+  }
+  mu_prev = mu;
+  mu = M1 / n;
+  sigma = M2 / n;
+
+  // Starting iterations
+  int step = 0;
+  while(max(abs(mu_prev - mu)) > tol & step < em_max_steps){
+    step++;
+    Rcpp::Rcout << mu << std::endl;
+    Rcpp::Rcout << M1i.t() << std::endl;
+    M1.zeros();
+    M2.zeros();
+    for(int i = 0; i < n; i++){
+      arma::vec x = X.col(i);
+      arma::vec sampling_mu = M1i.col(i);
+      arma::mat sampling_sigma = M2i.slice(i);
+
+      arma::vec lik_std = expected_mc_03_init(x, mu, sigma, Z, sampling_mu, sampling_sigma, Hs);
+      arma::vec mu_exp  = expected_mc_mean(x, Hs, lik_std);
+      Rcpp::Rcout << mu_exp << std::endl;
+      M1 += mu_exp;
+      M2 += expected_mc_var(x, mu, Hs, lik_std);
+
+      M1i.col(i) = mu_exp;
+      M2i.slice(i) = expected_mc_var(x, mu_exp, Hs, lik_std);
+    }
+    mu_prev = mu;
+    mu = M1 / n;
+    sigma = M2 / n;
+  }
+
+  return Rcpp::List::create(mu, sigma, inv_ilr_coordinates(M1.t()));
+}

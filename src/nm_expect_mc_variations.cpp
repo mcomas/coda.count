@@ -66,8 +66,8 @@ Rcpp::List expected_montecarlo_01(arma::vec x, arma::vec mu_ilr, arma::mat sigma
   return(Rcpp::List::create(M0, M1, M2));
 }
 
-arma::vec expected_montecarlo_01_init(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::mat Z,
-                                   arma::vec mu_exp, arma::mat& Hs){ //, double var_exp){
+arma::vec expected_montecarlo_01_init(arma::vec x, arma::vec& mu_ilr, arma::mat& sigma_ilr, arma::mat& Z,
+                                      arma::vec mu_exp, arma::mat& Hs){
 
   int K = x.size();
   int k = K - 1;
@@ -96,6 +96,95 @@ arma::vec expected_montecarlo_01_init(arma::vec x, arma::vec mu_ilr, arma::mat s
   arma::vec lik_st = lik / mean(lik);
 
   return(lik_st);
+}
+
+arma::vec expected_mc_01_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_ilr,
+                              arma::mat& Z, arma::vec& sampling_mu, arma::mat& Hs){
+
+  int K = x.size();
+  int k = K - 1;
+  int nsim = Z.n_rows;
+
+  arma::mat inv_sigma = inv_sympd(sigma_ilr);
+
+  arma::mat SAMPLING_MU = arma::repmat(sampling_mu.t(), nsim, 1);
+
+  arma::mat sampling_sigma = sigma_ilr;
+  arma::mat sampling_inv_sigma = inv_sigma;
+  arma::mat sampling_sigma_chol = arma::chol(sampling_sigma);
+
+  arma::mat D = inv_sigma * (mu_ilr-sampling_mu);
+
+  double M0 = 0;
+  arma::vec M1 = arma::vec(k);
+  M1.zeros();
+  Hs = SAMPLING_MU + Z * sampling_sigma_chol;
+  arma::mat Ps = inv_ilr_coordinates(Hs);
+  arma::vec loglik = lpmultinomial_mult(Ps, x) + Hs * D; //mu12(0,0) +
+  double cmax = max(loglik);
+
+  arma::vec lik = exp(loglik - cmax);
+  arma::vec lik_st = lik / mean(lik);
+
+  return(lik_st);
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::vec expected_mc_03_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_ilr,
+                              arma::mat& Z, arma::vec& mu_sampling, arma::mat& sigma_sampling, arma::mat& Hs){
+
+  int K = x.size();
+  int k = K - 1;
+  int nsim = Z.n_rows;
+  arma::mat B = ilr_basis(K);
+
+  arma::mat inv_sigma_ilr = inv_sympd(sigma_ilr);
+  arma::mat inv_sigma_sampling = inv_sympd(sigma_sampling);
+
+
+  Z = Z * arma::chol(sigma_sampling);
+  Z.each_row() += mu_sampling.t();
+  arma::vec loglik = -ldnormal(Z, mu_sampling, inv_sigma_sampling);
+
+  for(int i = 0; i < nsim; i++){
+    arma::vec h = Z.row(i).t();
+    arma::vec p = exp(B * h);
+    loglik(i) += lpnm_join_no_constant(x, mu_ilr, inv_sigma_ilr, p / arma::accu(p), h);
+  }
+  arma::vec lik = arma::exp(loglik - max(loglik));
+  arma::vec lik_st = lik / mean(lik);
+
+
+  return(lik_st);
+
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::vec expected_mc_mean(arma::vec& x, arma::mat& Hs, arma::vec& lik_st){
+  int k = x.size() - 1;
+  arma::vec M1 = arma::vec(k);
+  M1.zeros();
+  for(int i = 0;i < k; i++){
+    arma::vec C = Hs.col(i) % lik_st;
+    M1(i) += mean(C);
+  }
+  return(M1);
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::mat expected_mc_var(arma::vec& x, arma::vec& mu, arma::mat& Hs, arma::vec& lik_st){
+  int k = x.size() - 1;
+  arma::mat M2 = arma::mat(k, k);
+  M2.zeros();
+  for(int i = 0; i < k; i++){
+    for(int j = 0; j < k; j++){
+      M2(i,j) += mean( (Hs.col(i) - mu(i)) % (Hs.col(j) - mu(j)) % lik_st);
+    }
+  }
+  return(M2);
 }
 
 //' @export
