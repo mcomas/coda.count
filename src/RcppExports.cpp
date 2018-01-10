@@ -100,146 +100,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// lpmultinomial_const
-double lpmultinomial_const(arma::vec x);
-RcppExport SEXP _coda_count_lpmultinomial_const(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(lpmultinomial_const(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// c_dlrnm_hermite
-double c_dlrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order, int step_by, double eps, int max_steps);
-RcppExport SEXP _coda_count_c_dlrnm_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
-    Rcpp::traits::input_parameter< int >::type step_by(step_bySEXP);
-    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
-    Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_dlrnm_hermite(x, mu, sigma, order, step_by, eps, max_steps));
-    return rcpp_result_gen;
-END_RCPP
-}
-// c_lrnm_fit_hermite
-Rcpp::List c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0, int order, int step_by, double eps, int max_steps, int em_max_steps);
-RcppExport SEXP _coda_count_c_lrnm_fit_hermite(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP, SEXP em_max_stepsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu0(mu0SEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma0(sigma0SEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
-    Rcpp::traits::input_parameter< int >::type step_by(step_bySEXP);
-    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
-    Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
-    Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_hermite(X, mu0, sigma0, order, step_by, eps, max_steps, em_max_steps));
-    return rcpp_result_gen;
-END_RCPP
-}
-// c_lrnm_fit_maximum
-Rcpp::List c_lrnm_fit_maximum(arma::mat X, arma::vec mu0, arma::mat sigma0, double tol, int em_max_steps);
-RcppExport SEXP _coda_count_c_lrnm_fit_maximum(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP tolSEXP, SEXP em_max_stepsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu0(mu0SEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma0(sigma0SEXP);
-    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_maximum(X, mu0, sigma0, tol, em_max_steps));
-    return rcpp_result_gen;
-END_RCPP
-}
-// c_lrnm_fit_mc
-Rcpp::List c_lrnm_fit_mc(arma::mat X, arma::vec mu0, arma::mat sigma0, arma::mat Z, double tol, int em_max_steps);
-RcppExport SEXP _coda_count_c_lrnm_fit_mc(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP ZSEXP, SEXP tolSEXP, SEXP em_max_stepsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu0(mu0SEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma0(sigma0SEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Z(ZSEXP);
-    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_mc(X, mu0, sigma0, Z, tol, em_max_steps));
-    return rcpp_result_gen;
-END_RCPP
-}
-// expected_hermite
-Rcpp::List expected_hermite(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, int order);
-RcppExport SEXP _coda_count_expected_hermite(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP orderSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu_ilr(mu_ilrSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma_ilr(sigma_ilrSEXP);
-    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
-    rcpp_result_gen = Rcpp::wrap(expected_hermite(x, mu_ilr, sigma_ilr, order));
-    return rcpp_result_gen;
-END_RCPP
-}
-// expected_montecarlo
-Rcpp::List expected_montecarlo(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::mat& Z, arma::vec mu_sampling, arma::mat sigma_sampling, arma::mat& Hz);
-RcppExport SEXP _coda_count_expected_montecarlo(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP ZSEXP, SEXP mu_samplingSEXP, SEXP sigma_samplingSEXP, SEXP HzSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu_ilr(mu_ilrSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma_ilr(sigma_ilrSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type Z(ZSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu_sampling(mu_samplingSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma_sampling(sigma_samplingSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type Hz(HzSEXP);
-    rcpp_result_gen = Rcpp::wrap(expected_montecarlo(x, mu_ilr, sigma_ilr, Z, mu_sampling, sigma_sampling, Hz));
-    return rcpp_result_gen;
-END_RCPP
-}
-// expected_metropolis
-Rcpp::List expected_metropolis(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::vec mu_exp, int nsim, int ignored_steps);
-RcppExport SEXP _coda_count_expected_metropolis(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP mu_expSEXP, SEXP nsimSEXP, SEXP ignored_stepsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu_ilr(mu_ilrSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma_ilr(sigma_ilrSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu_exp(mu_expSEXP);
-    Rcpp::traits::input_parameter< int >::type nsim(nsimSEXP);
-    Rcpp::traits::input_parameter< int >::type ignored_steps(ignored_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(expected_metropolis(x, mu_ilr, sigma_ilr, mu_exp, nsim, ignored_steps));
-    return rcpp_result_gen;
-END_RCPP
-}
-// metropolis_sample
-arma::mat metropolis_sample(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::vec x0, int nsim, int ignored_steps);
-RcppExport SEXP _coda_count_metropolis_sample(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP x0SEXP, SEXP nsimSEXP, SEXP ignored_stepsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu_ilr(mu_ilrSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma_ilr(sigma_ilrSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type x0(x0SEXP);
-    Rcpp::traits::input_parameter< int >::type nsim(nsimSEXP);
-    Rcpp::traits::input_parameter< int >::type ignored_steps(ignored_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(metropolis_sample(x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps));
-    return rcpp_result_gen;
-END_RCPP
-}
 // expected_montecarlo_01
 Rcpp::List expected_montecarlo_01(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::mat Z, arma::vec mu_exp);
 RcppExport SEXP _coda_count_expected_montecarlo_01(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP ZSEXP, SEXP mu_expSEXP) {
@@ -377,6 +237,69 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// expected_hermite
+Rcpp::List expected_hermite(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, int order);
+RcppExport SEXP _coda_count_expected_hermite(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP orderSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_ilr(mu_ilrSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma_ilr(sigma_ilrSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    rcpp_result_gen = Rcpp::wrap(expected_hermite(x, mu_ilr, sigma_ilr, order));
+    return rcpp_result_gen;
+END_RCPP
+}
+// expected_montecarlo
+Rcpp::List expected_montecarlo(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::mat& Z, arma::vec mu_sampling, arma::mat sigma_sampling, arma::mat& Hz);
+RcppExport SEXP _coda_count_expected_montecarlo(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP ZSEXP, SEXP mu_samplingSEXP, SEXP sigma_samplingSEXP, SEXP HzSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_ilr(mu_ilrSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma_ilr(sigma_ilrSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_sampling(mu_samplingSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma_sampling(sigma_samplingSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Hz(HzSEXP);
+    rcpp_result_gen = Rcpp::wrap(expected_montecarlo(x, mu_ilr, sigma_ilr, Z, mu_sampling, sigma_sampling, Hz));
+    return rcpp_result_gen;
+END_RCPP
+}
+// expected_metropolis
+Rcpp::List expected_metropolis(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::vec mu_exp, int nsim, int ignored_steps);
+RcppExport SEXP _coda_count_expected_metropolis(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP mu_expSEXP, SEXP nsimSEXP, SEXP ignored_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_ilr(mu_ilrSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma_ilr(sigma_ilrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_exp(mu_expSEXP);
+    Rcpp::traits::input_parameter< int >::type nsim(nsimSEXP);
+    Rcpp::traits::input_parameter< int >::type ignored_steps(ignored_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(expected_metropolis(x, mu_ilr, sigma_ilr, mu_exp, nsim, ignored_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// metropolis_sample
+arma::mat metropolis_sample(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::vec x0, int nsim, int ignored_steps);
+RcppExport SEXP _coda_count_metropolis_sample(SEXP xSEXP, SEXP mu_ilrSEXP, SEXP sigma_ilrSEXP, SEXP x0SEXP, SEXP nsimSEXP, SEXP ignored_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_ilr(mu_ilrSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma_ilr(sigma_ilrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x0(x0SEXP);
+    Rcpp::traits::input_parameter< int >::type nsim(nsimSEXP);
+    Rcpp::traits::input_parameter< int >::type ignored_steps(ignored_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(metropolis_sample(x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mvf_deriv
 double mvf_deriv(int I, arma::vec a, arma::vec mu, arma::mat inv_sigma, arma::vec x);
 RcppExport SEXP _coda_count_mvf_deriv(SEXP ISEXP, SEXP aSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP xSEXP) {
@@ -433,6 +356,83 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
     Rcpp::traits::input_parameter< double >::type prop(propSEXP);
     rcpp_result_gen = Rcpp::wrap(mvf_maximum(x, mu_ilr, sigma_ilr, B, eps, max_iter, prop));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lpmultinomial_const
+double lpmultinomial_const(arma::vec x);
+RcppExport SEXP _coda_count_lpmultinomial_const(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(lpmultinomial_const(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_dlrnm_hermite
+double c_dlrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order, int step_by, double eps, int max_steps);
+RcppExport SEXP _coda_count_c_dlrnm_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type step_by(step_bySEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_dlrnm_hermite(x, mu, sigma, order, step_by, eps, max_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_lrnm_fit_hermite
+Rcpp::List c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0, int order, int step_by, double eps, int max_steps, int em_max_steps);
+RcppExport SEXP _coda_count_c_lrnm_fit_hermite(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP, SEXP em_max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma0(sigma0SEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type step_by(step_bySEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
+    Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_hermite(X, mu0, sigma0, order, step_by, eps, max_steps, em_max_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_lrnm_fit_maximum
+Rcpp::List c_lrnm_fit_maximum(arma::mat X, arma::vec mu0, arma::mat sigma0, double tol, int em_max_steps);
+RcppExport SEXP _coda_count_c_lrnm_fit_maximum(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP tolSEXP, SEXP em_max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma0(sigma0SEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_maximum(X, mu0, sigma0, tol, em_max_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_lrnm_fit_mc
+Rcpp::List c_lrnm_fit_mc(arma::mat X, arma::vec mu0, arma::mat sigma0, arma::mat Z, double tol, int em_max_steps);
+RcppExport SEXP _coda_count_c_lrnm_fit_mc(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP ZSEXP, SEXP tolSEXP, SEXP em_max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma0(sigma0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_mc(X, mu0, sigma0, Z, tol, em_max_steps));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -545,15 +545,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_ddm", (DL_FUNC) &_coda_count_c_ddm, 2},
     {"_coda_count_c_dm_fit", (DL_FUNC) &_coda_count_c_dm_fit, 3},
     {"_coda_count_validate_dnm", (DL_FUNC) &_coda_count_validate_dnm, 4},
-    {"_coda_count_lpmultinomial_const", (DL_FUNC) &_coda_count_lpmultinomial_const, 1},
-    {"_coda_count_c_dlrnm_hermite", (DL_FUNC) &_coda_count_c_dlrnm_hermite, 7},
-    {"_coda_count_c_lrnm_fit_hermite", (DL_FUNC) &_coda_count_c_lrnm_fit_hermite, 8},
-    {"_coda_count_c_lrnm_fit_maximum", (DL_FUNC) &_coda_count_c_lrnm_fit_maximum, 5},
-    {"_coda_count_c_lrnm_fit_mc", (DL_FUNC) &_coda_count_c_lrnm_fit_mc, 6},
-    {"_coda_count_expected_hermite", (DL_FUNC) &_coda_count_expected_hermite, 4},
-    {"_coda_count_expected_montecarlo", (DL_FUNC) &_coda_count_expected_montecarlo, 7},
-    {"_coda_count_expected_metropolis", (DL_FUNC) &_coda_count_expected_metropolis, 6},
-    {"_coda_count_metropolis_sample", (DL_FUNC) &_coda_count_metropolis_sample, 6},
     {"_coda_count_expected_montecarlo_01", (DL_FUNC) &_coda_count_expected_montecarlo_01, 5},
     {"_coda_count_expected_mc_03_init", (DL_FUNC) &_coda_count_expected_mc_03_init, 7},
     {"_coda_count_expected_mc_mean", (DL_FUNC) &_coda_count_expected_mc_mean, 3},
@@ -563,10 +554,19 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_expected_montecarlo_02", (DL_FUNC) &_coda_count_expected_montecarlo_02, 6},
     {"_coda_count_expected_montecarlo_03", (DL_FUNC) &_coda_count_expected_montecarlo_03, 6},
     {"_coda_count_expected_montecarlo_04", (DL_FUNC) &_coda_count_expected_montecarlo_04, 6},
+    {"_coda_count_expected_hermite", (DL_FUNC) &_coda_count_expected_hermite, 4},
+    {"_coda_count_expected_montecarlo", (DL_FUNC) &_coda_count_expected_montecarlo, 7},
+    {"_coda_count_expected_metropolis", (DL_FUNC) &_coda_count_expected_metropolis, 6},
+    {"_coda_count_metropolis_sample", (DL_FUNC) &_coda_count_metropolis_sample, 6},
     {"_coda_count_mvf_deriv", (DL_FUNC) &_coda_count_mvf_deriv, 5},
     {"_coda_count_mvf_deriv2", (DL_FUNC) &_coda_count_mvf_deriv2, 6},
     {"_coda_count_alr_basis", (DL_FUNC) &_coda_count_alr_basis, 1},
     {"_coda_count_mvf_maximum", (DL_FUNC) &_coda_count_mvf_maximum, 7},
+    {"_coda_count_lpmultinomial_const", (DL_FUNC) &_coda_count_lpmultinomial_const, 1},
+    {"_coda_count_c_dlrnm_hermite", (DL_FUNC) &_coda_count_c_dlrnm_hermite, 7},
+    {"_coda_count_c_lrnm_fit_hermite", (DL_FUNC) &_coda_count_c_lrnm_fit_hermite, 8},
+    {"_coda_count_c_lrnm_fit_maximum", (DL_FUNC) &_coda_count_c_lrnm_fit_maximum, 5},
+    {"_coda_count_c_lrnm_fit_mc", (DL_FUNC) &_coda_count_c_lrnm_fit_mc, 6},
     {"_coda_count_c_rmultinomial_Rcpp", (DL_FUNC) &_coda_count_c_rmultinomial_Rcpp, 2},
     {"_coda_count_c_rmultinomial", (DL_FUNC) &_coda_count_c_rmultinomial, 2},
     {"_coda_count_c_rdirichlet", (DL_FUNC) &_coda_count_c_rdirichlet, 2},

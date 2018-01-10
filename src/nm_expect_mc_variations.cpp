@@ -107,18 +107,14 @@ arma::vec expected_mc_01_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_
 
   arma::mat inv_sigma = inv_sympd(sigma_ilr);
 
-  arma::mat SAMPLING_MU = arma::repmat(sampling_mu.t(), nsim, 1);
-
   arma::mat sampling_sigma = sigma_ilr;
   arma::mat sampling_inv_sigma = inv_sigma;
   arma::mat sampling_sigma_chol = arma::chol(sampling_sigma);
 
   arma::mat D = inv_sigma * (mu_ilr-sampling_mu);
 
-  double M0 = 0;
-  arma::vec M1 = arma::vec(k);
-  M1.zeros();
-  Hs = SAMPLING_MU + Z * sampling_sigma_chol;
+  Hs = Z * sampling_sigma_chol;
+  Hs.each_row() += sampling_mu.t();
   arma::mat Ps = inv_ilr_coordinates(Hs);
   arma::vec loglik = lpmultinomial_mult(Ps, x) + Hs * D; //mu12(0,0) +
   double cmax = max(loglik);
@@ -143,12 +139,12 @@ arma::vec expected_mc_03_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_
   arma::mat inv_sigma_sampling = inv_sympd(sigma_sampling);
 
 
-  Z = Z * arma::chol(sigma_sampling);
-  Z.each_row() += mu_sampling.t();
+  Hs = Z * arma::chol(sigma_sampling);
+  Hs.each_row() += mu_sampling.t();
   arma::vec loglik = -ldnormal(Z, mu_sampling, inv_sigma_sampling);
 
   for(int i = 0; i < nsim; i++){
-    arma::vec h = Z.row(i).t();
+    arma::vec h = Hs.row(i).t();
     arma::vec p = exp(B * h);
     loglik(i) += lpnm_join_no_constant(x, mu_ilr, inv_sigma_ilr, p / arma::accu(p), h);
   }

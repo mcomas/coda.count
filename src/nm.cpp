@@ -228,8 +228,7 @@ Rcpp::List c_lrnm_fit_mc(arma::mat X, arma::vec mu0, arma::mat sigma0, arma::mat
   int step = 0;
   while(max(abs(mu_prev - mu)) > tol & step < em_max_steps){
     step++;
-    Rcpp::Rcout << mu << std::endl;
-    Rcpp::Rcout << M1i.t() << std::endl;
+    //Rcpp:Rcout << "Step " << step << std::endl;
     M1.zeros();
     M2.zeros();
     for(int i = 0; i < n; i++){
@@ -237,14 +236,32 @@ Rcpp::List c_lrnm_fit_mc(arma::mat X, arma::vec mu0, arma::mat sigma0, arma::mat
       arma::vec sampling_mu = M1i.col(i);
       arma::mat sampling_sigma = M2i.slice(i);
 
-      arma::vec lik_std = expected_mc_03_init(x, mu, sigma, Z, sampling_mu, sampling_sigma, Hs);
-      arma::vec mu_exp  = expected_mc_mean(x, Hs, lik_std);
-      Rcpp::Rcout << mu_exp << std::endl;
-      M1 += mu_exp;
-      M2 += expected_mc_var(x, mu, Hs, lik_std);
 
-      M1i.col(i) = mu_exp;
-      M2i.slice(i) = expected_mc_var(x, mu_exp, Hs, lik_std);
+      //if(i == 0){
+        Rcpp::Rcout << "mu" << std::endl << mu << std::endl;
+        Rcpp::Rcout << "sigma" << std::endl << sigma << std::endl;
+        Rcpp::Rcout << "sampling_mu" << std::endl << sampling_mu << std::endl;
+        Rcpp::Rcout << "sampling_sigma" << std::endl << sampling_sigma << std::endl;
+        Rcpp::Rcout << "trace: " << trace(sampling_sigma) << std::endl;
+        Rcpp::Rcout << "lowest eigenvalue " << min(eig_sym(sampling_sigma) ) << std::endl;
+        Rcpp::Rcout << "Hs" << std::endl << Hs << std::endl;
+      //}
+
+      if(min(eig_sym(sampling_sigma)) > 10e-15){
+        arma::vec lik_std = expected_mc_03_init(x, mu, sigma, Z, sampling_mu, sampling_sigma, Hs);
+        arma::vec mu_exp  = expected_mc_mean(x, Hs, lik_std);
+        //Rcpp::Rcout << "Calculated" << std::endl;
+        M1 += mu_exp;
+        M2 += expected_mc_var(x, mu, Hs, lik_std);
+
+        M1i.col(i) = mu_exp;
+        M2i.slice(i) = expected_mc_var(x, mu_exp, Hs, lik_std);
+      }else{
+        M1 += M1i.col(i);
+        M2 += (M1i.col(i) - mu) * (M1i.col(i) - mu).t();
+      }
+
+
     }
     mu_prev = mu;
     mu = M1 / n;
