@@ -1,5 +1,0 @@
-PKG_LIBS=`${R_HOME}/bin/Rscript -e "Rcpp:::LdFlags()"` $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
-CXX_STD = CXX11
-CXX=clang++
-CC=clang
-PKG_CXXFLAGS = -std=c++11 -fopenmp

@@ -3,6 +3,7 @@
 #include <RcppArmadillo.h>
 # include "nm.h"
 # include "nm_expect.h"
+# include "coda.h"
 #include "hermite.h"
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
 // [[Rcpp::plugins(cpp11)]]
@@ -99,18 +100,57 @@ arma::vec c_m1_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
   return(vnext);
 }
 
+//' @export
+// [[Rcpp::export]]
+arma::mat c_m2_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
+                       int order = 100, int step_by = 100,
+                       double eps = 0.000001, int max_steps = 10){
+  arma::mat vcurrent(mu.n_elem, mu.n_elem);
+  arma::mat vnext = m2_lrnm_hermite(x, mu, sigma, order);
+  int step = 1;
+  while(max(max(abs(vcurrent - vnext))) > eps &  step < max_steps){
+    step++;
+    order+=step_by;
+    vcurrent = vnext;
+    vnext = m2_lrnm_hermite(x, mu, sigma, order);
+  }
+  return(vnext);
+}
 
 //' @export
 // [[Rcpp::export]]
-arma::vec c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0,
+Rcpp::List c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0,
                    int order = 100, int step_by = 100,
-                   double eps = 0.000001, int max_steps = 10){
+                   double eps = 0.000001, int max_steps = 10,
+                   int em_max_steps = 10){
   X = X.t();
-  arma::vec prob(X.n_cols);
-  for(int i = 0; i < X.n_cols; i++){
-    prob(i) = c_dlrnm_hermite(X.col(i), mu0, sigma0, order, step_by, eps, max_steps);
+  int n = X.n_cols;
+
+  arma::mat H(mu0.n_elem, n);
+  arma::vec M1(mu0.n_elem);
+  arma::mat M2(mu0.n_elem, mu0.n_elem);
+  arma::vec mu = mu0;
+  arma::mat sigma = sigma0;
+  arma::vec mu_prev = mu0 + 1;
+
+
+  int step = 0;
+  while(max(abs(mu_prev - mu)) > eps & step < em_max_steps){
+    step++;
+    M1.zeros();
+    M2.zeros();
+    for(int i = 0; i < n; i++){
+      double prob = c_dlrnm_hermite(X.col(i), mu, sigma, order, step_by, eps, max_steps);
+      H.col(i) = c_m1_hermite(X.col(i), mu, sigma, order, step_by, eps, max_steps)/prob;
+      M1 += H.col(i);
+      M2 += (c_m2_hermite(X.col(i), mu, sigma, order, step_by, eps, max_steps)/prob);
+    }
+    mu_prev = mu;
+    mu = M1 / n;
+    sigma = M2/n - mu * mu.t();
   }
-  return(prob);
+
+  return Rcpp::List::create(mu, sigma, inv_ilr_coordinates(H.t()));
 }
 
 // //' @export
