@@ -13,7 +13,7 @@ fit.lrnm = c_lrnm_fit_hermite(X, colMeans(H), cov(H))
 fit.lrnm2 = c_lrnm_fit_hermite(X, colMeans(H), cov(H), max_steps = 0, order = 250)
 
 #####3
-NSIM = 100
+NSIM = 10000
 Z0 = sobol(NSIM/2, dim = length(MU.orig), normal = TRUE, init=TRUE)
 Z = matrix(0, nrow=NSIM, ncol=length(MU.orig))
 Z[seq(1,NSIM,2),] = Z0

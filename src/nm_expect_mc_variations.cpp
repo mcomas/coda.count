@@ -141,7 +141,7 @@ arma::vec expected_mc_03_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_
 
   Hs = Z * arma::chol(sigma_sampling);
   Hs.each_row() += mu_sampling.t();
-  arma::vec loglik = -ldnormal(Z, mu_sampling, inv_sigma_sampling);
+  arma::vec loglik = -ldnormal(Hs, mu_sampling, inv_sigma_sampling);
 
   for(int i = 0; i < nsim; i++){
     arma::vec h = Hs.row(i).t();
