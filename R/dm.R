@@ -9,8 +9,9 @@
 #' sum(pmf[,4])
 #' @export
 ddm <- function(x, alpha) {
-  x = as.integer(x)
-  if( length(x) != length(alpha) ){
+  x = trunc(x)
+  dimension = ifelse(is.vector(x), length(x), ncol(x))
+  if( dimension != length(alpha) ){
     stop("count and parameters must have same length")
   }
   if( ! length(alpha) > 1){
@@ -22,7 +23,12 @@ ddm <- function(x, alpha) {
   if( !all(alpha > 0) ){
     stop("All parameters must be positive")
   }
-  c_ddm(x, alpha)
+  if(is.vector(x)){
+    c_ddm(x, alpha)
+  }else{
+    apply(X, 1, c_ddm, alpha)
+  }
+
 }
 
 #' Estimate the parameters of a Dirichlet-multinomial distribution

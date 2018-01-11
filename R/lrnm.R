@@ -16,7 +16,11 @@ dlrnm = function(x, mu, sigma, method = ifelse(length(mu) %in% 1:2, 'hermite', '
                  hermite.max_steps = 10){
   sigma = as.matrix(sigma)
   if(method == 'hermite'){
-    return(c_dlrnm_hermite(x, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+    if(is.vector(x)){
+      return(c_dlrnm_hermite(x, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+    }else{
+      return(apply(X, 1, c_dlrnm_hermite, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+    }
   }
   if(method == 'mc'){
     message('Method Monte Carlo not available yet')
