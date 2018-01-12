@@ -18,7 +18,7 @@ probability mass function evaluated in x
 Probability mass function of a Dirichlet-multinomial distribution
 }
 \examples{
-X = lattice_simplex(3,10)
-(pmf <- cbind(X, apply(X, 1, ddm, c(0.5,0.5,0.5))))
+X = simplex_lattice(10,3)
+(pmf <- cbind(X, ddm(X, c(0.5,0.5,0.5))))
 sum(pmf[,4])
 }
