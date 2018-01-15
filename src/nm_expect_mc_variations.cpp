@@ -1,4 +1,5 @@
 // [[Rcpp::depends(RcppArmadillo)]]
+#define ARMA_DONT_PRINT_ERRORS
 
 #include <RcppArmadillo.h>
 #include "coda.h"
@@ -7,6 +8,7 @@
 #include "hermite.h"
 #include <random>
 #include <vector>
+
 
 // Enable C++11 via this plugin (Rcpp 0.10.3 or later)
 // [[Rcpp::plugins(cpp11)]]
@@ -137,16 +139,22 @@ arma::vec expected_mc_03_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& inv_si
   int nsim = Z.n_rows;
   arma::mat B = ilr_basis(K);
 
+  //Rcpp::Rcout << "in ";
   arma::mat inv_sigma_sampling = arma::mat(k,k);
-  bool b_inv_sigma_sampling = inv_sympd(sigma_sampling, inv_sigma_sampling);
-  if(!b_inv_sigma_sampling){
-    inv_sigma_sampling = inv(diagmat(sigma_sampling));
+  bool b_inv_sigma_sampling = inv_sympd(inv_sigma_sampling, sigma_sampling);
+  if(b_inv_sigma_sampling == false){
+    sigma_sampling = diagmat(abs(diagvec(sigma_sampling)));
+    inv_sigma_sampling = inv(sigma_sampling);
   }
 
+  //Rcpp::Rcout << "out " << std::endl;
   arma::mat chol_decomp = arma::mat(k,k);
-  bool b_chol_decomp = arma::chol(sigma_sampling, chol_decomp);
-  if(!b_inv_sigma_sampling){
-    chol_decomp = diagmat(sqrt(diagvec(sigma_sampling)));
+  bool b_chol_decomp = arma::chol(chol_decomp, sigma_sampling);
+  if(b_chol_decomp == false){
+    Rcpp::Rcout << sigma_sampling << std::endl;
+    arma::vec diagonal = abs(diagvec(sigma_sampling));
+    diagonal.transform( [](double val) { return (val + 1e-10); } );
+    chol_decomp = diagmat(sqrt(diagonal));
   }
 
   Hs = Z * chol_decomp;

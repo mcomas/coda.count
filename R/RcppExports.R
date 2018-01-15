@@ -40,65 +40,6 @@ validate_dnm <- function(x, mu, sigma, order) {
 }
 
 #' @export
-ldnormal <- function(H, mu, inv_sigma) {
-    .Call('_coda_count_ldnormal', PACKAGE = 'coda.count', H, mu, inv_sigma)
-}
-
-#' @export
-lpmultinomial_const <- function(x) {
-    .Call('_coda_count_lpmultinomial_const', PACKAGE = 'coda.count', x)
-}
-
-c_dlrnm_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
-    .Call('_coda_count_c_dlrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
-}
-
-#' @export
-c_lrnm_fit_hermite <- function(X, mu0, sigma0, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L, em_max_steps = 10L) {
-    .Call('_coda_count_c_lrnm_fit_hermite', PACKAGE = 'coda.count', X, mu0, sigma0, order, step_by, eps, max_steps, em_max_steps)
-}
-
-#' @export
-c_lrnm_fit_maximum <- function(X, mu0, sigma0, tol = 10e-6, em_max_steps = 10L) {
-    .Call('_coda_count_c_lrnm_fit_maximum', PACKAGE = 'coda.count', X, mu0, sigma0, tol, em_max_steps)
-}
-
-#' @export
-c_lrnm_fit_mc_init <- function(X, mu0, sigma0, Z, tol = 0.001, em_max_steps = 10L) {
-    .Call('_coda_count_c_lrnm_fit_mc_init', PACKAGE = 'coda.count', X, mu0, sigma0, Z, tol, em_max_steps)
-}
-
-#' @export
-c_lrnm_fit_mc_step <- function(X, mu0, sigma0, Z, M1i, M2i, tol = 0.001, em_max_steps = 10L) {
-    .Call('_coda_count_c_lrnm_fit_mc_step', PACKAGE = 'coda.count', X, mu0, sigma0, Z, M1i, M2i, tol, em_max_steps)
-}
-
-#' @export
-c_lrnm_fit_mc <- function(X, mu0, sigma0, Z, tol = 0.001, em_max_steps = 10L) {
-    .Call('_coda_count_c_lrnm_fit_mc', PACKAGE = 'coda.count', X, mu0, sigma0, Z, tol, em_max_steps)
-}
-
-#' @export
-expected_hermite <- function(x, mu_ilr, sigma_ilr, order) {
-    .Call('_coda_count_expected_hermite', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, order)
-}
-
-#' @export
-expected_montecarlo <- function(x, mu_ilr, sigma_ilr, Z, mu_sampling, sigma_sampling, Hz) {
-    .Call('_coda_count_expected_montecarlo', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, Z, mu_sampling, sigma_sampling, Hz)
-}
-
-#' @export
-expected_metropolis <- function(x, mu_ilr, sigma_ilr, mu_exp, nsim, ignored_steps = 100L) {
-    .Call('_coda_count_expected_metropolis', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, mu_exp, nsim, ignored_steps)
-}
-
-#' @export
-metropolis_sample <- function(x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps = 100L) {
-    .Call('_coda_count_metropolis_sample', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps)
-}
-
-#' @export
 expected_montecarlo_01 <- function(x, mu_ilr, sigma_ilr, Z, mu_exp) {
     .Call('_coda_count_expected_montecarlo_01', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, Z, mu_exp)
 }
@@ -148,6 +89,26 @@ expected_montecarlo_04 <- function(x, mu_ilr, sigma_ilr, Z, m1, m2) {
     .Call('_coda_count_expected_montecarlo_04', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, Z, m1, m2)
 }
 
+#' @export
+expected_hermite <- function(x, mu_ilr, sigma_ilr, order) {
+    .Call('_coda_count_expected_hermite', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, order)
+}
+
+#' @export
+expected_montecarlo <- function(x, mu_ilr, sigma_ilr, Z, mu_sampling, sigma_sampling, Hz) {
+    .Call('_coda_count_expected_montecarlo', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, Z, mu_sampling, sigma_sampling, Hz)
+}
+
+#' @export
+expected_metropolis <- function(x, mu_ilr, sigma_ilr, mu_exp, nsim, ignored_steps = 100L) {
+    .Call('_coda_count_expected_metropolis', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, mu_exp, nsim, ignored_steps)
+}
+
+#' @export
+metropolis_sample <- function(x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps = 100L) {
+    .Call('_coda_count_metropolis_sample', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps)
+}
+
 mvf_deriv <- function(I, a, mu, inv_sigma, x) {
     .Call('_coda_count_mvf_deriv', PACKAGE = 'coda.count', I, a, mu, inv_sigma, x)
 }
@@ -164,6 +125,45 @@ alr_basis <- function(K) {
 #' @export
 mvf_maximum <- function(x, mu_ilr, sigma_ilr, B, eps, max_iter, prop) {
     .Call('_coda_count_mvf_maximum', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, B, eps, max_iter, prop)
+}
+
+#' @export
+ldnormal <- function(H, mu, inv_sigma) {
+    .Call('_coda_count_ldnormal', PACKAGE = 'coda.count', H, mu, inv_sigma)
+}
+
+#' @export
+lpmultinomial_const <- function(x) {
+    .Call('_coda_count_lpmultinomial_const', PACKAGE = 'coda.count', x)
+}
+
+c_dlrnm_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
+    .Call('_coda_count_c_dlrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
+}
+
+#' @export
+c_lrnm_fit_hermite <- function(X, mu0, sigma0, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L, em_max_steps = 10L) {
+    .Call('_coda_count_c_lrnm_fit_hermite', PACKAGE = 'coda.count', X, mu0, sigma0, order, step_by, eps, max_steps, em_max_steps)
+}
+
+#' @export
+c_lrnm_fit_maximum <- function(X, mu0, sigma0, tol = 10e-6, em_max_steps = 10L) {
+    .Call('_coda_count_c_lrnm_fit_maximum', PACKAGE = 'coda.count', X, mu0, sigma0, tol, em_max_steps)
+}
+
+#' @export
+c_lrnm_fit_mc_init <- function(X, mu0, sigma0, Z, tol = 0.001, em_max_steps = 10L) {
+    .Call('_coda_count_c_lrnm_fit_mc_init', PACKAGE = 'coda.count', X, mu0, sigma0, Z, tol, em_max_steps)
+}
+
+#' @export
+c_lrnm_fit_mc_step <- function(X, mu0, sigma0, Z, M1i, M2i, tol = 0.001, em_max_steps = 10L) {
+    .Call('_coda_count_c_lrnm_fit_mc_step', PACKAGE = 'coda.count', X, mu0, sigma0, Z, M1i, M2i, tol, em_max_steps)
+}
+
+#' @export
+c_lrnm_fit_mc <- function(X, mu0, sigma0, Z, tol = 0.001, em_max_steps = 10L) {
+    .Call('_coda_count_c_lrnm_fit_mc', PACKAGE = 'coda.count', X, mu0, sigma0, Z, tol, em_max_steps)
 }
 
 c_rmultinomial_Rcpp <- function(P, vsize) {

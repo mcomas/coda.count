@@ -344,7 +344,7 @@ Rcpp::List c_lrnm_fit_mc(arma::mat X, arma::vec mu0, arma::mat sigma0, arma::mat
   // Starting iterations
   int step = 0;
   while(max(abs(mu_prev - mu)) > tol & step < em_max_steps){
-    Rcpp::Rcout << "Mu prev: " << mu_prev.t() << std::endl;
+    //Rcpp::Rcout << "Mu prev: " << mu_prev.t() << std::endl;
     Rcpp::Rcout << "Mu " << mu.t() << std::endl;
     Rcpp::checkUserInterrupt();
     step++;
@@ -358,9 +358,9 @@ Rcpp::List c_lrnm_fit_mc(arma::mat X, arma::vec mu0, arma::mat sigma0, arma::mat
       arma::mat sampling_sigma = M2i.slice(i);
 
       //Rcpp::Rcout << "Total:" << accu(x) << ", max eigen: " << max(eig_sym(sampling_sigma)) << ", min eigen: " << min(eig_sym(sampling_sigma)) << std::endl;
-      //arma::vec eigenval = eig_sym(sampling_sigma);
+      arma::vec eigenval = eig_sym(sampling_sigma);
 
-      //if(min(eigenval) > 1e-20){
+      if(max(eigenval) > 1e-10){
         //Rcpp::Rcout << "x" << std::endl << x << std::endl;
         //Rcpp::Rcout << "highest " << max(eig_sym(sampling_sigma) ) << " lowest eigenvalue " << min(eig_sym(sampling_sigma) ) << std::endl;
 
@@ -387,10 +387,10 @@ Rcpp::List c_lrnm_fit_mc(arma::mat X, arma::vec mu0, arma::mat sigma0, arma::mat
         M1i.col(i) = mu_exp;
         M2i.slice(i) = expected_mc_var(x, mu_exp, Hs, lik_std);
 
-      // }else{
-      //   M1 += M1i.col(i);
-      //   M2 += (M1i.col(i) - mu) * (M1i.col(i) - mu).t();
-      // }
+      }else{
+        M1 += M1i.col(i);
+        M2 += (M1i.col(i) - mu) * (M1i.col(i) - mu).t();
+      }
     }
     mu_prev = mu;
     mu = M1 / n;
