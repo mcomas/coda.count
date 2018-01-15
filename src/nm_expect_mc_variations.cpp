@@ -98,6 +98,8 @@ arma::vec expected_montecarlo_01_init(arma::vec x, arma::vec& mu_ilr, arma::mat&
   return(lik_st);
 }
 
+//' @export
+// [[Rcpp::export]]
 arma::vec expected_mc_01_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_ilr,
                               arma::mat& Z, arma::vec& sampling_mu, arma::mat& Hs){
 
@@ -127,7 +129,7 @@ arma::vec expected_mc_01_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_
 
 //' @export
 // [[Rcpp::export]]
-arma::vec expected_mc_03_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_ilr,
+arma::vec expected_mc_03_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& inv_sigma_ilr,
                               arma::mat& Z, arma::vec& mu_sampling, arma::mat& sigma_sampling, arma::mat& Hs){
 
   int K = x.size();
@@ -135,8 +137,7 @@ arma::vec expected_mc_03_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_
   int nsim = Z.n_rows;
   arma::mat B = ilr_basis(K);
 
-  arma::mat inv_sigma_ilr = inv_sympd(sigma_ilr);
-  arma::mat inv_sigma_sampling = inv_sympd(sigma_sampling);
+  arma::mat inv_sigma_sampling = inv(sigma_sampling);
 
 
   Hs = Z * arma::chol(sigma_sampling);
