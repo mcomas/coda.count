@@ -137,10 +137,19 @@ arma::vec expected_mc_03_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& inv_si
   int nsim = Z.n_rows;
   arma::mat B = ilr_basis(K);
 
-  arma::mat inv_sigma_sampling = inv(sigma_sampling);
+  arma::mat inv_sigma_sampling = arma::mat(k,k);
+  bool b_inv_sigma_sampling = inv_sympd(sigma_sampling, inv_sigma_sampling);
+  if(!b_inv_sigma_sampling){
+    inv_sigma_sampling = inv(diagmat(sigma_sampling));
+  }
 
+  arma::mat chol_decomp = arma::mat(k,k);
+  bool b_chol_decomp = arma::chol(sigma_sampling, chol_decomp);
+  if(!b_inv_sigma_sampling){
+    chol_decomp = diagmat(sqrt(diagvec(sigma_sampling)));
+  }
 
-  Hs = Z * arma::chol(sigma_sampling);
+  Hs = Z * chol_decomp;
   Hs.each_row() += mu_sampling.t();
   arma::vec loglik = -ldnormal(Hs, mu_sampling, inv_sigma_sampling);
 
