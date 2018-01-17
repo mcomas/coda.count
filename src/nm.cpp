@@ -353,7 +353,13 @@ Rcpp::List c_lrnm_fit_mc(arma::mat X, arma::vec mu0, arma::mat sigma0, arma::mat
     Rcpp:Rcout << "Step " << step << ". Abs. dif" << max(abs(mu_prev - mu)) << std::endl;
     M1.zeros();
     M2.zeros();
-    arma::mat inv_sigma = inv_sympd(sigma);
+    //arma::mat inv_sigma = inv_sympd(sigma);
+    arma::mat inv_sigma = arma::mat(K-1,K-1);
+    bool b_inv_sigma = inv_sympd(inv_sigma, sigma);
+    if(b_inv_sigma == false){
+      inv_sigma = inv(diagmat(abs(diagvec(sigma))));
+    }
+
     for(int i = 0; i < n; i++){
       arma::vec x = X.col(i);
       arma::vec sampling_mu = M1i.col(i);
