@@ -39,9 +39,18 @@ Rcpp::List expected_montecarlo(arma::vec x, arma::vec mu_ilr, arma::mat sigma_il
   int nsim = Z.n_rows;
   arma::mat B = ilr_basis(K);
 
-  arma::mat inv_sigma_ilr = inv_sympd(sigma_ilr);
-  arma::mat inv_sigma_sampling = inv_sympd(sigma_sampling);
+  arma::mat inv_sigma_ilr = arma::mat(k,k);
+  bool b_inv_sigma_ilr = inv_sympd(inv_sigma_ilr, sigma_ilr);
+  if(b_inv_sigma_ilr == false){
+    inv_sigma_ilr= inv(diagmat(abs(diagvec(sigma_ilr))));
+  }
 
+  arma::mat inv_sigma_sampling = arma::mat(k,k);
+  bool b_inv_sigma_sampling = inv_sympd(inv_sigma_sampling, sigma_sampling);
+  if(b_inv_sigma_sampling == false){
+    sigma_sampling = diagmat(abs(diagvec(sigma_sampling)));
+    inv_sigma_sampling = inv(sigma_sampling);
+  }
 
   Hz = Z * arma::chol(sigma_sampling);
   Hz.each_row() += mu_sampling.t();
