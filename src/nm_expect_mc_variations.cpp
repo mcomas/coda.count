@@ -109,11 +109,23 @@ arma::vec expected_mc_01_init(arma::vec& x, arma::vec& mu_ilr, arma::mat& sigma_
   int k = K - 1;
   int nsim = Z.n_rows;
 
-  arma::mat inv_sigma = inv_sympd(sigma_ilr);
-
   arma::mat sampling_sigma = sigma_ilr;
-  arma::mat sampling_inv_sigma = inv_sigma;
-  arma::mat sampling_sigma_chol = arma::chol(sampling_sigma);
+
+  arma::mat inv_sigma = arma::mat(K-1,K-1);
+
+  bool b_inv_sigma = inv_sympd(inv_sigma, sigma_ilr);
+  if(b_inv_sigma == false){
+    inv_sigma = inv(diagmat(abs(diagvec(sigma_ilr))));
+  }
+
+
+  arma::mat sampling_sigma_chol = arma::mat(K-1,K-1);
+  bool b_sampling_sigma_chol =  arma::chol(sampling_sigma_chol, sampling_sigma);
+  if(b_sampling_sigma_chol == false){
+    arma::vec diagonal = abs(diagvec(sampling_sigma));
+    diagonal.transform( [](double val) { return (val + 1e-10); } );
+    sampling_sigma_chol = diagmat(sqrt(diagonal));
+  }
 
   arma::mat D = inv_sigma * (mu_ilr-sampling_mu);
 
