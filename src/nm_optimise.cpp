@@ -1,4 +1,5 @@
 // [[Rcpp::depends(RcppArmadillo)]]
+#define ARMA_DONT_PRINT_ERRORS
 
 #include <RcppArmadillo.h>
 
@@ -52,8 +53,12 @@ arma::vec mvf_maximum(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::
   arma::vec mu_alr = A * B * mu_ilr;
 
   arma::mat sigma_alr = A * B * sigma_ilr * B.t() * A.t();
-  arma::mat inv_sigma_alr = inv_sympd(sigma_alr);
-  //Rcpp::Rcout << sigma_alr;
+
+  arma::mat inv_sigma_alr = arma::mat(mu_ilr.n_elem,mu_ilr.n_elem);
+  bool p_inv_sigma_alr = inv_sympd(inv_sigma_alr, sigma_alr);
+  if(p_inv_sigma_alr == false){
+    inv_sigma_alr = pinv(sigma_alr);
+  }
 
   int k = x.size() - 1;
   arma::vec a = arma::vec(k);

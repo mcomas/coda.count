@@ -178,7 +178,9 @@ Rcpp::List c_lrnm_fit_maximum(arma::mat X, arma::vec mu0, arma::mat sigma0,
     // Rcpp::Rcout << mu << std::endl;
     step++;
     for(int i = 0; i < n; i++){
-      H.col(i) = mvf_maximum(X.col(i), mu, sigma, B, 10e-6, 50, 0.66);
+      //Rcpp::Rcout << "Step:" << step << " element:" << i+1 << std::endl << X.col(i) << std::endl;
+      //Rcpp::Rcout << sigma << std::endl;
+      H.col(i) = mvf_maximum(X.col(i), mu, sigma, B, tol, 50, 0.66);
     }
     mu_prev = mu;
     mu = mean(H,1);
