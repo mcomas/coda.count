@@ -99,3 +99,31 @@ arma::vec mvf_maximum(arma::vec x, arma::vec mu_ilr, arma::mat sigma_ilr, arma::
 
   return B.t() * Ainv * out;
 }
+
+//' @export
+// [[Rcpp::export]]
+arma::vec mvf_maximum_alr(arma::vec x, arma::vec mu_alr, arma::mat& inv_sigma_alr,
+                          arma::vec a, double eps, int max_iter) {
+
+  int k = x.size() - 1;
+
+  arma::vec out = arma::vec(a);
+  arma::vec deriv = arma::zeros<arma::vec>(k);
+  arma::mat deriv2 = arma::zeros<arma::mat>(k, k);
+  arma::vec step = arma::zeros<arma::vec>(k);
+
+  int current_iter = 0;
+  do{
+    current_iter++;
+    for(int I=0; I<k; I++){
+      deriv[I] =  mvf_deriv(I, out, mu_alr, inv_sigma_alr, x);
+      for(int J=0; J<k; J++){
+        deriv2(I,J) = mvf_deriv2(I, J, out, mu_alr, inv_sigma_alr, x);
+      }
+    }
+    step = arma::solve(deriv2, deriv);
+    out = out - step;
+  }while( norm(step, 2) > eps && current_iter < max_iter);
+
+  return out;
+}

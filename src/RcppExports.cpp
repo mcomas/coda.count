@@ -86,6 +86,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// timesTwo
+NumericVector timesTwo(NumericVector x);
+RcppExport SEXP _coda_count_timesTwo(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(timesTwo(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // validate_dnm
 double validate_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order);
 RcppExport SEXP _coda_count_validate_dnm(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP) {
@@ -375,6 +386,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mvf_maximum_alr
+arma::vec mvf_maximum_alr(arma::vec x, arma::vec mu_alr, arma::mat& inv_sigma_alr, arma::vec a, double eps, int max_iter);
+RcppExport SEXP _coda_count_mvf_maximum_alr(SEXP xSEXP, SEXP mu_alrSEXP, SEXP inv_sigma_alrSEXP, SEXP aSEXP, SEXP epsSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_alr(mu_alrSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma_alr(inv_sigma_alrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(mvf_maximum_alr(x, mu_alr, inv_sigma_alr, a, eps, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ldnormal
 arma::vec ldnormal(arma::mat H, arma::vec mu, arma::mat inv_sigma);
 RcppExport SEXP _coda_count_ldnormal(SEXP HSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP) {
@@ -446,6 +473,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
     rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_maximum(X, mu0, sigma0, tol, em_max_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_lrnm_fit_maximum_alr
+Rcpp::List c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0, double tol, int em_max_steps);
+RcppExport SEXP _coda_count_c_lrnm_fit_maximum_alr(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP tolSEXP, SEXP em_max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma0(sigma0SEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_maximum_alr(X, mu0, sigma0, tol, em_max_steps));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -607,6 +649,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_alr_to_ilr", (DL_FUNC) &_coda_count_alr_to_ilr, 1},
     {"_coda_count_c_ddm", (DL_FUNC) &_coda_count_c_ddm, 2},
     {"_coda_count_c_dm_fit", (DL_FUNC) &_coda_count_c_dm_fit, 3},
+    {"_coda_count_timesTwo", (DL_FUNC) &_coda_count_timesTwo, 1},
     {"_coda_count_validate_dnm", (DL_FUNC) &_coda_count_validate_dnm, 4},
     {"_coda_count_expected_montecarlo_01", (DL_FUNC) &_coda_count_expected_montecarlo_01, 5},
     {"_coda_count_expected_mc_01_init", (DL_FUNC) &_coda_count_expected_mc_01_init, 6},
@@ -626,11 +669,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_mvf_deriv2", (DL_FUNC) &_coda_count_mvf_deriv2, 6},
     {"_coda_count_alr_basis", (DL_FUNC) &_coda_count_alr_basis, 1},
     {"_coda_count_mvf_maximum", (DL_FUNC) &_coda_count_mvf_maximum, 7},
+    {"_coda_count_mvf_maximum_alr", (DL_FUNC) &_coda_count_mvf_maximum_alr, 6},
     {"_coda_count_ldnormal", (DL_FUNC) &_coda_count_ldnormal, 3},
     {"_coda_count_lpmultinomial_const", (DL_FUNC) &_coda_count_lpmultinomial_const, 1},
     {"_coda_count_c_dlrnm_hermite", (DL_FUNC) &_coda_count_c_dlrnm_hermite, 7},
     {"_coda_count_c_lrnm_fit_hermite", (DL_FUNC) &_coda_count_c_lrnm_fit_hermite, 8},
     {"_coda_count_c_lrnm_fit_maximum", (DL_FUNC) &_coda_count_c_lrnm_fit_maximum, 5},
+    {"_coda_count_c_lrnm_fit_maximum_alr", (DL_FUNC) &_coda_count_c_lrnm_fit_maximum_alr, 5},
     {"_coda_count_c_lrnm_fit_mc_init", (DL_FUNC) &_coda_count_c_lrnm_fit_mc_init, 6},
     {"_coda_count_c_lrnm_fit_mc_step", (DL_FUNC) &_coda_count_c_lrnm_fit_mc_step, 8},
     {"_coda_count_c_lrnm_fit_mc", (DL_FUNC) &_coda_count_c_lrnm_fit_mc, 6},

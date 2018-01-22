@@ -161,7 +161,7 @@ Rcpp::List c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0,
 //' @export
 // [[Rcpp::export]]
 Rcpp::List c_lrnm_fit_maximum(arma::mat X, arma::vec mu0, arma::mat sigma0,
-                              double tol = 10e-6, int em_max_steps = 10){
+                              double tol = 10e-6, int em_max_steps = 100){
   X = X.t();
   int n = X.n_cols;
   int K = X.n_rows;
@@ -188,6 +188,39 @@ Rcpp::List c_lrnm_fit_maximum(arma::mat X, arma::vec mu0, arma::mat sigma0,
     sigma = cov(H.t());
   }
   return Rcpp::List::create(mu, sigma, inv_ilr_coordinates(H.t()));
+}
+
+//' @export
+// [[Rcpp::export]]
+Rcpp::List c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
+                                  double tol = 10e-6, int em_max_steps = 100){
+  X = X.t();
+  int n = X.n_cols;
+  int K = X.n_rows;
+  int k = K - 1;
+
+  arma::mat A(mu0.n_elem, n);
+  for(int i = 0; i < n; i++){
+    arma::vec p = X.col(i) + 0.5;
+    for(int j = 0; j < k; j++){
+      A(j,i) = log(p(j)/p(k));
+    }
+  }
+  arma::vec mu = mu0;
+  arma::mat inv_sigma = inv_sympd(sigma0);
+  arma::vec mu_prev = mu0 + 1;
+
+  int step = 0;
+  while(max(abs(mu_prev - mu)) > tol & step < em_max_steps){
+    step++;
+    for(int i = 0; i < n; i++){
+      A.col(i) = mvf_maximum_alr(X.col(i), mu, inv_sigma, A.col(i), tol, 50);
+    }
+    mu_prev = mu;
+    mu = mean(A,1);
+    inv_sigma = inv_sympd(cov(A.t()));
+  }
+  return Rcpp::List::create(mu, cov(A.t()), A.t());
 }
 
 //' @export
