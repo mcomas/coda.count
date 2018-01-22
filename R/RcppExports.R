@@ -34,10 +34,6 @@ c_dm_fit <- function(X, eps = 0.0001, maxiter = 5000L) {
     .Call('_coda_count_c_dm_fit', PACKAGE = 'coda.count', X, eps, maxiter)
 }
 
-timesTwo <- function(x) {
-    .Call('_coda_count_timesTwo', PACKAGE = 'coda.count', x)
-}
-
 #' @export
 validate_dnm <- function(x, mu, sigma, order) {
     .Call('_coda_count_validate_dnm', PACKAGE = 'coda.count', x, mu, sigma, order)
@@ -113,6 +109,11 @@ metropolis_sample <- function(x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps = 10
     .Call('_coda_count_metropolis_sample', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps)
 }
 
+#' @export
+c_lrnm_fit_maximum_alr <- function(X, mu0, sigma0, tol = 10e-6, em_max_steps = 100L) {
+    .Call('_coda_count_c_lrnm_fit_maximum_alr', PACKAGE = 'coda.count', X, mu0, sigma0, tol, em_max_steps)
+}
+
 mvf_deriv <- function(I, a, mu, inv_sigma, x) {
     .Call('_coda_count_mvf_deriv', PACKAGE = 'coda.count', I, a, mu, inv_sigma, x)
 }
@@ -158,11 +159,6 @@ c_lrnm_fit_hermite <- function(X, mu0, sigma0, order = 100L, step_by = 100L, eps
 #' @export
 c_lrnm_fit_maximum <- function(X, mu0, sigma0, tol = 10e-6, em_max_steps = 100L) {
     .Call('_coda_count_c_lrnm_fit_maximum', PACKAGE = 'coda.count', X, mu0, sigma0, tol, em_max_steps)
-}
-
-#' @export
-c_lrnm_fit_maximum_alr <- function(X, mu0, sigma0, tol = 10e-6, em_max_steps = 100L) {
-    .Call('_coda_count_c_lrnm_fit_maximum_alr', PACKAGE = 'coda.count', X, mu0, sigma0, tol, em_max_steps)
 }
 
 #' @export

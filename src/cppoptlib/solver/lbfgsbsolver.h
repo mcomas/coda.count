@@ -1,7 +1,7 @@
 // CppNumericalSolver
 #include <iostream>
 #include <list>
-#include <Eigen/LU>
+#include "../../Eigen/LU"
 #include "isolver.h"
 #include "../boundedproblem.h"
 #include "../linesearch/morethuente.h"

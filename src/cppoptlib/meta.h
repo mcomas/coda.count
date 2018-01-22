@@ -4,7 +4,7 @@
 
 #include <string>
 #include <iostream>
-#include <Eigen/Core>
+#include "../Eigen/Core"
 
 namespace cppoptlib {
 

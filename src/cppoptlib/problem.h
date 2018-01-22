@@ -3,7 +3,7 @@
 
 #include <array>
 #include <vector>
-#include <Eigen/Core>
+#include "../Eigen/Core"
 
 #include "meta.h"
 

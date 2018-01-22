@@ -3,7 +3,7 @@
 #define CMAES_H_
 
 #include <random>
-#include <Eigen/Dense>
+#include "../../Eigen/Dense"
 #include "isolver.h"
 
 namespace cppoptlib {
