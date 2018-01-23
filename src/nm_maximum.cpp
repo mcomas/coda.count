@@ -171,21 +171,28 @@ arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
   mu = A_.rowwise().mean();
   Eigen::MatrixXd centered = A_.transpose().rowwise() - A_.transpose().colwise().mean();
   Eigen::MatrixXd sigma = (centered.adjoint() * centered) / double(A_.cols() - 1);
+  Eigen::MatrixXd sigma_diag = Eigen::MatrixXd::Identity(k, k) * sigma.diagonal().mean();
 
   int step = 0;
   while( ((mu_prev - mu).lpNorm<Eigen::Infinity>() > tol & step < em_max_steps) | step == 0){
-    TConditionalMode f(mu, sigma.llt().solve(I));
+    //Rcpp::Rcout << A_ << std::endl << sigma << std::endl << mu << std::endl;
+    inv_sigma = sigma_diag.llt().solve(I);
+    TConditionalMode f(mu, inv_sigma);
     step++;
     for(int i =0; i < n; i++){
       f.update_x(X_.col(i));
       Eigen::VectorXd x0_ = A_.col(i);
+      //Rcpp::Rcout << mu << std::endl << inv_sigma << std::endl << x0_ << std::endl;
       solver.minimize(f, x0_);
+      //Rcpp::Rcout << x0_ <<std::endl <<std::endl;
       A_.col(i) = x0_;
     }
+    //Rcpp::Rcout << A_ << std::endl << inv_sigma << std::endl;
     mu_prev = mu.replicate(1, 1);
     mu = A_.rowwise().mean();
     Eigen::MatrixXd centered = A_.transpose().rowwise() - A_.transpose().colwise().mean();
-    Eigen::MatrixXd sigma = (centered.adjoint() * centered) / double(A_.cols() - 1);
+    sigma = (centered.adjoint() * centered) / double(A_.cols() - 1);
+    sigma_diag = Eigen::MatrixXd::Identity(k, k) * sigma.diagonal().mean();
   }
 
   arma::mat A(n, k);
