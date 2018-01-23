@@ -109,7 +109,6 @@ metropolis_sample <- function(x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps = 10
     .Call('_coda_count_metropolis_sample', PACKAGE = 'coda.count', x, mu_ilr, sigma_ilr, x0, nsim, ignored_steps)
 }
 
-#' @export
 c_lrnm_fit_maximum_alr <- function(X, mu0, sigma0, tol = 10e-6, em_max_steps = 100L) {
     .Call('_coda_count_c_lrnm_fit_maximum_alr', PACKAGE = 'coda.count', X, mu0, sigma0, tol, em_max_steps)
 }
@@ -156,7 +155,6 @@ c_lrnm_fit_hermite <- function(X, mu0, sigma0, order = 100L, step_by = 100L, eps
     .Call('_coda_count_c_lrnm_fit_hermite', PACKAGE = 'coda.count', X, mu0, sigma0, order, step_by, eps, max_steps, em_max_steps)
 }
 
-#' @export
 c_lrnm_fit_maximum <- function(X, mu0, sigma0, tol = 10e-6, em_max_steps = 100L) {
     .Call('_coda_count_c_lrnm_fit_maximum', PACKAGE = 'coda.count', X, mu0, sigma0, tol, em_max_steps)
 }

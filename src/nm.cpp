@@ -158,7 +158,6 @@ Rcpp::List c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0,
   return Rcpp::List::create(mu, sigma, inv_ilr_coordinates(H.t()));
 }
 
-//' @export
 // [[Rcpp::export]]
 Rcpp::List c_lrnm_fit_maximum(arma::mat X, arma::vec mu0, arma::mat sigma0,
                               double tol = 10e-6, int em_max_steps = 100){

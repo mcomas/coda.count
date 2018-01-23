@@ -317,7 +317,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_lrnm_fit_maximum_alr
-Rcpp::List c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0, double tol, int em_max_steps);
+arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0, double tol, int em_max_steps);
 RcppExport SEXP _coda_count_c_lrnm_fit_maximum_alr(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP tolSEXP, SEXP em_max_stepsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

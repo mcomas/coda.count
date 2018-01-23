@@ -127,44 +127,9 @@ public:
   }
 };
 
-
-// arma::vec bfgsSolver(arma::vec x, arma::vec mu, arma::mat sigma) {
-//   int k = mu.n_elem;
-//   Eigen::VectorXd x_(k+1);
-//   Eigen::VectorXd mu_(k);
-//   Eigen::MatrixXd sigma_(k, k);
-//   for(int i=0; i<x.n_elem; i++) x_(i) = x(i);
-//   for(int i=0; i<mu.n_elem; i++) mu_(i) = mu(i);
-//   for(int i=0; i<sigma.n_rows; i++) for(int j=0; j<sigma.n_cols; j++) sigma_(i, j) = sigma(i, j);
-//
-//
-//   typedef ConditionalMode<double> TConditionalMode;
-//   typedef typename TConditionalMode::TVector TVector;
-//   typedef typename TConditionalMode::MatrixType MatrixType;
-//
-//   TConditionalMode f(mu_, sigma_);
-//   cppoptlib::BfgsSolver<TConditionalMode> solver;
-//   Eigen::VectorXd x0(k);
-//   for(int i=0; i < k; i++){
-//     x0(i) = log(x(i)+0.5) - log(x(k)+0.5);
-//   }
-//   for(int i = 0; i < n; i++){
-//     f.update(x);
-//   }
-//   solver.minimize(f, x0);
-//
-//   arma::vec res = arma::vec(k);
-//   for(int i=0; i<k; i++) res(i) = x0(i);
-//
-//   return res;
-// }
-
-
-//' @export
 // [[Rcpp::export]]
-Rcpp::List c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
+arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
                                   double tol = 10e-6, int em_max_steps = 100){
-
   int n = X.n_rows;
   int K = X.n_cols;
   int k = K - 1;
@@ -178,8 +143,6 @@ Rcpp::List c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
   Eigen::MatrixXd sigma0_(k, k);
   for(int i = 0; i < k; i++) for(int j = 0; j < k; j++) sigma0_(i, j) = sigma0(i, j);
 
-  Rcpp::Rcout << X_ << std::endl;
-
   Eigen::MatrixXd A_(k, n);
   for(int i = 0; i < n; i++){
     double denom = log(X_(k,i) + 0.5);
@@ -187,8 +150,6 @@ Rcpp::List c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
       A_(j,i) = log(X_(j,i) + 0.5) - denom;
     }
   }
-  Rcpp::Rcout << std::endl;
-  Rcpp::Rcout << A_ << std::endl;
   Eigen::MatrixXd I = Eigen::MatrixXd::Identity(k, k);
   Eigen::VectorXd mu(mu0_);
   Eigen::MatrixXd inv_sigma(sigma0_.llt().solve(I));
@@ -197,71 +158,41 @@ Rcpp::List c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
   typedef typename TConditionalMode::TVector TVector;
   typedef typename TConditionalMode::MatrixType MatrixType;
 
-  TConditionalMode f(mu, inv_sigma);
+  TConditionalMode f0(mu, inv_sigma);
   cppoptlib::BfgsSolver<TConditionalMode> solver;
-  Rcpp::Rcout << std::endl;
   for(int i =0; i < n; i++){
-    f.update_x(X_.col(i));
+    f0.update_x(X_.col(i));
     Eigen::VectorXd x0_ = A_.col(i);
-    solver.minimize(f, x0_);
+    solver.minimize(f0, x0_);
     A_.col(i) = x0_;
   }
 
-  Eigen::VectorXd mu_prev(A_.rowwise().mean());
+  Eigen::VectorXd mu_prev = mu.replicate(1, 1);
+  mu = A_.rowwise().mean();
   Eigen::MatrixXd centered = A_.transpose().rowwise() - A_.transpose().colwise().mean();
   Eigen::MatrixXd sigma = (centered.adjoint() * centered) / double(A_.cols() - 1);
 
+  int step = 0;
+  while( ((mu_prev - mu).lpNorm<Eigen::Infinity>() > tol & step < em_max_steps) | step == 0){
+    TConditionalMode f(mu, sigma.llt().solve(I));
+    step++;
+    for(int i =0; i < n; i++){
+      f.update_x(X_.col(i));
+      Eigen::VectorXd x0_ = A_.col(i);
+      solver.minimize(f, x0_);
+      A_.col(i) = x0_;
+    }
+    mu_prev = mu.replicate(1, 1);
+    mu = A_.rowwise().mean();
+    Eigen::MatrixXd centered = A_.transpose().rowwise() - A_.transpose().colwise().mean();
+    Eigen::MatrixXd sigma = (centered.adjoint() * centered) / double(A_.cols() - 1);
+  }
 
-
-  // Eigen::VectorXd x0(k);
-  // for(int i=0; i < k; i++){
-  //   x0(i) = log(x(i)+0.5) - log(x(k)+0.5);
-  // }
-//
-//   TConditionalMode f(x_, mu_, sigma_);
-//   solver.minimize(f, x0);
-
-
-  // int step = 0;
-  // while((max(abs(mu_prev - mu)) > tol & step < em_max_steps) | step == 0){
-  //    step++;
-  //    for(int i = 0; i < n; i++){
-  //      A.col(i) = mvf_maximum_alr(X.col(i), mu, inv_sigma, A.col(i));
-  //    }
-  //    mu_prev = mu;
-  //    mu = mean(A,1);
-  //    inv_sigma = inv_sympd(cov(A.t()));
-  // }
-  return Rcpp::List::create(mu0);
+  arma::mat A(n, k);
+  for(int i=0; i<n; i++){
+    for(int j=0; j<k; j++){
+      A(i,j) = A_(j,i);
+    }
+  }
+  return A;
 }
-
-
-
-
-// Rcpp::NumericVector example_NewtonDescentSolver(Rcpp::NumericVector x, Rcpp::NumericVector mu, Rcpp::NumericMatrix sigma) {
-//   int k = mu.size();
-//   Eigen::VectorXd x_(x.size());
-//   Eigen::VectorXd mu_(mu.size());
-//   Eigen::MatrixXd sigma_(sigma.nrow(), sigma.ncol());
-//   for(int i=0; i<x.size(); i++) x_(i) = x(i);
-//   for(int i=0; i<mu.size(); i++) mu_(i) = mu(i);
-//   for(int i=0; i<sigma.nrow(); i++) for(int j=0; j<sigma.ncol(); j++) sigma_(i, j) = sigma(i, j);
-//
-//   typedef ConditionalMode<double> TConditionalMode;
-//   typedef typename TConditionalMode::TVector TVector;
-//   typedef typename TConditionalMode::MatrixType MatrixType;
-//
-//   TConditionalMode f(x_, mu_, sigma_);
-//   cppoptlib::NewtonDescentSolver<TConditionalMode> solver;
-//   Eigen::VectorXd x0(mu.size());
-//   for(int i=0; i<mu.size(); i++){
-//     x0(i) = log(x(i)+0.5) - log(x(k)+0.5);
-//   }
-//   solver.minimize(f, x0);
-//
-//   NumericVector res(x0.size());
-//   for(int i=0; i<res.size(); i++) res(i) = x0(i);
-//   //Rcpp::Rcout << "argmin      " << x0.transpose() << std::endl;
-//   //Rcpp::Rcout << "f in argmin " << f(x0) << std::endl;
-//   return res;
-// }
