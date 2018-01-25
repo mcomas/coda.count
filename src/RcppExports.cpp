@@ -317,8 +317,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_lrnm_fit_maximum_alr
-arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0, double tol, int em_max_steps);
-RcppExport SEXP _coda_count_c_lrnm_fit_maximum_alr(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP tolSEXP, SEXP em_max_stepsSEXP) {
+arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0, double tol, int em_max_steps, double min_evalue);
+RcppExport SEXP _coda_count_c_lrnm_fit_maximum_alr(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP tolSEXP, SEXP em_max_stepsSEXP, SEXP min_evalueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -327,7 +327,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type sigma0(sigma0SEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_maximum_alr(X, mu0, sigma0, tol, em_max_steps));
+    Rcpp::traits::input_parameter< double >::type min_evalue(min_evalueSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_maximum_alr(X, mu0, sigma0, tol, em_max_steps, min_evalue));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -653,7 +654,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_expected_montecarlo", (DL_FUNC) &_coda_count_expected_montecarlo, 7},
     {"_coda_count_expected_metropolis", (DL_FUNC) &_coda_count_expected_metropolis, 6},
     {"_coda_count_metropolis_sample", (DL_FUNC) &_coda_count_metropolis_sample, 6},
-    {"_coda_count_c_lrnm_fit_maximum_alr", (DL_FUNC) &_coda_count_c_lrnm_fit_maximum_alr, 5},
+    {"_coda_count_c_lrnm_fit_maximum_alr", (DL_FUNC) &_coda_count_c_lrnm_fit_maximum_alr, 6},
     {"_coda_count_mvf_deriv", (DL_FUNC) &_coda_count_mvf_deriv, 5},
     {"_coda_count_mvf_deriv2", (DL_FUNC) &_coda_count_mvf_deriv2, 6},
     {"_coda_count_alr_basis", (DL_FUNC) &_coda_count_alr_basis, 1},

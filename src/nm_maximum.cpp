@@ -129,7 +129,8 @@ public:
 
 // [[Rcpp::export]]
 arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
-                                  double tol = 10e-6, int em_max_steps = 100){
+                                  double tol = 10e-6, int em_max_steps = 100,
+                                  double min_evalue = 0.0001){
   int n = X.n_rows;
   int K = X.n_cols;
   int k = K - 1;
@@ -170,13 +171,16 @@ arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
   Eigen::VectorXd mu_prev = mu.replicate(1, 1);
   mu = A_.rowwise().mean();
   Eigen::MatrixXd centered = A_.transpose().rowwise() - A_.transpose().colwise().mean();
-  Eigen::MatrixXd sigma = (centered.adjoint() * centered) / double(A_.cols() - 1);
-  Eigen::MatrixXd sigma_diag = Eigen::MatrixXd::Identity(k, k) * sigma.diagonal().mean();
+  Eigen::MatrixXd sigma_ini = (centered.adjoint() * centered) / double(A_.cols() - 1);
+  Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(sigma_ini);
+  Eigen::MatrixXd D = es.eigenvalues().asDiagonal();
+  Eigen::MatrixXd V = es.eigenvectors().array().max(min_evalue);
+  Eigen::MatrixXd sigma = V * D * V.transpose();
 
   int step = 0;
   while( ((mu_prev - mu).lpNorm<Eigen::Infinity>() > tol & step < em_max_steps) | step == 0){
     //Rcpp::Rcout << A_ << std::endl << sigma << std::endl << mu << std::endl;
-    inv_sigma = sigma_diag.llt().solve(I);
+    inv_sigma = sigma.llt().solve(I);
     TConditionalMode f(mu, inv_sigma);
     step++;
     for(int i =0; i < n; i++){
@@ -191,8 +195,11 @@ arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
     mu_prev = mu.replicate(1, 1);
     mu = A_.rowwise().mean();
     Eigen::MatrixXd centered = A_.transpose().rowwise() - A_.transpose().colwise().mean();
-    sigma = (centered.adjoint() * centered) / double(A_.cols() - 1);
-    sigma_diag = Eigen::MatrixXd::Identity(k, k) * sigma.diagonal().mean();
+    sigma_ini = (centered.adjoint() * centered) / double(A_.cols() - 1);
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(sigma_ini);
+    D = es.eigenvalues().asDiagonal();
+    V = es.eigenvectors().array().max(min_evalue);
+    sigma = V * D * V.transpose();
   }
 
   arma::mat A(n, k);
