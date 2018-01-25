@@ -173,8 +173,8 @@ arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
   Eigen::MatrixXd centered = A_.transpose().rowwise() - A_.transpose().colwise().mean();
   Eigen::MatrixXd sigma_ini = (centered.adjoint() * centered) / double(A_.cols() - 1);
   Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(sigma_ini);
-  Eigen::MatrixXd D = es.eigenvalues().asDiagonal();
-  Eigen::MatrixXd V = es.eigenvectors().array().max(min_evalue);
+  Eigen::MatrixXd D = es.eigenvalues().array().max(min_evalue).matrix().asDiagonal();
+  Eigen::MatrixXd V = es.eigenvectors();
   Eigen::MatrixXd sigma = V * D * V.transpose();
 
   int step = 0;
@@ -197,8 +197,8 @@ arma::mat c_lrnm_fit_maximum_alr(arma::mat X, arma::vec mu0, arma::mat sigma0,
     Eigen::MatrixXd centered = A_.transpose().rowwise() - A_.transpose().colwise().mean();
     sigma_ini = (centered.adjoint() * centered) / double(A_.cols() - 1);
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(sigma_ini);
-    D = es.eigenvalues().asDiagonal();
-    V = es.eigenvectors().array().max(min_evalue);
+    D = es.eigenvalues().array().max(min_evalue).matrix().asDiagonal();
+    V = es.eigenvectors();
     sigma = V * D * V.transpose();
   }
 
