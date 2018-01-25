@@ -32,11 +32,11 @@ dlrnm = function(x, mu, sigma, method = ifelse(length(mu) %in% 1:2, 'hermite', '
 #' @param X count sample
 #' @return Estimated parameters mu and sigma
 #' @export
-fit_lrnm = function(X, method = 'maximum', eps = 0.0001, maxiter = 100){
+fit_lrnm = function(X, method = 'maximum', eps = 0.0001, maxiter = 100, min_evalue = 0.0001){
   xm = colSums(X)
   mu_alr = log(xm[-ncol(X)] / xm[ncol(X)])
   if(method == 'maximum'){
-    A = c_lrnm_fit_maximum_alr(X, mu_alr, diag(ncol(X)-1), tol = eps, em_max_steps = maxiter)
+    A = c_lrnm_fit_maximum_alr(X, mu_alr, diag(ncol(X)-1), tol = eps, em_max_steps = maxiter, min_evalue = min_evalue)
   }
   P = exp(cbind(A, 0))
   H = ilr_coordinates(P)
