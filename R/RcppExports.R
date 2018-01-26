@@ -113,6 +113,10 @@ c_lrnm_fit_maximum_alr <- function(X, mu0, sigma0, tol = 10e-6, em_max_steps = 1
     .Call('_coda_count_c_lrnm_fit_maximum_alr', PACKAGE = 'coda.count', X, mu0, sigma0, tol, em_max_steps, min_evalue)
 }
 
+c_lrnm_fit_maximum_alr_centered <- function(X, mu0, sigma0, tol = 10e-6, em_max_steps = 100L, min_evalue = 0.0001) {
+    .Call('_coda_count_c_lrnm_fit_maximum_alr_centered', PACKAGE = 'coda.count', X, mu0, sigma0, tol, em_max_steps, min_evalue)
+}
+
 mvf_deriv <- function(I, a, mu, inv_sigma, x) {
     .Call('_coda_count_mvf_deriv', PACKAGE = 'coda.count', I, a, mu, inv_sigma, x)
 }
