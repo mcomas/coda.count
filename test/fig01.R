@@ -76,39 +76,42 @@ r3 = f3()
 r4 = f4()
 r5 = f5()
 r6 = f6()
-
+save.image('test/fig01.RData')
+pdf('test/fig01a.pdf', width = 5.5, height = 6.5)
 XLIM = 200:1000
 YLIM = range(r1[XLIM,1], r2[XLIM,1], r3[XLIM,1],
              r4[XLIM,1], r5[XLIM,1], r6[XLIM,1])
 plot(r1[,1], type='l', xlim = range(XLIM), ylim = YLIM,
-     xlab = 'Iteration', ylab = 'Estimation')
+     xlab = 'Iteration', ylab = 'Estimation', main = 'First moment')
 segments(x0 = 1, x1 = NSIM, y0 = r0[[2]], y1 = r0[[2]], col='red')
 points(r2[,1], col='blue', type='l')
 points(r3[,1], col='green', type='l')
-points(r4[,1], col='orange', type='l')
+#points(r4[,1], col='orange', type='l')
 points(r5[,1], col='brown', type='l')
 points(r6[,1], col='purple', type='l')
 legend('bottomright',
-       legend = c('MC', 'MC (Antithetic variates)','QMC', 'QMC (Antithetic variates)',
+       legend = c('MC', 'MC (Antithetic variates)','QMC',# 'QMC (Antithetic variates)',
                   'MCMC (Metropolis)', 'MCMC (Hamiltonian)'),
-       col= c('black', 'blue', 'green', 'orange', 'brown', 'purple'),
+       col= c('black', 'blue', 'green', 'brown', 'purple'),
        bty = 'n', lty=1, cex = 0.8)
+dev.off()
 
 # WIDTH = 6.5, HEIGHT = 5.5
+pdf('test/fig01b.pdf', width = 5.5, height = 6.5)
 XLIM = 200:1000
 YLIM = range(r1[XLIM,2], r2[XLIM,2], r3[XLIM,2],
              r4[XLIM,2], r5[XLIM,2], r6[XLIM,2])
 plot(r1[,2], type='l', xlim = range(XLIM), ylim = YLIM,
-     xlab = 'Iteration', ylab = 'Estimation')
+     xlab = 'Iteration', ylab = 'Estimation', main = 'Second moment')
 segments(x0 = 1, x1 = NSIM, y0 = r0[[3]], y1 = r0[[3]], col='red')
 points(r2[,2], col='blue', type='l')
 points(r3[,2], col='green', type='l')
-points(r4[,2], col='orange', type='l')
+#points(r4[,2], col='orange', type='l')
 points(r5[,2], col='brown', type='l')
 points(r6[,2], col='purple', type='l')
 legend('bottomright',
-       legend = c('MC', 'MC (Antithetic variates)','QMC', 'QMC (Antithetic variates)',
+       legend = c('MC', 'MC (Antithetic variates)','QMC', #'QMC (Antithetic variates)',
                   'MCMC (Metropolis)', 'MCMC (Hamiltonian)'),
-       col= c('black', 'blue', 'green', 'orange', 'brown', 'purple'),
+       col= c('black', 'blue', 'green', 'brown', 'purple'),
        bty = 'n', lty=1, cex = 0.8)
-
+dev.off()
