@@ -9,7 +9,7 @@ Description: Different tools for counting distributions defined on the simplex. 
     the log-ratio approach introduced by John Aitchison (1982) <http://www.jstor.org/stable/2345821>. Main functions
     have been implemented in c++ for better performance.
 Depends:
-    R (>= 3.0.4)
+    R (>= 3.0.2)
 Imports:
     Rcpp (>= 0.12.12),
     randtoolbox
