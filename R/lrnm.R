@@ -19,7 +19,7 @@ dlrnm = function(x, mu, sigma, method = ifelse(length(mu) %in% 1:2, 'hermite', '
     if(is.vector(x)){
       return(c_dlrnm_hermite(x, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
     }else{
-      return(apply(X, 1, c_dlrnm_hermite, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+      return(apply(x, 1, c_dlrnm_hermite, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
     }
   }
   if(method == 'mc'){

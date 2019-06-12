@@ -1,8 +1,8 @@
-#include <RcppArmadillo.h>
+# include <RcppArmadillo.h>
 
-double c_dnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order);
+#ifndef HERMITE_H
+#define HERMITE_H
 
-arma::vec m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order);
+arma::mat hermite(int order);
 
-arma::mat m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order);
-
+#endif

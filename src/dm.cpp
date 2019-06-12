@@ -3,9 +3,6 @@
 #include <RcppArmadillo.h>
 #include <math.h>
 
-// Enable C++11 via this plugin (Rcpp 0.10.3 or later)
-// [[Rcpp::plugins(cpp11)]]
-
 using namespace Rcpp;
 
 const double log2pi = std::log(2.0 * M_PI);

@@ -4,9 +4,9 @@
 \alias{dlrnm}
 \title{Probability mass function of a logratio-normal-multinomial distribution}
 \usage{
-dlrnm(x, mu, sigma, method = ifelse(length(mu) \%in\% 1:2, "hermite", "mc"),
-  hermite.order = 100, hermite.step_by = 100, hermite.eps = 1e-06,
-  hermite.max_steps = 10)
+dlrnm(x, mu, sigma, method = ifelse(length(mu) \%in\% 1:2, "hermite",
+  "mc"), hermite.order = 100, hermite.step_by = 100,
+  hermite.eps = 1e-06, hermite.max_steps = 10)
 }
 \arguments{
 \item{x}{count vector}

@@ -1,6 +1,5 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
-# include <RcppArmadillo.h>
 # include <cstdlib>
 # include <cmath>
 # include <vector>
@@ -9,8 +8,7 @@
 # include <iomanip>
 # include <ctime>
 # include <cstring>
-# include "nm.h"
-# include "coda.h"
+# include "hermite.h"
 
 using namespace Rcpp;
 using namespace std;
@@ -37,180 +35,15 @@ void sgqf ( int nt, double aj[], double bj[], double zemu, double t[],
             double wts[] );
 void timestamp ( );
 
-arma::mat hermite(int order);
 
-int next_combination(int c[], int d)
-{
+
+int next_combination(int c[], int d){
   int i = 0;
   while ( i <d-1 && c[i+1]==c[i]+1){ // for each bump
     c[i] = i;
     i++;                 // fall back
   }
   return d - ++c[i];              // push forward and verify
-}
-
-//' @export
-// [[Rcpp::export]]
-double validate_dnm(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
-  unsigned d = x.n_elem - 1;
-  arma::mat uni_hermite = hermite(order);
-  uni_hermite.col(1) = log(uni_hermite.col(1));
-
-
-  arma::vec eigval;
-  arma::mat eigvec;
-
-  eig_sym(eigval, eigvec, sigma);
-  //Rcpp::Rcout << fliplr(eigvec) << flipud(eigval);
-  arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
-  Rcpp::Rcout << rotation << std::endl;
-  arma::mat B = ilr_basis(d+1);
-  Rcpp::Rcout << B << std::endl;
-  arma::vec B_mu = B * mu;
-  arma::mat B_rotation = B * rotation;
-  return(0);
-}
-
-double c_dnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order){
-  unsigned d = x.n_elem - 1;
-  arma::mat uni_hermite = hermite(order);
-  uni_hermite.col(1) = log(uni_hermite.col(1));
-
-
-  arma::vec eigval;
-  arma::mat eigvec;
-
-  eig_sym(eigval, eigvec, sigma);
-  arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
-  arma::mat B = ilr_basis(d+1);
-
-  // arma::vec B_mu = B * mu;
-  // arma::mat B_rotation = B * rotation;
-
-  unsigned int index[d+1];
-  for(unsigned int i = 0; i <= d; i++) index[i] = 0;
-  int position = 0, k = 0;
-  double integral = 0;
-  double l_cmult = lpmultinomial_const(x);
-
-  do{
-    double w = 0;
-    arma::vec h(d);
-    for(unsigned int i = 0; i < d; i++){
-      h(i) = uni_hermite(index[i],0);
-      w += uni_hermite(index[i],1);
-    }
-    h = mu + rotation * h;
-    //arma::vec p = exp(B * (mu + rotation * h));
-    arma::vec p = exp(B * h);
-    integral += exp(w + lpmultinomial(x, p/accu(p), l_cmult));
-    // Calculate next coordinate
-    index[position]++;
-    while(index[position] == order){
-      index[position] = 0;
-      position++;
-      index[position]++;
-    }
-    position = 0;
-    k++;
-  } while (index[d] == 0);
-
-  return integral;
-}
-
-arma::vec m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
-  unsigned d = x.n_elem - 1;
-  arma::mat uni_hermite = hermite(order);
-  uni_hermite.col(1) = log(uni_hermite.col(1));
-
-  arma::vec eigval;
-  arma::mat eigvec;
-
-  eig_sym(eigval, eigvec, sigma);
-  arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
-  arma::mat B = ilr_basis(d+1);
-
-  // arma::vec B_mu = B * mu;
-  // arma::mat B_rotation = B * rotation;
-
-  unsigned int index[d+1];
-  for(unsigned int i = 0; i <= d; i++) index[i] = 0;
-  int position = 0, k = 0;
-  arma::vec integral = arma::zeros(d);
-  double l_cmult = lpmultinomial_const(x);
-
-  do{
-    double w = 0;
-    arma::vec h(d);
-    for(unsigned int i = 0; i < d; i++){
-      h(i) = uni_hermite(index[i],0);
-      w += uni_hermite(index[i],1);
-    }
-    h = mu + rotation * h;
-    //arma::vec p = exp(B * (mu + rotation * h));
-    arma::vec p = exp(B * h);
-    integral += h * exp(w + lpmultinomial(x, p/accu(p), l_cmult));
-
-    // Calculate next coordinate
-    index[position]++;
-    while(index[position] == order){
-      index[position] = 0;
-      position++;
-      index[position]++;
-    }
-    position = 0;
-    k++;
-  } while (index[d] == 0);
-
-  return integral;
-}
-
-arma::mat m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
-  unsigned d = x.n_elem - 1;
-  arma::mat uni_hermite = hermite(order);
-  uni_hermite.col(1) = log(uni_hermite.col(1));
-
-
-  arma::vec eigval;
-  arma::mat eigvec;
-
-  eig_sym(eigval, eigvec, sigma);
-  arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
-  arma::mat B = ilr_basis(d+1);
-
-  // arma::vec B_mu = B * mu;
-  // arma::mat B_rotation = B * rotation;
-
-  unsigned int index[d+1];
-  for(unsigned int i = 0; i <= d; i++) index[i] = 0;
-  int position = 0, k = 0;
-  arma::mat integral = arma::zeros(d,d);
-  double l_cmult = lpmultinomial_const(x);
-
-  do{
-    double w = 0;
-    arma::vec h(d);
-    for(unsigned int i = 0; i < d; i++){
-      h(i) = uni_hermite(index[i],0);
-      w += uni_hermite(index[i],1);
-    }
-    h = mu + rotation * h;
-    //arma::vec p = exp(B * (mu + rotation * h));
-    arma::vec p = exp(B * h);
-    integral += h * h.t()* exp(w + lpmultinomial(x, p/accu(p), l_cmult));
-
-    // Calculate next coordinate
-    index[position]++;
-    while(index[position] == order){
-      index[position] = 0;
-      position++;
-      index[position]++;
-    }
-    position = 0;
-    k++;
-  } while (index[d] == 0);
-
-  return integral;
 }
 
 double hermite_integration(unsigned int order, unsigned int d){
@@ -240,46 +73,6 @@ double hermite_integration(unsigned int order, unsigned int d){
   } while (index[d] == 0);
 
   return integral;
-}
-
-arma::mat gaussian_hermite(int order, arma::vec mu, arma::mat sigma) {
-  int d = mu.n_elem;
-  arma::mat uni_hermite = hermite(order);
-
-  arma::vec eigval;
-  arma::mat eigvec;
-
-  eig_sym(eigval, eigvec, sigma);
-  arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
-
-  unsigned int index[d+1];
-  for(unsigned int i = 0; i <= d; i++) index[i] = 0;
-  int position = 0, k = 0;
-  double integral = 0;
-
-  int nr = 1;
-  for(unsigned int i = 0; i < d; i++, nr*=order);
-  arma::mat quad = arma::ones(nr, d + 1);
-  arma::vec h(d);
-  do{
-    //Rcpp::Rcout << "max: " << order*d << " current: " << k << std::endl;
-    for(unsigned int i = 0; i < d; i++){
-      h(i) = uni_hermite(index[i],0);
-      quad(k,d) *= uni_hermite(index[i],1);
-    }
-    quad.row(k).head(d) = (mu + rotation * h).t();
-    // Calculate next coordinate
-    index[position]++;
-    while(index[position] == order){
-      index[position] = 0;
-      position++;
-      index[position]++;
-    }
-    position = 0;
-    k++;
-  } while (index[d] == 0);
-
-  return quad;
 }
 
 arma::mat hermite(int order) {

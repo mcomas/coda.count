@@ -2,9 +2,7 @@
 
 #include <RcppArmadillo.h>
 #include <vector>
-# include "coda.h"
-// Enable C++11 via this plugin (Rcpp 0.10.3 or later)
-// [[Rcpp::plugins(cpp11)]]
+#include "coda_base.h"
 
 using namespace Rcpp;
 
