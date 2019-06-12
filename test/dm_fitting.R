@@ -1,3 +1,4 @@
+library(dplyr)
 library(coda.count)
 ALPHA = 10+c(100, 10, 5)
 
@@ -16,7 +17,7 @@ df_dm = as_tibble(X_, .name_repair = ~paste0('X',1:3)) %>%
 
 library(ggtern)
 ggtern(data = df_dm) +
-  geom_point(aes(x = X2, y = X1, z = X3, col = f), size = 3) +
+  geom_point(aes(x = X2, y = X1, z = X3, col = f), size = 2) +
   scale_color_continuous(low = 'blue', high = 'red') +
   theme_minimal()
 
