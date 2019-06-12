@@ -35,7 +35,7 @@ ggplot() +
   scale_color_continuous(low = 'white', high = 'red') +
   facet_wrap(~distribution) +
   coord_equal() +
-  theme_minimal() + theme(legend.position = 'none')
+  theme_void() + theme(legend.position = 'none')
 
 ###########
 
