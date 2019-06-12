@@ -1,10 +1,23 @@
 library(coda.count)
-
+set.seed(1)
+n = 10
 MU.orig = c(0,0)
-SIGMA.orig = diag(2)
-X = rlrnm(MU.orig, SIGMA.orig, 100, 10)
+SIGMA.orig = diag(3, 2)
+X = rlrnm(MU.orig, SIGMA.orig, n, 100)
 
-fit_lrnm(X)
+ft1 = c_lrnm_fit_hermite(X, MU.orig, sigma0 = SIGMA.orig)
+ft1[[1]]
+ft1[[2]]
+
+library(randtoolbox)
+Z = randtoolbox::sobol(n = n, d = 2)
+ft2 = c_lrnm_fit_mc(X, MU.orig, sigma0 = SIGMA.orig, Z = Z)
+ft2[[1]]
+ft2[[2]]
+
+ft2 = fit_lrnm(X, method = 'maximum')
+ft2$mu
+ft2$sigma
 
 pars.dm = fit_dm(X)
 H = ilr_coordinates(t(t(X) + pars.dm[,1]))

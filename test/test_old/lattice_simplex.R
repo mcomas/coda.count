@@ -1,3 +1,4 @@
 Rcpp::sourceCpp('src/utils.cpp')
 print("Running")
-lattice_simplex(3,2)
+nrow(c_simplex_lattice(30,5))
+
