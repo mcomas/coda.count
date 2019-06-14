@@ -116,6 +116,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// lpnm_join_maximum_alr
+arma::vec lpnm_join_maximum_alr(arma::vec x, arma::vec mu_alr, arma::mat& inv_sigma_alr, arma::vec a, double eps, int max_iter);
+RcppExport SEXP _coda_count_lpnm_join_maximum_alr(SEXP xSEXP, SEXP mu_alrSEXP, SEXP inv_sigma_alrSEXP, SEXP aSEXP, SEXP epsSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_alr(mu_alrSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma_alr(inv_sigma_alrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(lpnm_join_maximum_alr(x, mu_alr, inv_sigma_alr, a, eps, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_rmultinomial_Rcpp
 IntegerMatrix c_rmultinomial_Rcpp(NumericMatrix P, NumericVector vsize);
 RcppExport SEXP _coda_count_c_rmultinomial_Rcpp(SEXP PSEXP, SEXP vsizeSEXP) {
@@ -225,6 +241,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_lpmultinomial_const", (DL_FUNC) &_coda_count_lpmultinomial_const, 1},
     {"_coda_count_lpnm_join", (DL_FUNC) &_coda_count_lpnm_join, 5},
     {"_coda_count_lpnm_join_no_constant", (DL_FUNC) &_coda_count_lpnm_join_no_constant, 5},
+    {"_coda_count_lpnm_join_maximum_alr", (DL_FUNC) &_coda_count_lpnm_join_maximum_alr, 6},
     {"_coda_count_c_rmultinomial_Rcpp", (DL_FUNC) &_coda_count_c_rmultinomial_Rcpp, 2},
     {"_coda_count_c_rmultinomial", (DL_FUNC) &_coda_count_c_rmultinomial, 2},
     {"_coda_count_c_rdirichlet", (DL_FUNC) &_coda_count_c_rdirichlet, 2},

@@ -66,3 +66,59 @@ double lpnm_join_no_constant(arma::vec x, arma::vec mu, arma::mat inv_sigma,
   double lnormal = -0.5 * ((arma::mat)(y.t() * inv_sigma * y))(0,0);
   return(lmult + lnormal);
 }
+
+
+double lpnm_join_deriv(int I, arma::vec a, arma::vec mu, arma::mat inv_sigma, arma::vec x){
+  int k = a.size();
+  arma::mat log_norm =  -(a-mu).t() * inv_sigma(arma::span::all, I);
+  double kappa = 1;
+  for(int i = 0; i < k; i++) kappa += exp(a(i));
+  double mult = 0;
+  mult += x(I) * (kappa-exp(a(I))) / kappa;
+  for(int i = 0; i < I; i++) mult += x(i) * (-exp(a(I))) / kappa;
+  for(int i = I+1; i < k+1; i++) mult += x(i) * (-exp(a(I))) / kappa;
+  return log_norm(0) + mult;
+}
+
+
+double lpnm_join_deriv2(int I, int J, arma::vec a, arma::vec mu, arma::mat inv_sigma, arma::vec x){
+  int k = a.size();
+
+  double kappa = 1;
+  for(int i = 0; i < k; i++) kappa += exp(a(i));
+  double mult = -inv_sigma(I, J);
+  if(I == J){
+    for(int i = 0; i < k + 1; i++) mult -= x(i) * exp(a(I)) * (kappa-exp(a(I))) / (kappa*kappa);
+  }else{
+    for(int i = 0; i < k + 1; i++) mult += x(i) * exp(a(I) + a(J)) / (kappa*kappa);
+  }
+  return mult;
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::vec lpnm_join_maximum_alr(arma::vec x, arma::vec mu_alr, arma::mat& inv_sigma_alr,
+                                arma::vec a, double eps, int max_iter) {
+
+  int k = x.size() - 1;
+
+  arma::vec out = arma::vec(a);
+  arma::vec deriv = arma::zeros<arma::vec>(k);
+  arma::mat deriv2 = arma::zeros<arma::mat>(k, k);
+  arma::vec step = arma::zeros<arma::vec>(k);
+
+  int current_iter = 0;
+  do{
+    current_iter++;
+    for(int I=0; I<k; I++){
+      deriv[I] =  lpnm_join_deriv(I, out, mu_alr, inv_sigma_alr, x);
+      for(int J=0; J<k; J++){
+        deriv2(I,J) = lpnm_join_deriv2(I, J, out, mu_alr, inv_sigma_alr, x);
+      }
+    }
+    step = arma::solve(deriv2, deriv);
+    out = out - step;
+  }while( norm(step, 2) > eps && current_iter < max_iter);
+
+  return out;
+}

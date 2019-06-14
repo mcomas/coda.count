@@ -37,6 +37,11 @@ lpnm_join_no_constant <- function(x, mu, inv_sigma, p, h) {
     .Call('_coda_count_lpnm_join_no_constant', PACKAGE = 'coda.count', x, mu, inv_sigma, p, h)
 }
 
+#' @export
+lpnm_join_maximum_alr <- function(x, mu_alr, inv_sigma_alr, a, eps, max_iter) {
+    .Call('_coda_count_lpnm_join_maximum_alr', PACKAGE = 'coda.count', x, mu_alr, inv_sigma_alr, a, eps, max_iter)
+}
+
 c_rmultinomial_Rcpp <- function(P, vsize) {
     .Call('_coda_count_c_rmultinomial_Rcpp', PACKAGE = 'coda.count', P, vsize)
 }

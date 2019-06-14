@@ -6,8 +6,18 @@ library(ggtern)
 
 
 lrnm_posterior = function(MU, SIGMA, x){
+  X_MU = composition(MU)
+  ILR2ALR = t(ilr_basis(3)) %*% alr_basis(3)
+  ALR2ILR = solve(ILR2ALR)
 
+  MU_ALR = MU %*% ILR2ALR
+  #composition(MU_ALR, 'alr')
+  #composition(MU, 'ilr')
 
+  SIGMA_ALR = t(ILR2ALR) %*% SIGMA %*% ILR2ALR
+  a_opt = coda.count::lpnm_join_maximum_alr(x, MU_ALR, solve(SIGMA_ALR),
+                                            a = MU_ALR, eps = 0.0001, max_iter = 100)
+  x_opt = composition(a_opt[,1], 'alr')
   #ldnormal(matrix(h, nrow = 1), MU, solve(SIGMA))
   #mvtnorm::dmvnorm(matrix(h, nrow = 1), mean = MU, sigma = SIGMA, log = TRUE)
 
@@ -26,7 +36,12 @@ lrnm_posterior = function(MU, SIGMA, x){
     gather(distribution, density, starts_with('f_')) %>%
     mutate(distribution = factor(distribution, levels = c('f_prior', 'f_posterior'),
                                  labels = c('Prior', 'Posterior')))
-  dfplot
+  dopt = bind_rows(
+    tibble(x = x_opt[2], y = x_opt[1], z = x_opt[3], distribution = 'f_posterior'),
+    tibble(x = X_MU[2], y = X_MU[1], z = X_MU[3], distribution = 'f_prior')) %>%
+    mutate(distribution = factor(distribution, levels = c('f_prior', 'f_posterior'),
+                                 labels = c('Prior', 'Posterior')))
+  list(data = dfplot, opt = dopt)
 }
 
 MU = c(0,0)
@@ -34,12 +49,14 @@ SIGMA = matrix(c(1,-0.8,
                  -0.8,1), nrow = 2) * 0.25
 x = c(10,1,20)
 
-dfplot = lrnm_posterior(MU, SIGMA, x)
+res = lrnm_posterior(MU, SIGMA, x)
 
 ggtern() +
-  geom_point(data=dfplot, aes(x=p2,y=p1,z=p3, col=density), size = 2) +
+  geom_point(data=res$data, aes(x=p2,y=p1,z=p3, col=density), size = 2) +
   geom_mask() +
   geom_point(data = data.frame(x = x[2], y = x[1], z = x[3]), aes(x=x,y=y,z=z), col = 'black') +
+  geom_point(data = res$opt,
+             aes(x=x,y=y,z=z), col = 'blue') +
   scale_color_continuous(low = 'white', high = 'red') +
   facet_wrap(~distribution) + theme(legend.position = 'none')
 
