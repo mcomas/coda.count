@@ -18,6 +18,11 @@ c_dlrnm_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.
 }
 
 #' @export
+c_lrnm_fit_hermite <- function(X, mu0, sigma0, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L, em_max_steps = 10L) {
+    .Call('_coda_count_c_lrnm_fit_hermite', PACKAGE = 'coda.count', X, mu0, sigma0, order, step_by, eps, max_steps, em_max_steps)
+}
+
+#' @export
 ldnormal <- function(H, mu, inv_sigma) {
     .Call('_coda_count_ldnormal', PACKAGE = 'coda.count', H, mu, inv_sigma)
 }
