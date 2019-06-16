@@ -6,6 +6,7 @@
 #include "lrnm_utils.h"
 #include "coda_base.h"
 
+//' @export
 // [[Rcpp::export]]
 double c_dlrnm_hermite_(arma::vec x, arma::vec mu, arma::mat sigma, int order){
   unsigned d = x.n_elem - 1;
@@ -164,6 +165,8 @@ arma::mat m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned i
   return integral;
 }
 
+//' @export
+// [[Rcpp::export]]
 arma::vec c_m1_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
                        int order = 100, int step_by = 100,
                        double eps = 0.000001, int max_steps = 10){
@@ -179,7 +182,8 @@ arma::vec c_m1_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
   return(vnext);
 }
 
-
+//' @export
+// [[Rcpp::export]]
 arma::mat c_m2_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
                        int order = 100, int step_by = 100,
                        double eps = 0.000001, int max_steps = 10){

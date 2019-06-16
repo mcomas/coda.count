@@ -62,6 +62,40 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_m1_hermite
+arma::vec c_m1_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order, int step_by, double eps, int max_steps);
+RcppExport SEXP _coda_count_c_m1_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type step_by(step_bySEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_m1_hermite(x, mu, sigma, order, step_by, eps, max_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_m2_hermite
+arma::mat c_m2_hermite(arma::vec x, arma::vec mu, arma::mat sigma, int order, int step_by, double eps, int max_steps);
+RcppExport SEXP _coda_count_c_m2_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< int >::type step_by(step_bySEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_m2_hermite(x, mu, sigma, order, step_by, eps, max_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_lrnm_fit_hermite
 Rcpp::List c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0, int order, int step_by, double eps, int max_steps, int em_max_steps);
 RcppExport SEXP _coda_count_c_lrnm_fit_hermite(SEXP XSEXP, SEXP mu0SEXP, SEXP sigma0SEXP, SEXP orderSEXP, SEXP step_bySEXP, SEXP epsSEXP, SEXP max_stepsSEXP, SEXP em_max_stepsSEXP) {
@@ -77,6 +111,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type max_steps(max_stepsSEXP);
     Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
     rcpp_result_gen = Rcpp::wrap(c_lrnm_fit_hermite(X, mu0, sigma0, order, step_by, eps, max_steps, em_max_steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ldnormal2
+arma::vec ldnormal2(arma::mat H, arma::vec mu, arma::mat inv_sigma);
+RcppExport SEXP _coda_count_ldnormal2(SEXP HSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type H(HSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type inv_sigma(inv_sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(ldnormal2(H, mu, inv_sigma));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -255,7 +302,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_dm_fit", (DL_FUNC) &_coda_count_c_dm_fit, 3},
     {"_coda_count_c_dlrnm_hermite_", (DL_FUNC) &_coda_count_c_dlrnm_hermite_, 4},
     {"_coda_count_c_dlrnm_hermite", (DL_FUNC) &_coda_count_c_dlrnm_hermite, 7},
+    {"_coda_count_c_m1_hermite", (DL_FUNC) &_coda_count_c_m1_hermite, 7},
+    {"_coda_count_c_m2_hermite", (DL_FUNC) &_coda_count_c_m2_hermite, 7},
     {"_coda_count_c_lrnm_fit_hermite", (DL_FUNC) &_coda_count_c_lrnm_fit_hermite, 8},
+    {"_coda_count_ldnormal2", (DL_FUNC) &_coda_count_ldnormal2, 3},
     {"_coda_count_ldnormal", (DL_FUNC) &_coda_count_ldnormal, 3},
     {"_coda_count_lpmultinomial_const", (DL_FUNC) &_coda_count_lpmultinomial_const, 1},
     {"_coda_count_lpnm_join", (DL_FUNC) &_coda_count_lpnm_join, 5},

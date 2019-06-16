@@ -9,6 +9,7 @@ c_dm_fit <- function(X, eps = 0.0001, maxiter = 5000L) {
     .Call('_coda_count_c_dm_fit', PACKAGE = 'coda.count', X, eps, maxiter)
 }
 
+#' @export
 c_dlrnm_hermite_ <- function(x, mu, sigma, order) {
     .Call('_coda_count_c_dlrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, order)
 }
@@ -18,8 +19,23 @@ c_dlrnm_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.
 }
 
 #' @export
+c_m1_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
+    .Call('_coda_count_c_m1_hermite', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
+}
+
+#' @export
+c_m2_hermite <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
+    .Call('_coda_count_c_m2_hermite', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
+}
+
+#' @export
 c_lrnm_fit_hermite <- function(X, mu0, sigma0, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L, em_max_steps = 10L) {
     .Call('_coda_count_c_lrnm_fit_hermite', PACKAGE = 'coda.count', X, mu0, sigma0, order, step_by, eps, max_steps, em_max_steps)
+}
+
+#' @export
+ldnormal2 <- function(H, mu, inv_sigma) {
+    .Call('_coda_count_ldnormal2', PACKAGE = 'coda.count', H, mu, inv_sigma)
 }
 
 #' @export
