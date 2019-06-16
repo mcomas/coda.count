@@ -1,3 +1,5 @@
+library(coda.base)
+library(coda.count)
 dirichlet_gaussian_approx = function(ALPHA){
   D = length(ALPHA)
   ILR2ALR = t(ilr_basis(D)) %*% alr_basis(D)
@@ -45,8 +47,8 @@ if(FALSE){
   ALPHA = c(10,35)
   N = dirichlet_gaussian_approx_ILR(ALPHA)
   h = seq(-10, 5, 0.02)
-  f1 = sapply(h, function(h) gtools::ddirichlet(composition(h), ALPHA) * sqrt(2) * prod(composition(h)))
-  f2 = sapply(h, function(h) dnorm(h, N$MU, sqrt(N$SIGMA)))
+  f1 = sapply(h, function(h) gtools::ddirichlet(composition(h), ALPHA) )
+  f2 = sapply(h, function(h) dnorm(h, N$MU, sqrt(N$SIGMA)) / (sqrt(2) * prod(composition(h))))
   plot(h,f1, type = 'l', ylim = range(c(f1,f2)),xlim=c(-3,0), col='blue')
   points(h,f2, type='l', col='red')
 }
@@ -56,8 +58,20 @@ gaussian_product = function(MU1, SIGMA1, MU2, SIGMA2){
   MU3 = SIGMA2 %*% invSIGMA12 %*% t(t(MU1)) + SIGMA1 %*% invSIGMA12 %*% t(t(MU2))
   list(MU = MU3, SIGMA = SIGMA3)
 }
+gaussian_division = function(MU2, SIGMA2, MU3, SIGMA3){
+  invSIGMA3 = solve(SIGMA3)
+  invSIGMA2 = solve(SIGMA2)
+  SIGMA1 = solve(invSIGMA3 - invSIGMA2)
+  MU1 = SIGMA1 %*% invSIGMA3 %*% MU3 - SIGMA1 %*% invSIGMA2 %*% MU2
+  list(MU = MU1, SIGMA = SIGMA1)
+}
 
 plot_approx = function(X, MU, SIGMA){
+  if(FALSE){
+    X = c(10, 2)
+    MU = c(4)
+    SIGMA = diag(1, ncol = 1)
+  }
   D = length(X)
   N1 = dirichlet_gaussian_approx(ALPHA = X + 1)
   MU_ALR = coordinates(composition(MU), 'alr')
@@ -77,11 +91,14 @@ plot_approx = function(X, MU, SIGMA){
   mx = coordinates(composition(mx_alr, 'alr'))
 
 
-  h = seq(-10, 10, 0.02)
+  h = seq(MU-30, MU+30, 0.02)
   f = sapply(h, function(h) exp(lpnm_join(X, MU, ISIGMA, matrix(composition(h), nrow=1), matrix(h,nrow=1)))/prob)
   f1 = sapply(h, function(h) dnorm(h, MU, sqrt(SIGMA)))
-
   f2 = sapply(h, function(h) dnorm(h, APPROX$MU, sqrt(APPROX$SIGMA)))
+  f2b = sapply(h, function(h) dnorm(h, APPROX$MU, sqrt(APPROX$SIGMA)) / (sqrt(D) * prod(composition(h))))
+  f2b = f2b / sum(f2b * 0.02)
+  # f2c = sapply(h, function(h) dnorm(h, APPROX$MU, sqrt(APPROX$SIGMA)) / (sqrt(D) * prod(composition(APPROX$MU))))
+  # f2c = f2c / sum(f2c * 0.02)
   f3 = sapply(h, function(h) gtools::ddirichlet(composition(h), X+1) * sqrt(D) * prod(composition(h)))
   f4 = sapply(h, function(h) dnorm(h, N1$MU, sqrt(N1$SIGMA)))
   y_lim = range(c(f,f1,f2,f3,f4))
@@ -93,14 +110,44 @@ plot_approx = function(X, MU, SIGMA){
   #abline(v = mx, col = 'red')
   points(h, f1, type = 'l', col = 'blue')
   points(h, f2, type = 'l', col = 'green')
+  points(h, f2b, type = 'l', col = 'orange')
+  points(h, f2c, type = 'l', col = 'red')
   points(h, f3, type = 'l', col = 'brown', lty = 2)
   points(h, f4, type = 'l', col = 'purple', lty = 2)
   legend('topright',
-         legend = c('Prior', 'Posterior', 'Posterior approx.', 'Dirichlet', 'Dirichlet approx.'),
-         col = c('blue', 'black', 'green', 'brown', 'purple'), cex=0.75, bty='n', lty=c(1,1,1,2,2))
+         legend = c('Prior', 'Posterior', 'Posterior approx.', 'Posterior approx.(corrected)', 'Posterior approx.(corrected2)', 'Dirichlet', 'Dirichlet approx.'),
+         col = c('blue', 'black', 'green', 'orange', 'red', 'brown', 'purple'), cex=0.75, bty='n', lty=c(1,1,1,1,2,2))
 }
-plot_approx(X = c(0, 1), MU = c(2), SIGMA = diag(10, ncol = 1))
 
+plot_approx(X = c(10, 2), MU = c(4), SIGMA = diag(1, ncol = 1))
+
+if(FALSE){
+  h = seq(-5, 5, 0.02)
+  logistic_ilr = function(h) sapply(h, function(h_) prod(composition(h_))* sqrt(2))
+  logistic_alr = function(h) sapply(h, function(h_) prod(composition(h_, 'alr')))
+  integrate(logistic_ilr, -100, 100)$value
+  integrate(logistic_alr, -100, 100)$value
+  f_ilr = logistic_ilr(h)
+  f_ilr_approx = dnorm(h, mean = 0, sd = 1/sqrt(2 * pi * logistic_ilr(0)^2))
+  f_alr = logistic_alr(h)
+  f_alr_approx = dnorm(h, mean = 0, sd = 1.6)
+  plot(h,f_ilr, type = 'l')
+  points(h, f_ilr_approx, type = 'l', col = 'green')
+  points(h, f_alr, type = 'l', col = 'red')
+  points(h, f_alr_approx, type = 'l', col = 'blue')
+}
+if(FALSE){
+  library(ggplot2)
+  H = expand.grid(h1 = seq(-2, 2, 0.05), h2 = seq(-2, 2, 0.05))
+  logistic_ilr = function(H) apply(H, 1, function(h_) prod(composition(h_)) * sqrt(3))
+  H$f = logistic_ilr(H)
+  hmax = logistic_ilr(matrix(0,ncol=2))
+  H$f_gaussian = mvtnorm::dmvnorm(H[,1:2], mean = c(0,0), diag(1/(hmax*2*pi), 2))
+  ggplot(data=H) +
+    geom_point(aes(x=h1, y = h2, col = f))
+  ggplot(data=H) +
+    geom_point(aes(x=h1, y = h2, col = f_gaussian))
+}
 #
 # p = 0.001
 # n = 10
