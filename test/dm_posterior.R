@@ -4,7 +4,7 @@ library(dplyr)
 library(tidyr)
 library(ggtern)
 
-ALPHA = c(10, 50, 50)
+ALPHA = c(10, 50, 50) # Try: c(1,3,3) c(1,2,3)
 x = c(10,5,20)
 h = coordinates(x)
 

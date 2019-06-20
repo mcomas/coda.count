@@ -112,12 +112,19 @@ plot_approx = function(X, MU, SIGMA){
   #points(h, f_dirichlet_lebesgue, type = 'l', col = 'red', lty = 3)
   points(h, f_posterior_approximation, type = 'l', col = 'green', lty = 2)
   legend('topright',
-         legend = c('Posterior', 'Prior', 'Multinomial', 'Multinomial approx.'),
-         col = c('black', 'blue', 'red', 'red'), cex=0.75, bty='n', lty=c(1,2,1,2))
+         legend = c('Posterior', 'Posterior approx.', 'Prior',
+                    'Multinomial', 'Multinomial approx.'),
+         col = c('black', 'green', 'blue', 'red', 'red'), cex=0.75, bty='n', lty=c(1,2,1,1,2))
 
 }
 
-plot_approx(X = c(10, 2), MU = c(4), SIGMA = diag(1, ncol = 1))
+plot_approx(X = c(1, 1), MU = c(2), SIGMA = diag(1, ncol = 1))
+
+## Bad parameters
+# If Dirichlet is almost constant within prior domain, posterior remains as the prior.
+# X = 1000*c(100, 0); MU = c(20); SIGMA = diag(1, ncol = 1)
+#
+# X = c(100, 2); MU = c(10); SIGMA = diag(1, ncol = 1)
 
 if(FALSE){
   h = seq(-5, 5, 0.02)
