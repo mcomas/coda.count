@@ -32,7 +32,7 @@ posterior_approx = function(ALPHA, x){
   df2$f_prior = scale(apply(P, 1, gtools::ddirichlet, ALPHA))[,1]
   df2$f_posterior = scale(apply(P, 1, gtools::ddirichlet, ALPHA + x))[,1]
 
-  dfplot =  bind_rows(df1 %>% mutate(type = 'Log-Ratio-Normal'),
+  dfplot =  bind_rows(df1 %>% mutate(type = 'Log-ratio-Normal'),
                       df2 %>% mutate(type = 'Dirichlet')) %>%
     gather(distribution, density, starts_with('f_')) %>%
     mutate(distribution = factor(distribution, levels = c('f_prior', 'f_posterior'),
@@ -42,11 +42,11 @@ posterior_approx = function(ALPHA, x){
   xdirich2 = ALPHA + x
   dmax = bind_rows(
     tibble(x = X_MU[2], y = X_MU[1], z = X_MU[3], distribution = 'f_prior') %>%
-      mutate(type = 'Log-Ratio-Normal'),
+      mutate(type = 'Log-ratio-Normal'),
     tibble(x = xdirich[2], y = xdirich[1], z = xdirich[3], distribution = 'f_prior') %>%
       mutate(type = 'Dirichlet'),
     tibble(x = x_opt[2], y = x_opt[1], z = x_opt[3], distribution = 'f_posterior') %>%
-      mutate(type = 'Log-Ratio-Normal'),
+      mutate(type = 'Log-ratio-Normal'),
     tibble(x = xdirich2[2], y = xdirich2[1], z = xdirich2[3], distribution = 'f_posterior') %>%
       mutate(type = 'Dirichlet')) %>%
     mutate(distribution = factor(distribution, levels = c('f_prior', 'f_posterior'),

@@ -12,7 +12,19 @@ dirichlet_gaussian_approx = function(ALPHA){
   SIGMA = t(ALR2ILR) %*% SIGMA_ALR %*% ALR2ILR
   return(list(MU = MU, SIGMA = SIGMA))
 }
-
+gaussian_product = function(MU1, SIGMA1, MU2, SIGMA2){
+  invSIGMA12 = solve(SIGMA1+SIGMA2)
+  SIGMA3 = SIGMA1 %*% invSIGMA12 %*% SIGMA2
+  MU3 = SIGMA2 %*% invSIGMA12 %*% t(t(MU1)) + SIGMA1 %*% invSIGMA12 %*% t(t(MU2))
+  list(MU = MU3, SIGMA = SIGMA3)
+}
+gaussian_division = function(MU2, SIGMA2, MU3, SIGMA3){
+  invSIGMA3 = solve(SIGMA3)
+  invSIGMA2 = solve(SIGMA2)
+  SIGMA1 = solve(invSIGMA3 - invSIGMA2)
+  MU1 = SIGMA1 %*% invSIGMA3 %*% MU3 - SIGMA1 %*% invSIGMA2 %*% MU2
+  list(MU = MU1, SIGMA = SIGMA1)
+}
 
 if(FALSE){
   dirichlet_gaussian_approx_ALR = function(ALPHA){
@@ -26,8 +38,8 @@ if(FALSE){
   ALPHA = c(10,35)
   N = dirichlet_gaussian_approx_ALR(ALPHA)
   h = seq(-10, 5, 0.02)
-  f1 = sapply(h, function(h) gtools::ddirichlet(composition(h, 'alr'), ALPHA) * prod(composition(h, 'alr')))
-  f2 = sapply(h, function(h) dnorm(h, N$MU, sqrt(N$SIGMA)))
+  f1 = sapply(h, function(h) gtools::ddirichlet(composition(h, 'alr'), ALPHA))
+  f2 = sapply(h, function(h) dnorm(h, N$MU, sqrt(N$SIGMA)) / prod(composition(h, 'alr')))
   plot(h,f1, type = 'l', ylim = range(c(f1,f2)),xlim=c(-3,0), col='blue')
   points(h,f2, type='l', col='red')
 }
@@ -44,26 +56,20 @@ if(FALSE){
     SIGMA = t(ALR2ILR) %*% SIGMA_ALR %*% ALR2ILR
     return(list(MU = MU, SIGMA = SIGMA))
   }
-  ALPHA = c(10,35)
+  ALPHA = c(10,2)
   N = dirichlet_gaussian_approx_ILR(ALPHA)
-  h = seq(-10, 5, 0.02)
-  f1 = sapply(h, function(h) gtools::ddirichlet(composition(h), ALPHA) )
-  f2 = sapply(h, function(h) dnorm(h, N$MU, sqrt(N$SIGMA)) / (sqrt(2) * prod(composition(h))))
-  plot(h,f1, type = 'l', ylim = range(c(f1,f2)),xlim=c(-3,0), col='blue')
+  h = seq(-2, 5, 0.02)
+  f1_ = function(h) sapply(h, function(h) gtools::ddirichlet(composition(h), ALPHA) )
+  f2_ = function(h) sapply(h, function(h) dnorm(h, N$MU, sqrt(N$SIGMA)) / (sqrt(2) * prod(composition(h))))
+  f1 = f1_(h) / integrate(f1_, lower = -5, upper = 5)$value
+  f2 = f2_(h) / integrate(f2_, lower = -5, upper = 5)$value
+  MU2 = 0
+  SIGMA2 = 1/(2 * pi * prod(composition(0))^2)
+  N1 = gaussian_division(MU2, SIGMA2, N$MU, N$SIGMA)
+  f3 = sapply(h, function(h) dnorm(h, N1$MU, sqrt(N1$SIGMA)))
+  plot(h,f1, type = 'l', ylim = range(c(f1,f2)),xlim=c(-2,5), col='blue')
   points(h,f2, type='l', col='red')
-}
-gaussian_product = function(MU1, SIGMA1, MU2, SIGMA2){
-  invSIGMA12 = solve(SIGMA1+SIGMA2)
-  SIGMA3 = SIGMA1 %*% invSIGMA12 %*% SIGMA2
-  MU3 = SIGMA2 %*% invSIGMA12 %*% t(t(MU1)) + SIGMA1 %*% invSIGMA12 %*% t(t(MU2))
-  list(MU = MU3, SIGMA = SIGMA3)
-}
-gaussian_division = function(MU2, SIGMA2, MU3, SIGMA3){
-  invSIGMA3 = solve(SIGMA3)
-  invSIGMA2 = solve(SIGMA2)
-  SIGMA1 = solve(invSIGMA3 - invSIGMA2)
-  MU1 = SIGMA1 %*% invSIGMA3 %*% MU3 - SIGMA1 %*% invSIGMA2 %*% MU2
-  list(MU = MU1, SIGMA = SIGMA1)
+  points(h,f3, type='l', col='green')
 }
 
 plot_approx = function(X, MU, SIGMA){
@@ -73,57 +79,49 @@ plot_approx = function(X, MU, SIGMA){
     SIGMA = diag(1, ncol = 1)
   }
   D = length(X)
-  N1 = dirichlet_gaussian_approx(ALPHA = X + 1)
-  MU_ALR = coordinates(composition(MU), 'alr')
-
+  dlrnm = c_dlrnm_hermite_(X, MU, SIGMA, order = 1000)
   ISIGMA = solve(SIGMA)
-  ILR2ALR = t(ilr_basis(length(X))) %*% alr_basis(length(X))
-  SIGMA_ALR = t(ILR2ALR) %*% SIGMA %*% ILR2ALR
-
-  APPROX = gaussian_product(N1$MU, N1$SIGMA, MU, SIGMA)
-  prob = c_dlrnm_hermite_(X, MU, SIGMA, order = 1000)
-
-  M1 = c_m1_hermite(x = X, mu = MU, sigma = SIGMA, order = 100)/prob
-  M2 = c_m2_hermite(x = X, mu = MU, sigma = SIGMA, order = 100)/prob
-  #list('MU' = M1, 'SIGMA' = M2 - M1^2)
-
-  mx_alr = lpnm_join_maximum_alr(X, MU_ALR, solve(SIGMA_ALR), a = 0, eps = 0.00001, max_iter = 1000)
-  mx = coordinates(composition(mx_alr, 'alr'))
-
-
+  f_posterior_ = function(h_) sapply(h_, function(h) exp(lpnm_join(X, MU, ISIGMA, matrix(composition(h), nrow=1), matrix(h,nrow=1)))/dlrnm)
+  f_multinomial_ = function(h_, x) sapply(h_, function(h) gtools::ddirichlet(composition(h), x + 1) )
   h = seq(MU-30, MU+30, 0.02)
-  f = sapply(h, function(h) exp(lpnm_join(X, MU, ISIGMA, matrix(composition(h), nrow=1), matrix(h,nrow=1)))/prob)
-  f1 = sapply(h, function(h) dnorm(h, MU, sqrt(SIGMA)))
-  f2 = sapply(h, function(h) dnorm(h, APPROX$MU, sqrt(APPROX$SIGMA)))
-  f2b = sapply(h, function(h) dnorm(h, APPROX$MU, sqrt(APPROX$SIGMA)) / (sqrt(D) * prod(composition(h))))
-  f2b = f2b / sum(f2b * 0.02)
-  # f2c = sapply(h, function(h) dnorm(h, APPROX$MU, sqrt(APPROX$SIGMA)) / (sqrt(D) * prod(composition(APPROX$MU))))
-  # f2c = f2c / sum(f2c * 0.02)
-  f3 = sapply(h, function(h) gtools::ddirichlet(composition(h), X+1) * sqrt(D) * prod(composition(h)))
-  f4 = sapply(h, function(h) dnorm(h, N1$MU, sqrt(N1$SIGMA)))
-  y_lim = range(c(f,f1,f2,f3,f4))
-  f_max = pmax(f,f1,f2,f3,f4)
+
+  N_dirichlet_lebesgue = dirichlet_gaussian_approx(X+1)
+
+  MU_logistic = 0
+  SIGMA_logistic = 1/(2 * pi * prod(composition(0))^2)
+  N_dirichlet_aitchison = gaussian_division(MU_logistic, SIGMA_logistic,
+                                            N_dirichlet_lebesgue$MU, N_dirichlet_lebesgue$SIGMA)
+  N_posterior_approx = gaussian_product(MU, SIGMA,
+                                        N_dirichlet_aitchison$MU, N_dirichlet_aitchison$SIGMA)
+
+
+  f_posterior = f_posterior_(h)
+  f_prior = dnorm(h, MU, sqrt(SIGMA))
+  f_multinomial = f_multinomial_(h, X) / integrate(f_multinomial_, -10, 10, x = X)$value
+  f_dirichlet_lebesgue = dnorm(h, N_dirichlet_lebesgue$MU, sqrt(N_dirichlet_lebesgue$SIGMA))
+  f_dirichlet_aitchison = dnorm(h, N_dirichlet_aitchison$MU, sqrt(N_dirichlet_aitchison$SIGMA))
+  f_posterior_approximation = dnorm(h, N_posterior_approx$MU, sqrt(N_posterior_approx$SIGMA))
+
+  f_max = pmax(f_posterior, f_prior, f_multinomial, f_dirichlet_aitchison, f_posterior_approximation)
   x_lim = range(h[f_max>0.01])
-  plot(h,f, type = 'l', ylim = y_lim, xlim = x_lim)
-  abline(v = M1, col = 'black')
-  #abline(v = APPROX$MU, col = 'green')
-  #abline(v = mx, col = 'red')
-  points(h, f1, type = 'l', col = 'blue')
-  points(h, f2, type = 'l', col = 'green')
-  points(h, f2b, type = 'l', col = 'orange')
-  points(h, f2c, type = 'l', col = 'red')
-  points(h, f3, type = 'l', col = 'brown', lty = 2)
-  points(h, f4, type = 'l', col = 'purple', lty = 2)
+  y_lim = range(c(f_posterior, f_prior, f_multinomial, f_dirichlet_aitchison, f_posterior_approximation))
+  plot(h,f_posterior, type = 'l', ylim = y_lim, xlim = x_lim, lwd = 3)
+  points(h, f_prior, type = 'l', col = 'blue', lty = 2)
+  points(h, f_multinomial, type = 'l', col = 'red')
+  points(h, f_dirichlet_aitchison, type = 'l', col = 'red', lty = 2)
+  #points(h, f_dirichlet_lebesgue, type = 'l', col = 'red', lty = 3)
+  points(h, f_posterior_approximation, type = 'l', col = 'green', lty = 2)
   legend('topright',
-         legend = c('Prior', 'Posterior', 'Posterior approx.', 'Posterior approx.(corrected)', 'Posterior approx.(corrected2)', 'Dirichlet', 'Dirichlet approx.'),
-         col = c('blue', 'black', 'green', 'orange', 'red', 'brown', 'purple'), cex=0.75, bty='n', lty=c(1,1,1,1,2,2))
+         legend = c('Posterior', 'Prior', 'Multinomial', 'Multinomial approx.'),
+         col = c('black', 'blue', 'red', 'red'), cex=0.75, bty='n', lty=c(1,2,1,2))
+
 }
 
 plot_approx(X = c(10, 2), MU = c(4), SIGMA = diag(1, ncol = 1))
 
 if(FALSE){
   h = seq(-5, 5, 0.02)
-  logistic_ilr = function(h) sapply(h, function(h_) prod(composition(h_))* sqrt(2))
+  logistic_ilr = function(h) sapply(h, function(h_) prod(composition(h_)) * sqrt(2))
   logistic_alr = function(h) sapply(h, function(h_) prod(composition(h_, 'alr')))
   integrate(logistic_ilr, -100, 100)$value
   integrate(logistic_alr, -100, 100)$value
