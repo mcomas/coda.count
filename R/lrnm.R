@@ -17,9 +17,9 @@ dlrnm = function(x, mu, sigma, method = ifelse(length(mu) %in% 1:2, 'hermite', '
   sigma = as.matrix(sigma)
   if(method == 'hermite'){
     if(is.vector(x)){
-      return(c_dlrnm_hermite(x, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+      return(c_d_lrnm_hermite_(x, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
     }else{
-      return(apply(x, 1, c_dlrnm_hermite, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+      return(apply(x, 1, c_d_lrnm_hermite_, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
     }
   }
   if(method == 'mc'){
@@ -37,9 +37,9 @@ fit_lrnm = function(X, method = 'maximum', eps = 0.0001, maxiter = 100, min_eval
   mu_alr = log(xm[-ncol(X)] / xm[ncol(X)])
   if(method == 'maximum'){
     if(ini.centered){
-      A = c_lrnm_fit_maximum_alr_centered(X, mu_alr, diag(ncol(X)-1), tol = eps, em_max_steps = maxiter, min_evalue = min_evalue)
+      A = c_fit_lrnm_maximum_alr_centered(X, mu_alr, diag(ncol(X)-1), tol = eps, em_max_steps = maxiter, min_evalue = min_evalue)
     }else{
-      A = c_lrnm_fit_maximum_alr(X, mu_alr, diag(ncol(X)-1), tol = eps, em_max_steps = maxiter, min_evalue = min_evalue)
+      A = c_fit_lrnm_maximum_alr(X, mu_alr, diag(ncol(X)-1), tol = eps, em_max_steps = maxiter, min_evalue = min_evalue)
     }
 
   }

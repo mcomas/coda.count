@@ -118,7 +118,8 @@ plot_approx = function(X, MU, SIGMA){
 
 }
 
-plot_approx(X = c(0, 2000), MU = c(2), SIGMA = diag(1, ncol = 1))
+plot_approx(X = c(1, 2000), MU = c(2), SIGMA = diag(1, ncol = 1))
+plot_approx(X = c(200, 1), MU = c(5), SIGMA = diag(1, ncol = 1))
 plot_approx(X = c(20, 0), MU = c(2), SIGMA = diag(1, ncol = 1))
 plot_approx(X = c(10,10), MU = c(2), SIGMA = diag(1, ncol = 1))
 
@@ -128,11 +129,13 @@ plot_approx(X = c(10,10), MU = c(2), SIGMA = diag(1, ncol = 1))
 #
 # X = c(100, 2); MU = c(10); SIGMA = diag(1, ncol = 1)
 # plot_approx(X = c(100, 1), MU = c(10), SIGMA = diag(1, ncol = 1))
-library(manipulate)
-manipulate(
-  plot_approx(X = a * c(10, 0), MU = c(2), SIGMA = diag(1, ncol = 1)),
-  a = slider(1, 1000, step = 100)
-)
+if(FALSE){
+  library(manipulate)
+  manipulate(
+    plot_approx(X = a * c(10, 0), MU = c(2), SIGMA = diag(1, ncol = 1)),
+    a = slider(1, 1000, step = 100)
+  )
+}
 if(FALSE){
   h = seq(-5, 5, 0.02)
   logistic_ilr = function(h) sapply(h, function(h_) prod(composition(h_)) * sqrt(2))

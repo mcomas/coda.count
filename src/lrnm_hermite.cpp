@@ -8,7 +8,9 @@
 
 //' @export
 // [[Rcpp::export]]
-double c_dlrnm_hermite_(arma::vec x, arma::vec mu, arma::mat sigma, int order){
+double c_d_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv,
+                        int order){
+
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
@@ -18,10 +20,6 @@ double c_dlrnm_hermite_(arma::vec x, arma::vec mu, arma::mat sigma, int order){
 
   eig_sym(eigval, eigvec, sigma);
   arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
-  arma::mat B = ilr_basis(d+1);
-
-  // arma::vec B_mu = B * mu;
-  // arma::mat B_rotation = B * rotation;
 
   unsigned int index[d+1];
   for(unsigned int i = 0; i <= d; i++) index[i] = 0;
@@ -37,8 +35,7 @@ double c_dlrnm_hermite_(arma::vec x, arma::vec mu, arma::mat sigma, int order){
       w += uni_hermite(index[i],1);
     }
     h = mu + rotation * h;
-    //arma::vec p = exp(B * (mu + rotation * h));
-    arma::vec p = exp(B * h);
+    arma::vec p = exp(Binv * h);
     integral += exp(w + lpmultinomial(x, p/accu(p), l_cmult));
     // Calculate next coordinate
     index[position]++;
@@ -54,23 +51,10 @@ double c_dlrnm_hermite_(arma::vec x, arma::vec mu, arma::mat sigma, int order){
   return integral;
 }
 
+//' @export
 // [[Rcpp::export]]
-double c_dlrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
-                       int order = 100, int step_by = 100,
-                       double eps = 0.000001, int max_steps = 10){
-  double vcurrent = -1;
-  double vnext = c_dlrnm_hermite_(x, mu, sigma, order);
-  int step = 1;
-  while(abs(vcurrent - vnext) > eps &  step < max_steps){
-    step++;
-    order+=step_by;
-    vcurrent = vnext;
-    vnext = c_dlrnm_hermite_(x, mu, sigma, order);
-  }
-  return(vnext);
-}
-
-arma::vec m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
+arma::vec c_m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
+                            arma::mat Binv, int order){
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
@@ -80,10 +64,6 @@ arma::vec m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned i
 
   eig_sym(eigval, eigvec, sigma);
   arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
-  arma::mat B = ilr_basis(d+1);
-
-  // arma::vec B_mu = B * mu;
-  // arma::mat B_rotation = B * rotation;
 
   unsigned int index[d+1];
   for(unsigned int i = 0; i <= d; i++) index[i] = 0;
@@ -99,8 +79,7 @@ arma::vec m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned i
       w += uni_hermite(index[i],1);
     }
     h = mu + rotation * h;
-    //arma::vec p = exp(B * (mu + rotation * h));
-    arma::vec p = exp(B * h);
+    arma::vec p = exp(Binv * h);
     integral += h * exp(w + lpmultinomial(x, p/accu(p), l_cmult));
 
     // Calculate next coordinate
@@ -117,7 +96,10 @@ arma::vec m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned i
   return integral;
 }
 
-arma::mat m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned int order){
+//' @export
+// [[Rcpp::export]]
+arma::mat c_m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv,
+                            int order){
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
@@ -128,10 +110,6 @@ arma::mat m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned i
 
   eig_sym(eigval, eigvec, sigma);
   arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
-  arma::mat B = ilr_basis(d+1);
-
-  // arma::vec B_mu = B * mu;
-  // arma::mat B_rotation = B * rotation;
 
   unsigned int index[d+1];
   for(unsigned int i = 0; i <= d; i++) index[i] = 0;
@@ -147,8 +125,7 @@ arma::mat m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned i
       w += uni_hermite(index[i],1);
     }
     h = mu + rotation * h;
-    //arma::vec p = exp(B * (mu + rotation * h));
-    arma::vec p = exp(B * h);
+    arma::vec p = exp(Binv * h);
     integral += h * h.t()* exp(w + lpmultinomial(x, p/accu(p), l_cmult));
 
     // Calculate next coordinate
@@ -165,43 +142,70 @@ arma::mat m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, unsigned i
   return integral;
 }
 
-//' @export
+
+/*
+ * Maybe following functions should be removed
+ */
+
 // [[Rcpp::export]]
-arma::vec c_m1_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
-                       int order = 100, int step_by = 100,
-                       double eps = 0.000001, int max_steps = 10){
+double c_d_lrnm_hermite_(arma::vec x, arma::vec mu, arma::mat sigma,
+                         int order = 100, int step_by = 100,
+                         double eps = 0.000001, int max_steps = 10){
+  double vcurrent = -1;
+  unsigned d = x.n_elem - 1;
+  arma::mat Binv = ilr_basis(d+1);
+
+  double vnext = c_d_lrnm_hermite(x, mu, sigma, Binv, order);
+  int step = 1;
+  while(abs(vcurrent - vnext) > eps &  step < max_steps){
+    step++;
+    order+=step_by;
+    vcurrent = vnext;
+    vnext = c_d_lrnm_hermite(x, mu, sigma, Binv, order);
+  }
+  return(vnext);
+}
+
+// [[Rcpp::export]]
+arma::vec c_m1_lrnm_hermite_(arma::vec x, arma::vec mu, arma::mat sigma,
+                             int order = 100, int step_by = 100,
+                             double eps = 0.000001, int max_steps = 10){
   arma::vec vcurrent(mu.n_elem);
-  arma::vec vnext = m1_lrnm_hermite(x, mu, sigma, order);
+  unsigned d = x.n_elem - 1;
+  arma::mat Binv = ilr_basis(d+1);
+  arma::vec vnext = c_m1_lrnm_hermite(x, mu, sigma, Binv, order);
   int step = 1;
   while(max(abs(vcurrent - vnext)) > eps &  step < max_steps){
     step++;
     order+=step_by;
     vcurrent = vnext;
-    vnext = m1_lrnm_hermite(x, mu, sigma, order);
+    vnext = c_m1_lrnm_hermite(x, mu, sigma, Binv, order);
   }
   return(vnext);
 }
 
-//' @export
 // [[Rcpp::export]]
-arma::mat c_m2_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
-                       int order = 100, int step_by = 100,
-                       double eps = 0.000001, int max_steps = 10){
+arma::mat c_m2_lrnm_hermite_(arma::vec x, arma::vec mu, arma::mat sigma,
+                             int order = 100, int step_by = 100,
+                             double eps = 0.000001, int max_steps = 10){
   arma::mat vcurrent(mu.n_elem, mu.n_elem);
-  arma::mat vnext = m2_lrnm_hermite(x, mu, sigma, order);
+  unsigned d = x.n_elem - 1;
+  arma::mat Binv = ilr_basis(d+1);
+
+  arma::mat vnext = c_m2_lrnm_hermite(x, mu, sigma, Binv, order);
   int step = 1;
   while(max(max(abs(vcurrent - vnext))) > eps &  step < max_steps){
     step++;
     order+=step_by;
     vcurrent = vnext;
-    vnext = m2_lrnm_hermite(x, mu, sigma, order);
+    vnext = c_m2_lrnm_hermite(x, mu, sigma, Binv, order);
   }
   return(vnext);
 }
 
 //' @export
 // [[Rcpp::export]]
-Rcpp::List c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0,
+Rcpp::List c_fit_lrnm_hermite_(arma::mat X, arma::vec mu0, arma::mat sigma0,
                               int order = 100, int step_by = 100,
                               double eps = 0.000001, int max_steps = 10,
                               int em_max_steps = 10){
@@ -222,10 +226,10 @@ Rcpp::List c_lrnm_fit_hermite(arma::mat X, arma::vec mu0, arma::mat sigma0,
     M1.zeros();
     M2.zeros();
     for(int i = 0; i < n; i++){
-      double prob = c_dlrnm_hermite(X.col(i), mu, sigma, order, step_by, eps, max_steps);
-      H.col(i) = c_m1_hermite(X.col(i), mu, sigma, order, step_by, eps, max_steps)/prob;
+      double prob = c_d_lrnm_hermite_(X.col(i), mu, sigma, order, step_by, eps, max_steps);
+      H.col(i) = c_m1_lrnm_hermite_(X.col(i), mu, sigma, order, step_by, eps, max_steps)/prob;
       M1 += H.col(i);
-      M2 += (c_m2_hermite(X.col(i), mu, sigma, order, step_by, eps, max_steps)/prob);
+      M2 += (c_m2_lrnm_hermite_(X.col(i), mu, sigma, order, step_by, eps, max_steps)/prob);
     }
     mu_prev = mu;
     mu = M1 / n;
