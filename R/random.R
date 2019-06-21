@@ -42,31 +42,44 @@ rdm = function(alpha, size, n = length(size), probs = FALSE){
 
 #' logratio-normal-multinomial random sample
 #'
+#' @param n sample size. if ommited, the value is obtained as the length of vector size (in that case, all parameters should be called using their name).
+#' @param size vector to set the multinomial sampling size. vector is reused to have length equal parameter n
 #' @param mu logratio-normal-multinomial mu parameter
 #' @param sigma logratio-normal-multinomial mu parameter
-#' @param size vector to set the multinomial sampling size. vector is reused to have length equal parameter n
-#' @param n sample size
+#' @param B basis in which the parameters are expressed with
 #' @param probs logical indicating whether multinomial probabilities should be returned
 #' @return logratio-normal-multinomial random sample
 #' @examples
 #' mu = c(0,1)
 #' sigma = diag(2)
-#' rlrnm(mu, sigma, 1000, 10)
+#' rlrnm(10, 1000, mu, sigma)
 #' @export
-rlrnm = function(mu, sigma, size, n = length(size), probs = FALSE, B = NULL){
-  N = rep(size, length.out = n)
-  if(is.null(B)){
-    mu.ilr = mu
-    sigma.ilr = sigma
-  }else{
-    B0 = ilr_basis(length(mu)+1)
-    mu.ilr = mu %*% MASS::ginv(B) %*% B0
-    sigma.ilr = t(B0) %*% t(MASS::ginv(B)) %*% sigma  %*% MASS::ginv(B) %*% B0
+rlrnm = function(n = NULL, size, mu, sigma, B = coda.base::ilr_basis(length(mu)+1), probs = FALSE){
+  if(is.null(n)){
+    n = length(size)
   }
-  gen = c_rnormalmultinomial(mu.ilr, sigma.ilr, N)
+  N = rep(size, length.out = n)
+  Binv = pinv(B)
+  gen = c_rnormalmultinomial(mu, sigma, N, Binv)
   X = gen[[2]]
   if(probs){
     attr(X, 'probs') = gen[[1]]
   }
   X
+}
+
+#' logratio-normal random sample defined on the Simplex
+#'
+#' @param n sample size
+#' @param mu logratio-normal-multinomial mu parameter
+#' @param sigma logratio-normal-multinomial mu parameter
+#' @param B basis in which the parameters are expressed with
+#' @return logratio-normal-multinomial random sample
+#' @examples
+#' mu = c(0,1)
+#' sigma = diag(2)
+#' rlrnormal(mu, sigma, 10)
+#' @export
+rlrnormal = function(n, mu, sigma, B = coda.base::ilr_basis(length(mu)+1)){
+  c_rnormalSimplex(n, mu, sigma, pinv(B))
 }

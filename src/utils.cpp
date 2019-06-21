@@ -1,5 +1,14 @@
-#include <Rcpp.h>
+// [[Rcpp::depends(RcppArmadillo)]]
+
+#include <RcppArmadillo.h>
+
 using namespace Rcpp;
+
+//' @export
+// [[Rcpp::export]]
+arma::mat pinv(arma::mat X){
+  return arma::pinv(X);
+}
 
 int simplex_lattice_elements(int K, int SIZE){
   return R::choose(K+SIZE-1,SIZE);

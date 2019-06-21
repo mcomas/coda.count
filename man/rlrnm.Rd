@@ -4,16 +4,19 @@
 \alias{rlrnm}
 \title{logratio-normal-multinomial random sample}
 \usage{
-rlrnm(mu, sigma, size, n = length(size), probs = FALSE, B = NULL)
+rlrnm(n = NULL, size, mu, sigma, B = coda.base::ilr_basis(length(mu) +
+  1), probs = FALSE)
 }
 \arguments{
+\item{n}{sample size. if ommited, the value is obtained as the length of vector size (in that case, all parameters should be called using their name).}
+
+\item{size}{vector to set the multinomial sampling size. vector is reused to have length equal parameter n}
+
 \item{mu}{logratio-normal-multinomial mu parameter}
 
 \item{sigma}{logratio-normal-multinomial mu parameter}
 
-\item{size}{vector to set the multinomial sampling size. vector is reused to have length equal parameter n}
-
-\item{n}{sample size}
+\item{B}{basis in which the parameters are expressed with}
 
 \item{probs}{logical indicating whether multinomial probabilities should be returned}
 }
@@ -26,5 +29,5 @@ logratio-normal-multinomial random sample
 \examples{
 mu = c(0,1)
 sigma = diag(2)
-rlrnm(mu, sigma, 1000, 10)
+rlrnm(10, 1000, mu, sigma)
 }

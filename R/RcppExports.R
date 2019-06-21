@@ -24,21 +24,20 @@ c_m2_lrnm_hermite <- function(x, mu, sigma, Binv, order) {
     .Call('_coda_count_c_m2_lrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, Binv, order)
 }
 
-c_d_lrnm_hermite_ <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
-    .Call('_coda_count_c_d_lrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
+c_d_lrnm_hermite_ <- function(x, mu, sigma, Binv, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
+    .Call('_coda_count_c_d_lrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, Binv, order, step_by, eps, max_steps)
 }
 
-c_m1_lrnm_hermite_ <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
-    .Call('_coda_count_c_m1_lrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
+c_m1_lrnm_hermite_ <- function(x, mu, sigma, Binv, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
+    .Call('_coda_count_c_m1_lrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, Binv, order, step_by, eps, max_steps)
 }
 
-c_m2_lrnm_hermite_ <- function(x, mu, sigma, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
-    .Call('_coda_count_c_m2_lrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, order, step_by, eps, max_steps)
+c_m2_lrnm_hermite_ <- function(x, mu, sigma, Binv, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
+    .Call('_coda_count_c_m2_lrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, Binv, order, step_by, eps, max_steps)
 }
 
-#' @export
-c_fit_lrnm_hermite_ <- function(X, mu0, sigma0, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L, em_max_steps = 10L) {
-    .Call('_coda_count_c_fit_lrnm_hermite_', PACKAGE = 'coda.count', X, mu0, sigma0, order, step_by, eps, max_steps, em_max_steps)
+c_fit_lrnm_hermite_ <- function(X, mu0, sigma0, Binv, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L, em_max_steps = 10L) {
+    .Call('_coda_count_c_fit_lrnm_hermite_', PACKAGE = 'coda.count', X, mu0, sigma0, Binv, order, step_by, eps, max_steps, em_max_steps)
 }
 
 #' @export
@@ -87,16 +86,24 @@ c_rdirichletmultinomial <- function(alpha, size) {
     .Call('_coda_count_c_rdirichletmultinomial', PACKAGE = 'coda.count', alpha, size)
 }
 
+#' @export
 c_rnormal <- function(n, mu, sigma) {
     .Call('_coda_count_c_rnormal', PACKAGE = 'coda.count', n, mu, sigma)
 }
 
-c_rnormalSimplex <- function(n, mu, sigma) {
-    .Call('_coda_count_c_rnormalSimplex', PACKAGE = 'coda.count', n, mu, sigma)
+#' @export
+c_rnormalSimplex <- function(n, mu, sigma, Binv) {
+    .Call('_coda_count_c_rnormalSimplex', PACKAGE = 'coda.count', n, mu, sigma, Binv)
 }
 
-c_rnormalmultinomial <- function(mu, sigma, size) {
-    .Call('_coda_count_c_rnormalmultinomial', PACKAGE = 'coda.count', mu, sigma, size)
+#' @export
+c_rnormalmultinomial <- function(mu, sigma, size, Binv) {
+    .Call('_coda_count_c_rnormalmultinomial', PACKAGE = 'coda.count', mu, sigma, size, Binv)
+}
+
+#' @export
+pinv <- function(X) {
+    .Call('_coda_count_pinv', PACKAGE = 'coda.count', X)
 }
 
 c_simplex_lattice <- function(K, SIZE) {
