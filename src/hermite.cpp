@@ -400,7 +400,7 @@ double class_matrix ( int kind, int m, double alpha, double beta, double aj[],
     Rcpp::Rcout << "\n";
     Rcpp::Rcout << "CLASS_MATRIX - Fatal error!\n";
     Rcpp::Rcout << "  Gamma function does not match machine parameters.\n";
-    exit ( 1 );
+    Rcpp::stop("Stop\n");
   }
 
   if ( kind == 1 )
@@ -663,7 +663,7 @@ void imtqlx ( int n, double d[], double e[], double z[] )
         Rcpp::Rcout << "\n";
         Rcpp::Rcout << "IMTQLX - Fatal error!\n";
         Rcpp::Rcout << "  Iteration limit exceeded\n";
-        exit ( 1 );
+        Rcpp::stop("Stop\n");
       }
       j = j + 1;
       g = ( d[l] - p ) / ( 2.0 * e[l-1] );
@@ -796,7 +796,7 @@ void parchk ( int kind, int m, double alpha, double beta )
     Rcpp::Rcout << "\n";
     Rcpp::Rcout << "PARCHK - Fatal error!\n";
     Rcpp::Rcout << "  KIND <= 0.\n";
-    exit ( 1 );
+    Rcpp::stop("Stop\n");
   }
   //
   //  Check ALPHA for Gegenbauer, Jacobi, Laguerre, Hermite, Exponential.
@@ -806,7 +806,7 @@ void parchk ( int kind, int m, double alpha, double beta )
     Rcpp::Rcout << "\n";
     Rcpp::Rcout << "PARCHK - Fatal error!\n";
     Rcpp::Rcout << "  3 <= KIND and ALPHA <= -1.\n";
-    exit ( 1 );
+    Rcpp::stop("Stop\n");
   }
   //
   //  Check BETA for Jacobi.
@@ -816,7 +816,7 @@ void parchk ( int kind, int m, double alpha, double beta )
     Rcpp::Rcout << "\n";
     Rcpp::Rcout << "PARCHK - Fatal error!\n";
     Rcpp::Rcout << "  KIND == 4 and BETA <= -1.0.\n";
-    exit ( 1 );
+    Rcpp::stop("Stop\n");
   }
   //
   //  Check ALPHA and BETA for rational.
@@ -829,7 +829,7 @@ void parchk ( int kind, int m, double alpha, double beta )
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "PARCHK - Fatal error!\n";
       Rcpp::Rcout << "  KIND == 8 but condition on ALPHA and BETA fails.\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
   }
   return;
@@ -1120,7 +1120,7 @@ void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "SCQF - Fatal error!\n";
       Rcpp::Rcout << "  |B - A| too small.\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
     shft = ( a + b ) / 2.0;
     slp = ( b - a ) / 2.0;
@@ -1134,7 +1134,7 @@ void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "SCQF - Fatal error!\n";
       Rcpp::Rcout << "  |B - A| too small.\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
     shft = ( a + b ) / 2.0;
     slp = ( b - a ) / 2.0;
@@ -1148,7 +1148,7 @@ void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "SCQF - Fatal error!\n";
       Rcpp::Rcout << "  |B - A| too small.\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
     shft = ( a + b ) / 2.0;
     slp = ( b - a ) / 2.0;
@@ -1163,7 +1163,7 @@ void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "SCQF - Fatal error!\n";
       Rcpp::Rcout << "  |B - A| too small.\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
     shft = ( a + b ) / 2.0;
     slp = ( b - a ) / 2.0;
@@ -1175,7 +1175,7 @@ void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "SCQF - Fatal error!\n";
       Rcpp::Rcout << "  B <= 0\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
     shft = a;
     slp = 1.0 / b;
@@ -1189,7 +1189,7 @@ void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "SCQF - Fatal error!\n";
       Rcpp::Rcout << "  B <= 0.\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
     shft = a;
     slp = 1.0 / sqrt ( b );
@@ -1205,7 +1205,7 @@ void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "SCQF - Fatal error!\n";
       Rcpp::Rcout << "  |B - A| too small.\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
     shft = ( a + b ) / 2.0;
     slp = ( b - a ) / 2.0;
@@ -1217,7 +1217,7 @@ void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "SCQF - Fatal error!\n";
       Rcpp::Rcout << "  A + B <= 0.\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
     shft = a;
     slp = a + b;
@@ -1233,7 +1233,7 @@ void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],
       Rcpp::Rcout << "\n";
       Rcpp::Rcout << "SCQF - Fatal error!\n";
       Rcpp::Rcout << "  |B - A| too small.\n";
-      exit ( 1 );
+      Rcpp::stop("Stop\n");
     }
     shft = ( a + b ) / 2.0;
     slp = ( b - a ) / 2.0;
@@ -1321,7 +1321,7 @@ void sgqf ( int nt, double aj[], double bj[], double zemu, double t[],
     Rcpp::Rcout << "\n";
     Rcpp::Rcout << "SGQF - Fatal error!\n";
     Rcpp::Rcout << "  ZEMU <= 0.\n";
-    exit ( 1 );
+    Rcpp::stop("Stop\n");
   }
   //
   //  Set up vectors for IMTQLX.

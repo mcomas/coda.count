@@ -54,13 +54,15 @@ rdm = function(alpha, size, n = length(size), probs = FALSE){
 #' sigma = diag(2)
 #' rlrnm(10, 1000, mu, sigma)
 #' @export
-rlrnm = function(n = NULL, size, mu, sigma, B = coda.base::ilr_basis(length(mu)+1), probs = FALSE){
+rlrnm = function(n = NULL, size, mu, sigma, B = NULL, probs = FALSE){
+  if(is.null(B)){
+    B = coda.base::ilr_basis(length(mu)+1)
+  }
   if(is.null(n)){
     n = length(size)
   }
   N = rep(size, length.out = n)
-  Binv = pinv(B)
-  gen = c_rnormalmultinomial(mu, sigma, N, Binv)
+  gen = c_rnormalmultinomial(mu, sigma, N, pinv(B))
   X = gen[[2]]
   if(probs){
     attr(X, 'probs') = gen[[1]]
@@ -78,8 +80,11 @@ rlrnm = function(n = NULL, size, mu, sigma, B = coda.base::ilr_basis(length(mu)+
 #' @examples
 #' mu = c(0,1)
 #' sigma = diag(2)
-#' rlrnormal(mu, sigma, 10)
+#' rlrnormal(10, mu, sigma)
 #' @export
-rlrnormal = function(n, mu, sigma, B = coda.base::ilr_basis(length(mu)+1)){
+rlrnormal = function(n, mu, sigma, B = NULL){
+  if(is.null(B)){
+    B = coda.base::ilr_basis(length(mu)+1)
+  }
   c_rnormalSimplex(n, mu, sigma, pinv(B))
 }

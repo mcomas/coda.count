@@ -1,0 +1,78 @@
+---
+title: "approx"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{approx}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(coda.count)
+library(coda.base)
+```
+
+Parameters:
+
+```{r}
+x = c(0,100)
+mu = -10
+sigma = matrix(1) 
+inv_sigma = solve(sigma)
+B = alr_basis(2)
+Binv = MASS::ginv(B)
+```
+
+
+```{r}
+f_join = function(h_){
+  sapply(h_, function(h) 
+    exp(lpnm_join(x = x, mu = mu, inv_sigma, matrix(composition(h, B), nrow=1), matrix(h))))
+}
+(f_join_area_x_fixed <- integrate(f_join, lower = -20, upper = 10)$value)
+(f_join_area_x_fixed <- c_d_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000))
+f_multinomial_ = function(h_) sapply(h_, function(h) gtools::ddirichlet(composition(h, B), x + 1) )
+(f_multinomial_area <- integrate(f_multinomial_, -20, 10)$value)
+N_dirichlet_alr_lebesgue = c_dirichlet_alr_approx(x+1)
+N_logistic_alr = c_logistic_alr_approximation(1)
+N_dirichlet_alr_approx = c_gaussian_division(N_logistic_alr, N_dirichlet_alr_lebesgue)
+f_multinomial_approx_ = function(h_) dnorm(h_, N_dirichlet_alr_approx[,2], sqrt(N_dirichlet_alr_approx[,1]))
+N_posterior_approx = c_gaussian_product(N_dirichlet_alr_approx, cbind(sigma,mu))
+f_posterior_approx_ = function(h_) dnorm(h_, N_posterior_approx[,2], sqrt(N_posterior_approx[,1]))
+
+```
+
+Evaluation
+
+```{r}
+h = seq(-20,20,0.01)
+f_prior = dnorm(h, mu, sqrt(sigma))
+f_posterior = f_join(h)/f_join_area_x_fixed
+M1 = c_m1_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000) / c_d_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000)
+f_multinomial = f_multinomial_(h)/f_multinomial_area
+f_multinomial_approx = f_multinomial_approx_(h)
+f_posterior_approx = f_posterior_approx_(h)
+```
+
+```{r}
+f_max = pmax(f_prior, f_posterior, f_multinomial, f_multinomial_approx, f_posterior_approx)
+x_lim = range(h[f_max>0.01])
+y_lim = range(c(f_prior, f_posterior, f_multinomial, f_multinomial_approx, f_posterior_approx))
+plot(h, f_posterior, type = 'l', xlim = x_lim, ylim = y_lim)
+points(h, f_prior, type = 'l', col = 'red')
+points(h, f_multinomial, type = 'l', col = 'blue')
+points(h, f_multinomial_approx, type = 'l', col = 'blue', lty = 2)
+points(h, f_posterior_approx, type = 'l', col = 'black', lty = 2)
+abline(v = M1)
+```
+
+* The highest the bias in the multinomial, the higher the bias in the posterior.
+* When one component contains a zero, the distribution is similar to the logistic function.
+

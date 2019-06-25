@@ -4,7 +4,7 @@
 
 using namespace Rcpp;
 
-//' @export
+
 // [[Rcpp::export]]
 arma::mat pinv(arma::mat X){
   return arma::pinv(X);

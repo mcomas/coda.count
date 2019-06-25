@@ -11,15 +11,19 @@
 #' names(p) = sprintf("(%d,%d)", X[,1], X[,2])
 #' barplot(p, cex.axis = 0.8, cex.names = 0.8)
 #' @export
-dlrnm = function(x, mu, sigma, method = ifelse(length(mu) %in% 1:2, 'hermite', 'mc'),
+dlrnm = function(x, mu, sigma, B = NULL,
+                 method = ifelse(length(mu) %in% 1:2, 'hermite', 'mc'),
                  hermite.order = 100, hermite.step_by = 100, hermite.eps = 1e-06,
                  hermite.max_steps = 10){
+  if(is.null(B)){
+    B = coda.base::ilr_basis(length(mu)+1)
+  }
   sigma = as.matrix(sigma)
   if(method == 'hermite'){
     if(is.vector(x)){
-      return(c_d_lrnm_hermite_(x, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+      return(c_d_lrnm_hermite_(x, mu, sigma, pinv(t(B)), hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
     }else{
-      return(apply(x, 1, c_d_lrnm_hermite_, mu, sigma, hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+      return(apply(x, 1, c_d_lrnm_hermite_, mu, sigma, pinv(t(B)), hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
     }
   }
   if(method == 'mc'){

@@ -4,7 +4,7 @@
 \alias{rlrnormal}
 \title{logratio-normal random sample defined on the Simplex}
 \usage{
-rlrnormal(n, mu, sigma, B = coda.base::ilr_basis(length(mu) + 1))
+rlrnormal(n, mu, sigma, B = NULL)
 }
 \arguments{
 \item{n}{sample size}
@@ -24,5 +24,5 @@ logratio-normal random sample defined on the Simplex
 \examples{
 mu = c(0,1)
 sigma = diag(2)
-rlrnormal(mu, sigma, 10)
+rlrnormal(10, mu, sigma)
 }

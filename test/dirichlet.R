@@ -3,7 +3,7 @@ library(coda.count)
 
 library(gtools)
 
-ALPHA = c(1,10)
+ALPHA = c(10,100)
 dirichlet_lebesgue = function(p) ddirichlet(cbind(p,1-p), ALPHA)
 integrate(dirichlet_lebesgue, 0, 1)
 

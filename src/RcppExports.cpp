@@ -6,6 +6,28 @@
 
 using namespace Rcpp;
 
+// H
+arma::mat H(int d);
+RcppExport SEXP _coda_count_H(SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(H(d));
+    return rcpp_result_gen;
+END_RCPP
+}
+// F
+arma::mat F(int d);
+RcppExport SEXP _coda_count_F(SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(F(d));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_ddm
 double c_ddm(arma::vec x, arma::vec alpha);
 RcppExport SEXP _coda_count_c_ddm(SEXP xSEXP, SEXP alphaSEXP) {
@@ -28,6 +50,118 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     rcpp_result_gen = Rcpp::wrap(c_dm_fit(X, eps, maxiter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_dirichlet_alr_approx
+arma::mat c_dirichlet_alr_approx(arma::vec alpha);
+RcppExport SEXP _coda_count_c_dirichlet_alr_approx(SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_dirichlet_alr_approx(alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_logistic_ilr_approximation
+arma::mat c_logistic_ilr_approximation(int d);
+RcppExport SEXP _coda_count_c_logistic_ilr_approximation(SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_logistic_ilr_approximation(d));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_logistic_alr_approximation
+arma::mat c_logistic_alr_approximation(int d);
+RcppExport SEXP _coda_count_c_logistic_alr_approximation(SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_logistic_alr_approximation(d));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_gaussian_product
+arma::mat c_gaussian_product(arma::mat pars1, arma::mat pars2);
+RcppExport SEXP _coda_count_c_gaussian_product(SEXP pars1SEXP, SEXP pars2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type pars1(pars1SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type pars2(pars2SEXP);
+    rcpp_result_gen = Rcpp::wrap(c_gaussian_product(pars1, pars2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_gaussian_division
+arma::mat c_gaussian_division(arma::mat pars1, arma::mat pars_res);
+RcppExport SEXP _coda_count_c_gaussian_division(SEXP pars1SEXP, SEXP pars_resSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type pars1(pars1SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type pars_res(pars_resSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_gaussian_division(pars1, pars_res));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_d_lrnm_gaussian_approx
+double c_d_lrnm_gaussian_approx(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv);
+RcppExport SEXP _coda_count_c_d_lrnm_gaussian_approx(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_d_lrnm_gaussian_approx(x, mu, sigma, Binv));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_posterior_alr_approximation
+arma::mat c_posterior_alr_approximation(arma::vec x, arma::vec mu, arma::mat sigma);
+RcppExport SEXP _coda_count_c_posterior_alr_approximation(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_posterior_alr_approximation(x, mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_m1_lrnm_gaussian_approx
+arma::vec c_m1_lrnm_gaussian_approx(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv);
+RcppExport SEXP _coda_count_c_m1_lrnm_gaussian_approx(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_m1_lrnm_gaussian_approx(x, mu, sigma, Binv));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_m2_lrnm_gaussian_approx
+arma::mat c_m2_lrnm_gaussian_approx(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv);
+RcppExport SEXP _coda_count_c_m2_lrnm_gaussian_approx(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_m2_lrnm_gaussian_approx(x, mu, sigma, Binv));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -346,8 +480,19 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_coda_count_H", (DL_FUNC) &_coda_count_H, 1},
+    {"_coda_count_F", (DL_FUNC) &_coda_count_F, 1},
     {"_coda_count_c_ddm", (DL_FUNC) &_coda_count_c_ddm, 2},
     {"_coda_count_c_dm_fit", (DL_FUNC) &_coda_count_c_dm_fit, 3},
+    {"_coda_count_c_dirichlet_alr_approx", (DL_FUNC) &_coda_count_c_dirichlet_alr_approx, 1},
+    {"_coda_count_c_logistic_ilr_approximation", (DL_FUNC) &_coda_count_c_logistic_ilr_approximation, 1},
+    {"_coda_count_c_logistic_alr_approximation", (DL_FUNC) &_coda_count_c_logistic_alr_approximation, 1},
+    {"_coda_count_c_gaussian_product", (DL_FUNC) &_coda_count_c_gaussian_product, 2},
+    {"_coda_count_c_gaussian_division", (DL_FUNC) &_coda_count_c_gaussian_division, 2},
+    {"_coda_count_c_d_lrnm_gaussian_approx", (DL_FUNC) &_coda_count_c_d_lrnm_gaussian_approx, 4},
+    {"_coda_count_c_posterior_alr_approximation", (DL_FUNC) &_coda_count_c_posterior_alr_approximation, 3},
+    {"_coda_count_c_m1_lrnm_gaussian_approx", (DL_FUNC) &_coda_count_c_m1_lrnm_gaussian_approx, 4},
+    {"_coda_count_c_m2_lrnm_gaussian_approx", (DL_FUNC) &_coda_count_c_m2_lrnm_gaussian_approx, 4},
     {"_coda_count_c_d_lrnm_hermite", (DL_FUNC) &_coda_count_c_d_lrnm_hermite, 5},
     {"_coda_count_c_m1_lrnm_hermite", (DL_FUNC) &_coda_count_c_m1_lrnm_hermite, 5},
     {"_coda_count_c_m2_lrnm_hermite", (DL_FUNC) &_coda_count_c_m2_lrnm_hermite, 5},

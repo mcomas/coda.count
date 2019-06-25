@@ -4,8 +4,7 @@
 \alias{rlrnm}
 \title{logratio-normal-multinomial random sample}
 \usage{
-rlrnm(n = NULL, size, mu, sigma, B = coda.base::ilr_basis(length(mu) +
-  1), probs = FALSE)
+rlrnm(n = NULL, size, mu, sigma, B = NULL, probs = FALSE)
 }
 \arguments{
 \item{n}{sample size. if ommited, the value is obtained as the length of vector size (in that case, all parameters should be called using their name).}

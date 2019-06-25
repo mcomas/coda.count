@@ -78,8 +78,9 @@ plot_approx = function(X, MU, SIGMA){
     MU = c(4)
     SIGMA = diag(1, ncol = 1)
   }
+  Binv = ilr_basis(2)
   D = length(X)
-  dlrnm = c_dlrnm_hermite_(X, MU, SIGMA, order = 1000)
+  dlrnm = c_d_lrnm_hermite(X, MU, SIGMA, Binv, order = 1000)
   ISIGMA = solve(SIGMA)
   f_posterior_ = function(h_) sapply(h_, function(h) exp(lpnm_join(X, MU, ISIGMA, matrix(composition(h), nrow=1), matrix(h,nrow=1)))/dlrnm)
   f_multinomial_ = function(h_, x) sapply(h_, function(h) gtools::ddirichlet(composition(h), x + 1) )
@@ -122,6 +123,7 @@ plot_approx(X = c(1, 2000), MU = c(2), SIGMA = diag(1, ncol = 1))
 plot_approx(X = c(200, 1), MU = c(5), SIGMA = diag(1, ncol = 1))
 plot_approx(X = c(20, 0), MU = c(2), SIGMA = diag(1, ncol = 1))
 plot_approx(X = c(10,10), MU = c(2), SIGMA = diag(1, ncol = 1))
+
 
 ## Bad parameters
 # If Dirichlet is almost constant within prior domain, posterior remains as the prior.
