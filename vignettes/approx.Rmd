@@ -23,7 +23,7 @@ Parameters:
 
 ```{r}
 x = c(0,100)
-mu = -10
+mu = -2
 sigma = matrix(1) 
 inv_sigma = solve(sigma)
 B = alr_basis(2)
@@ -49,6 +49,8 @@ f_posterior_approx_ = function(h_) dnorm(h_, N_posterior_approx[,2], sqrt(N_post
 
 ```
 
+
+
 Evaluation
 
 ```{r}
@@ -62,14 +64,24 @@ f_posterior_approx = f_posterior_approx_(h)
 ```
 
 ```{r}
-f_max = pmax(f_prior, f_posterior, f_multinomial, f_multinomial_approx, f_posterior_approx)
+a_max = lpnm_join_maximum_alr(x, mu, inv_sigma, c(0), eps = 0.00001, max_iter = 1000)
+lpnm_join(x, mu, inv_sigma, composition(a_max, 'alr'), a_max)
+A = -coda.count::lpnm_join_deriv2(I = 0, J = 0, a_max, mu, inv_sigma, x)
+f_posterior_approx2 = dnorm(h, a_max, sqrt(1/A))
+```
+
+```{r}
+f_max = pmax(f_prior, f_posterior, f_multinomial, f_multinomial_approx, 
+             f_posterior_approx, f_posterior_approx2)
 x_lim = range(h[f_max>0.01])
-y_lim = range(c(f_prior, f_posterior, f_multinomial, f_multinomial_approx, f_posterior_approx))
+y_lim = range(c(f_prior, f_posterior, f_multinomial, f_multinomial_approx, 
+                f_posterior_approx, f_posterior_approx2))
 plot(h, f_posterior, type = 'l', xlim = x_lim, ylim = y_lim)
 points(h, f_prior, type = 'l', col = 'red')
 points(h, f_multinomial, type = 'l', col = 'blue')
 points(h, f_multinomial_approx, type = 'l', col = 'blue', lty = 2)
 points(h, f_posterior_approx, type = 'l', col = 'black', lty = 2)
+points(h, f_posterior_approx2, type = 'l', col = 'black', lty = 3)
 abline(v = M1)
 ```
 

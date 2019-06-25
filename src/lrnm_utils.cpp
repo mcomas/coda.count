@@ -87,7 +87,8 @@ double lpnm_join_no_constant(arma::vec x, arma::vec mu, arma::mat inv_sigma,
   return(lmult + lnormal);
 }
 
-
+//' @export
+// [[Rcpp::export]]
 double lpnm_join_deriv(int I, arma::vec a, arma::vec mu, arma::mat inv_sigma, arma::vec x){
   int k = a.size();
   arma::mat log_norm =  -(a-mu).t() * inv_sigma(arma::span::all, I);
@@ -100,7 +101,8 @@ double lpnm_join_deriv(int I, arma::vec a, arma::vec mu, arma::mat inv_sigma, ar
   return log_norm(0) + mult;
 }
 
-
+//' @export
+// [[Rcpp::export]]
 double lpnm_join_deriv2(int I, int J, arma::vec a, arma::vec mu, arma::mat inv_sigma, arma::vec x){
   int k = a.size();
 
