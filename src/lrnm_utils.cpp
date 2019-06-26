@@ -89,6 +89,40 @@ double lpnm_join_no_constant(arma::vec x, arma::vec mu, arma::mat inv_sigma,
 
 //' @export
 // [[Rcpp::export]]
+arma::vec l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat inv_sigma, arma::mat Binv){
+  int k = h.size();
+  arma::vec deriv(k);
+
+  arma::vec eBh = exp(Binv * h);
+  double  w = arma::accu(eBh);
+  arma::vec  wBi = Binv.t() * eBh;
+  return(-inv_sigma * (h-mu) + Binv.t() * x - sum(x) * wBi / w);
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat inv_sigma, arma::mat Binv){
+  int k = h.size();
+  arma::mat deriv(k,k);
+
+  arma::vec eBh = exp(Binv * h);
+  double  w = arma::accu(eBh);
+  arma::vec wBi = Binv.t() * eBh;
+  arma::mat wBij(k,k);
+  //Rcpp::Rcout << Binv << std::endl;
+  for(int i=0; i<k; i++){
+    for(int j=0; j<k; j++){
+      wBij(i,j) = arma::accu(Binv.col(i) % Binv.col(j) % eBh);
+    }
+  }
+  // Rcpp::Rcout << inv_sigma << std::endl;
+  // Rcpp::Rcout << (wBi * wBi.t() ) << std::endl;
+  // Rcpp::Rcout << wBij << std::endl;
+  return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
+}
+
+//' @export
+// [[Rcpp::export]]
 double lpnm_join_deriv(int I, arma::vec a, arma::vec mu, arma::mat inv_sigma, arma::vec x){
   int k = a.size();
   arma::mat log_norm =  -(a-mu).t() * inv_sigma(arma::span::all, I);

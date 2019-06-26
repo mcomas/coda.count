@@ -121,6 +121,16 @@ lpnm_join_no_constant <- function(x, mu, inv_sigma, p, h) {
 }
 
 #' @export
+l_lrnm_join_d1 <- function(h, x, mu, inv_sigma, Binv) {
+    .Call('_coda_count_l_lrnm_join_d1', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
+}
+
+#' @export
+l_lrnm_join_d2 <- function(h, x, mu, inv_sigma, Binv) {
+    .Call('_coda_count_l_lrnm_join_d2', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
+}
+
+#' @export
 lpnm_join_deriv <- function(I, a, mu, inv_sigma, x) {
     .Call('_coda_count_lpnm_join_deriv', PACKAGE = 'coda.count', I, a, mu, inv_sigma, x)
 }

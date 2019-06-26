@@ -350,6 +350,36 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// l_lrnm_join_d1
+arma::vec l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat inv_sigma, arma::mat Binv);
+RcppExport SEXP _coda_count_l_lrnm_join_d1(SEXP hSEXP, SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(l_lrnm_join_d1(h, x, mu, inv_sigma, Binv));
+    return rcpp_result_gen;
+END_RCPP
+}
+// l_lrnm_join_d2
+arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat inv_sigma, arma::mat Binv);
+RcppExport SEXP _coda_count_l_lrnm_join_d2(SEXP hSEXP, SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(l_lrnm_join_d2(h, x, mu, inv_sigma, Binv));
+    return rcpp_result_gen;
+END_RCPP
+}
 // lpnm_join_deriv
 double lpnm_join_deriv(int I, arma::vec a, arma::vec mu, arma::mat inv_sigma, arma::vec x);
 RcppExport SEXP _coda_count_lpnm_join_deriv(SEXP ISEXP, SEXP aSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP xSEXP) {
@@ -536,6 +566,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_lpmultinomial_const", (DL_FUNC) &_coda_count_lpmultinomial_const, 1},
     {"_coda_count_lpnm_join", (DL_FUNC) &_coda_count_lpnm_join, 5},
     {"_coda_count_lpnm_join_no_constant", (DL_FUNC) &_coda_count_lpnm_join_no_constant, 5},
+    {"_coda_count_l_lrnm_join_d1", (DL_FUNC) &_coda_count_l_lrnm_join_d1, 5},
+    {"_coda_count_l_lrnm_join_d2", (DL_FUNC) &_coda_count_l_lrnm_join_d2, 5},
     {"_coda_count_lpnm_join_deriv", (DL_FUNC) &_coda_count_lpnm_join_deriv, 5},
     {"_coda_count_lpnm_join_deriv2", (DL_FUNC) &_coda_count_lpnm_join_deriv2, 6},
     {"_coda_count_lpnm_join_maximum_alr", (DL_FUNC) &_coda_count_lpnm_join_maximum_alr, 6},

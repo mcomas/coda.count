@@ -22,8 +22,8 @@ library(coda.base)
 Parameters:
 
 ```{r}
-x = c(0,100)
-mu = -2
+x = c(0,1)
+mu = 0
 sigma = matrix(1) 
 inv_sigma = solve(sigma)
 B = alr_basis(2)
@@ -58,6 +58,8 @@ h = seq(-20,20,0.01)
 f_prior = dnorm(h, mu, sqrt(sigma))
 f_posterior = f_join(h)/f_join_area_x_fixed
 M1 = c_m1_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000) / c_d_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000)
+M2 = c_m2_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000) / c_d_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000)
+M2c = M2 - M1^2
 f_multinomial = f_multinomial_(h)/f_multinomial_area
 f_multinomial_approx = f_multinomial_approx_(h)
 f_posterior_approx = f_posterior_approx_(h)
@@ -81,10 +83,22 @@ points(h, f_prior, type = 'l', col = 'red')
 points(h, f_multinomial, type = 'l', col = 'blue')
 points(h, f_multinomial_approx, type = 'l', col = 'blue', lty = 2)
 points(h, f_posterior_approx, type = 'l', col = 'black', lty = 2)
-points(h, f_posterior_approx2, type = 'l', col = 'black', lty = 3)
+points(h, f_posterior_approx2, type = 'l', col = 'green', lty = 3)
 abline(v = M1)
 ```
 
 * The highest the bias in the multinomial, the higher the bias in the posterior.
 * When one component contains a zero, the distribution is similar to the logistic function.
 
+```{r}
+integrate(function(h) h * f_join(h)/f_join_area_x_fixed, -15, 0)$value +
+  integrate(function(h) h * f_join(h)/f_join_area_x_fixed, 0, 15)$value
+M1
+plot(h, h*f_posterior, type = 'l')
+```
+
+```{r}
+integrate(function(h) h^2 * f_join(h)/f_join_area_x_fixed, -10, 10)$value
+M2
+plot(h, h*h*f_posterior, type = 'l')
+```
