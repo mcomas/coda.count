@@ -22,9 +22,9 @@ library(coda.base)
 Parameters:
 
 ```{r}
-x = c(0,1)
+x = c(0,10)
 mu = 0
-sigma = matrix(1) 
+sigma = matrix(1) *2
 inv_sigma = solve(sigma)
 B = alr_basis(2)
 Binv = MASS::ginv(B)
@@ -32,21 +32,16 @@ Binv = MASS::ginv(B)
 
 
 ```{r}
-f_join = function(h_){
-  sapply(h_, function(h) 
-    exp(lpnm_join(x = x, mu = mu, inv_sigma, matrix(composition(h, B), nrow=1), matrix(h))))
-}
-(f_join_area_x_fixed <- integrate(f_join, lower = -20, upper = 10)$value)
+f_lrnm_join = function(h_) exp(sapply(h_, l_lrnm_join_vec, x, mu = mu, inv_sigma, t(Binv)))
+
+(f_join_area_x_fixed <- integrate(f_lrnm_join, lower = -20, upper = 10)$value)
 (f_join_area_x_fixed <- c_d_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000))
+
 f_multinomial_ = function(h_) sapply(h_, function(h) gtools::ddirichlet(composition(h, B), x + 1) )
 (f_multinomial_area <- integrate(f_multinomial_, -20, 10)$value)
-N_dirichlet_alr_lebesgue = c_dirichlet_alr_approx(x+1)
-N_logistic_alr = c_logistic_alr_approximation(1)
-N_dirichlet_alr_approx = c_gaussian_division(N_logistic_alr, N_dirichlet_alr_lebesgue)
-f_multinomial_approx_ = function(h_) dnorm(h_, N_dirichlet_alr_approx[,2], sqrt(N_dirichlet_alr_approx[,1]))
-N_posterior_approx = c_gaussian_product(N_dirichlet_alr_approx, cbind(sigma,mu))
-f_posterior_approx_ = function(h_) dnorm(h_, N_posterior_approx[,2], sqrt(N_posterior_approx[,1]))
 
+N_posterior_approx = c_posterior_approximation(x, mu, inv_sigma, Binv = t(Binv))
+f_posterior_approx_ = function(h_) dnorm(h_, N_posterior_approx[,2], sqrt(N_posterior_approx[,1]))
 ```
 
 
@@ -56,49 +51,48 @@ Evaluation
 ```{r}
 h = seq(-20,20,0.01)
 f_prior = dnorm(h, mu, sqrt(sigma))
-f_posterior = f_join(h)/f_join_area_x_fixed
-M1 = c_m1_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000) / c_d_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000)
-M2 = c_m2_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000) / c_d_lrnm_hermite(x, mu, sigma, Binv = t(Binv), order = 1000)
-M2c = M2 - M1^2
+f_posterior = f_lrnm_join(h)/f_join_area_x_fixed
 f_multinomial = f_multinomial_(h)/f_multinomial_area
-f_multinomial_approx = f_multinomial_approx_(h)
 f_posterior_approx = f_posterior_approx_(h)
 ```
 
-```{r}
-a_max = lpnm_join_maximum_alr(x, mu, inv_sigma, c(0), eps = 0.00001, max_iter = 1000)
-lpnm_join(x, mu, inv_sigma, composition(a_max, 'alr'), a_max)
-A = -coda.count::lpnm_join_deriv2(I = 0, J = 0, a_max, mu, inv_sigma, x)
-f_posterior_approx2 = dnorm(h, a_max, sqrt(1/A))
-```
 
 ```{r}
-f_max = pmax(f_prior, f_posterior, f_multinomial, f_multinomial_approx, 
-             f_posterior_approx, f_posterior_approx2)
+f_max = pmax(f_prior, f_posterior, f_multinomial, f_posterior_approx)
 x_lim = range(h[f_max>0.01])
-y_lim = range(c(f_prior, f_posterior, f_multinomial, f_multinomial_approx, 
-                f_posterior_approx, f_posterior_approx2))
+y_lim = range(c(f_prior, f_posterior, f_multinomial, f_posterior_approx))
 plot(h, f_posterior, type = 'l', xlim = x_lim, ylim = y_lim)
 points(h, f_prior, type = 'l', col = 'red')
 points(h, f_multinomial, type = 'l', col = 'blue')
-points(h, f_multinomial_approx, type = 'l', col = 'blue', lty = 2)
 points(h, f_posterior_approx, type = 'l', col = 'black', lty = 2)
-points(h, f_posterior_approx2, type = 'l', col = 'green', lty = 3)
-abline(v = M1)
-```
-
-* The highest the bias in the multinomial, the higher the bias in the posterior.
-* When one component contains a zero, the distribution is similar to the logistic function.
-
-```{r}
-integrate(function(h) h * f_join(h)/f_join_area_x_fixed, -15, 0)$value +
-  integrate(function(h) h * f_join(h)/f_join_area_x_fixed, 0, 15)$value
-M1
-plot(h, h*f_posterior, type = 'l')
 ```
 
 ```{r}
-integrate(function(h) h^2 * f_join(h)/f_join_area_x_fixed, -10, 10)$value
-M2
-plot(h, h*h*f_posterior, type = 'l')
+set.seed(2)
+mu = c(0,0)
+sigma = matrix(c(1,0.8,0.8,1), nrow = 2) * 10
+inv_sigma = solve(sigma)
+B = ilr_basis(3)
+Binv = MASS::ginv(B)
+X = rlrnm(n = 100, 10000, mu, sigma, B)
+
+H_ = coordinates(X + 1, B)
+mu_est = colMeans(H_)
+sigma_est = cov(H_)
+
+# c_posterior_approximation(X[15,], mu_est, solve(sigma_est), Binv = t(Binv))
+
+for(i in 1:200){
+  EST = apply(X, 1, c_posterior_approximation, mu_est, solve(sigma_est), Binv = t(Binv))
+  
+  mu_est = rowMeans(EST[5:6,])
+  sigma_vec = rowMeans(apply(EST, 2, function(est){
+    est[1:4] + c(est[5:6] %*% t(est[5:6]))
+  })) - c(mu_est %*% t(mu_est))
+  sigma_est = matrix(sigma_vec, nrow = 2)
+}
+print(mu_est)
+print(sigma_est)
 ```
+
+

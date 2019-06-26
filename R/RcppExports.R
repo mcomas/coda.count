@@ -45,23 +45,8 @@ c_gaussian_division <- function(pars1, pars_res) {
 }
 
 #' @export
-c_d_lrnm_gaussian_approx <- function(x, mu, sigma, Binv) {
-    .Call('_coda_count_c_d_lrnm_gaussian_approx', PACKAGE = 'coda.count', x, mu, sigma, Binv)
-}
-
-#' @export
-c_posterior_alr_approximation <- function(x, mu, sigma) {
-    .Call('_coda_count_c_posterior_alr_approximation', PACKAGE = 'coda.count', x, mu, sigma)
-}
-
-#' @export
-c_m1_lrnm_gaussian_approx <- function(x, mu, sigma, Binv) {
-    .Call('_coda_count_c_m1_lrnm_gaussian_approx', PACKAGE = 'coda.count', x, mu, sigma, Binv)
-}
-
-#' @export
-c_m2_lrnm_gaussian_approx <- function(x, mu, sigma, Binv) {
-    .Call('_coda_count_c_m2_lrnm_gaussian_approx', PACKAGE = 'coda.count', x, mu, sigma, Binv)
+c_posterior_approximation <- function(x, mu, inv_sigma, Binv) {
+    .Call('_coda_count_c_posterior_approximation', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv)
 }
 
 #' @export
@@ -96,28 +81,13 @@ c_fit_lrnm_hermite_ <- function(X, mu0, sigma0, Binv, order = 100L, step_by = 10
 }
 
 #' @export
-ldnormal2 <- function(H, mu, inv_sigma) {
-    .Call('_coda_count_ldnormal2', PACKAGE = 'coda.count', H, mu, inv_sigma)
+l_multinomial_const <- function(x) {
+    .Call('_coda_count_l_multinomial_const', PACKAGE = 'coda.count', x)
 }
 
 #' @export
-ldnormal <- function(H, mu, inv_sigma) {
-    .Call('_coda_count_ldnormal', PACKAGE = 'coda.count', H, mu, inv_sigma)
-}
-
-#' @export
-lpmultinomial_const <- function(x) {
-    .Call('_coda_count_lpmultinomial_const', PACKAGE = 'coda.count', x)
-}
-
-#' @export
-lpnm_join <- function(x, mu, inv_sigma, P, H) {
-    .Call('_coda_count_lpnm_join', PACKAGE = 'coda.count', x, mu, inv_sigma, P, H)
-}
-
-#' @export
-lpnm_join_no_constant <- function(x, mu, inv_sigma, p, h) {
-    .Call('_coda_count_lpnm_join_no_constant', PACKAGE = 'coda.count', x, mu, inv_sigma, p, h)
+l_lrnm_join_vec <- function(h, x, mu, inv_sigma, Binv) {
+    .Call('_coda_count_l_lrnm_join_vec', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
 }
 
 #' @export
@@ -131,18 +101,8 @@ l_lrnm_join_d2 <- function(h, x, mu, inv_sigma, Binv) {
 }
 
 #' @export
-lpnm_join_deriv <- function(I, a, mu, inv_sigma, x) {
-    .Call('_coda_count_lpnm_join_deriv', PACKAGE = 'coda.count', I, a, mu, inv_sigma, x)
-}
-
-#' @export
-lpnm_join_deriv2 <- function(I, J, a, mu, inv_sigma, x) {
-    .Call('_coda_count_lpnm_join_deriv2', PACKAGE = 'coda.count', I, J, a, mu, inv_sigma, x)
-}
-
-#' @export
-lpnm_join_maximum_alr <- function(x, mu_alr, inv_sigma_alr, a, eps, max_iter) {
-    .Call('_coda_count_lpnm_join_maximum_alr', PACKAGE = 'coda.count', x, mu_alr, inv_sigma_alr, a, eps, max_iter)
+l_lrnm_join_maximum <- function(x, mu, inv_sigma, Binv, eps = 0.0001, max_iter = 1000L) {
+    .Call('_coda_count_l_lrnm_join_maximum', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv, eps, max_iter)
 }
 
 c_rmultinomial_Rcpp <- function(P, vsize) {

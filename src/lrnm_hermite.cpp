@@ -25,7 +25,7 @@ double c_d_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Bi
   for(unsigned int i = 0; i <= d; i++) index[i] = 0;
   int position = 0, k = 0;
   double integral = 0;
-  double l_cmult = lpmultinomial_const(x);
+  double l_cmult = l_multinomial_const(x);
 
   do{
     double w = 0;
@@ -36,7 +36,7 @@ double c_d_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Bi
     }
     h = mu + rotation * h;
     arma::vec p = exp(Binv * h);
-    integral += exp(w + lpmultinomial(x, p/accu(p), l_cmult));
+    integral += exp(w + l_multinomial(x, p/accu(p), l_cmult));
     // Calculate next coordinate
     index[position]++;
     while(index[position] == order){
@@ -69,7 +69,7 @@ arma::vec c_m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
   for(unsigned int i = 0; i <= d; i++) index[i] = 0;
   int position = 0, k = 0;
   arma::vec integral = arma::zeros(d);
-  double l_cmult = lpmultinomial_const(x);
+  double l_cmult = l_multinomial_const(x);
 
   do{
     double w = 0;
@@ -80,7 +80,7 @@ arma::vec c_m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
     }
     h = mu + rotation * h;
     arma::vec p = exp(Binv * h);
-    integral += h * exp(w + lpmultinomial(x, p/accu(p), l_cmult));
+    integral += h * exp(w + l_multinomial(x, p/accu(p), l_cmult));
 
     // Calculate next coordinate
     index[position]++;
@@ -114,7 +114,7 @@ arma::mat c_m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::ma
   for(unsigned int i = 0; i <= d; i++) index[i] = 0;
   int position = 0, k = 0;
   arma::mat integral = arma::zeros(d,d);
-  double l_cmult = lpmultinomial_const(x);
+  double l_cmult = l_multinomial_const(x);
 
   do{
     double w = 0;
@@ -125,7 +125,7 @@ arma::mat c_m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::ma
     }
     h = mu + rotation * h;
     arma::vec p = exp(Binv * h);
-    integral += h * h.t()* exp(w + lpmultinomial(x, p/accu(p), l_cmult));
+    integral += h * h.t()* exp(w + l_multinomial(x, p/accu(p), l_cmult));
 
     // Calculate next coordinate
     index[position]++;
