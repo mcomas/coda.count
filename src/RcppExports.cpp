@@ -40,16 +40,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// c_dm_fit
-Rcpp::List c_dm_fit(arma::mat X, double eps, int maxiter);
-RcppExport SEXP _coda_count_c_dm_fit(SEXP XSEXP, SEXP epsSEXP, SEXP maxiterSEXP) {
+// c_dm_fit_alpha
+arma::vec c_dm_fit_alpha(arma::mat X, double eps, int maxiter);
+RcppExport SEXP _coda_count_c_dm_fit_alpha(SEXP XSEXP, SEXP epsSEXP, SEXP maxiterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_dm_fit(X, eps, maxiter));
+    rcpp_result_gen = Rcpp::wrap(c_dm_fit_alpha(X, eps, maxiter));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -166,6 +166,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
     Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     rcpp_result_gen = Rcpp::wrap(c_m2_lrnm_hermite(x, mu, sigma, Binv, order));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_fit_lrnm_hermite
+Rcpp::List c_fit_lrnm_hermite(arma::mat X, arma::mat B, int order, double eps, int max_iter, int em_max_steps);
+RcppExport SEXP _coda_count_c_fit_lrnm_hermite(SEXP XSEXP, SEXP BSEXP, SEXP orderSEXP, SEXP epsSEXP, SEXP max_iterSEXP, SEXP em_max_stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type B(BSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_fit_lrnm_hermite(X, B, order, eps, max_iter, em_max_steps));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -431,7 +447,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_H", (DL_FUNC) &_coda_count_H, 1},
     {"_coda_count_F", (DL_FUNC) &_coda_count_F, 1},
     {"_coda_count_c_ddm", (DL_FUNC) &_coda_count_c_ddm, 2},
-    {"_coda_count_c_dm_fit", (DL_FUNC) &_coda_count_c_dm_fit, 3},
+    {"_coda_count_c_dm_fit_alpha", (DL_FUNC) &_coda_count_c_dm_fit_alpha, 3},
     {"_coda_count_c_dirichlet_alr_approx", (DL_FUNC) &_coda_count_c_dirichlet_alr_approx, 1},
     {"_coda_count_c_logistic_ilr_approximation", (DL_FUNC) &_coda_count_c_logistic_ilr_approximation, 1},
     {"_coda_count_c_logistic_alr_approximation", (DL_FUNC) &_coda_count_c_logistic_alr_approximation, 1},
@@ -441,6 +457,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_d_lrnm_hermite", (DL_FUNC) &_coda_count_c_d_lrnm_hermite, 5},
     {"_coda_count_c_m1_lrnm_hermite", (DL_FUNC) &_coda_count_c_m1_lrnm_hermite, 5},
     {"_coda_count_c_m2_lrnm_hermite", (DL_FUNC) &_coda_count_c_m2_lrnm_hermite, 5},
+    {"_coda_count_c_fit_lrnm_hermite", (DL_FUNC) &_coda_count_c_fit_lrnm_hermite, 6},
     {"_coda_count_c_d_lrnm_hermite_", (DL_FUNC) &_coda_count_c_d_lrnm_hermite_, 8},
     {"_coda_count_c_m1_lrnm_hermite_", (DL_FUNC) &_coda_count_c_m1_lrnm_hermite_, 8},
     {"_coda_count_c_m2_lrnm_hermite_", (DL_FUNC) &_coda_count_c_m2_lrnm_hermite_, 8},

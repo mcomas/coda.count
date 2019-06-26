@@ -5,6 +5,9 @@
 #include "hermite.h"
 #include "lrnm_utils.h"
 #include "coda_base.h"
+#include "dm.h"
+
+using namespace Rcpp;
 
 //' @export
 // [[Rcpp::export]]
@@ -141,6 +144,44 @@ arma::mat c_m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::ma
   return integral;
 }
 
+//' @export
+// [[Rcpp::export]]
+Rcpp::List c_fit_lrnm_hermite(arma::mat X, arma::mat B, int order,
+                              double eps = 0.00001, int max_iter = 200, int em_max_steps = 10){
+
+  int n = X.n_rows;
+  int d = X.n_cols - 1;
+  arma::vec alpha = c_dm_fit_alpha(X);
+  arma::mat Binv = pinv(B).t();
+  arma::mat P = arma::mat(X);
+  P.each_row() += alpha.t();
+
+  arma::mat H = arma::log(P) * B;
+  arma::vec mu = mean(H,0).t();
+  arma::vec mu_prev;
+  arma::mat sigma = cov(H);
+  int current_iter = 0;
+  do{
+    current_iter++;
+    //Rcpp::Rcout << "Current: " << current_iter << std::endl;
+    mu_prev = arma::vec(mu);
+    arma::vec M1 = arma::zeros(d);
+    arma::mat M2 = arma::zeros(d, d);
+    for(int i = 0; i < H.n_rows; i++){
+      // Rcpp::Rcout << mu << std::endl;
+      // Rcpp::Rcout << sigma << std::endl;
+      double pX = c_d_lrnm_hermite(X.row(i).t(), mu, sigma, Binv, order);
+      //Rcpp::Rcout << pX << std::endl;
+      M1 += (c_m1_lrnm_hermite(X.row(i).t(), mu, sigma, Binv, order) / pX);
+      M2 += (c_m2_lrnm_hermite(X.row(i).t(), mu, sigma, Binv, order) / pX);
+    }
+    mu = M1 / n;
+    sigma = M2 / n - mu * mu.t();
+  } while ( norm(mu-mu_prev, 2) > eps && current_iter < max_iter);
+
+  return Rcpp::List::create(alpha, H, P, mu, sigma, current_iter);
+}
+
 
 /*
  * Maybe following functions should be removed
@@ -193,7 +234,6 @@ arma::mat c_m2_lrnm_hermite_(arma::vec x, arma::vec mu, arma::mat sigma,
   }
   return(vnext);
 }
-
 
 // [[Rcpp::export]]
 Rcpp::List c_fit_lrnm_hermite_(arma::mat X, arma::vec mu0, arma::mat sigma0,

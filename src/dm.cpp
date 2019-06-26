@@ -44,7 +44,6 @@ arma::vec dm_iter(arma::mat X, arma::vec alpha){
   return(alpha);
 }
 
-// [[Rcpp::export]]
 Rcpp::List c_dm_fit(arma::mat X, double eps = 0.0001, int maxiter = 5000){
   int K = X.n_cols;
   arma::vec alpha_prev = arma::ones<arma::vec>(K);
@@ -60,7 +59,8 @@ Rcpp::List c_dm_fit(arma::mat X, double eps = 0.0001, int maxiter = 5000){
   return Rcpp::List::create(alpha, iter);
 }
 
-
+//' @export
+// [[Rcpp::export]]
 arma::vec c_dm_fit_alpha(arma::mat X, double eps = 0.0001, int maxiter = 5000){
   int K = X.n_cols;
   arma::vec alpha_prev = arma::ones<arma::vec>(K);
