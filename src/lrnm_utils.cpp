@@ -7,26 +7,24 @@ using namespace Rcpp;
 
 const double log2pi = std::log(M_2PI);
 
-// //' @export
-// // [[Rcpp::export]]
-// arma::vec ldnormal2(arma::mat H, arma::vec mu, arma::mat inv_sigma){
-//   int k = H.n_cols;
-//   int n = H.n_rows;
-//   double log_det_val;
-//   double sign;
-//   log_det(log_det_val, sign, inv_sigma);
-//   double norm_const = -0.5 * k * log2pi + 0.5 * log_det_val;
-//   arma::vec log_norm = arma::vec(n);
-//   arma::mat x;
-//   for(int i = 0; i < n; i++){
-//     x = H.row(i) - mu.t();
-//     x = x * inv_sigma * x.t();
-//     log_norm[i] = -0.5 * x(0);
-//   }
-//   arma::vec norm = norm_const + log_norm;
-//
-//   return(norm);
-// }
+//' @export
+// [[Rcpp::export]]
+double ldnormal_vec(arma::vec h, arma::vec mu, arma::mat inv_sigma){
+  int k = h.n_elem;
+
+  double log_det_val;
+  double sign;
+  log_det(log_det_val, sign, inv_sigma);
+  double norm_const = -0.5 * k * log2pi + 0.5 * log_det_val;
+  double log_norm = 0;
+
+  arma::vec x;
+  x = h - mu;
+  x = x.t() * inv_sigma * x;
+  log_norm = -0.5 * x(0);
+
+  return(norm_const + log_norm);
+}
 
 
 // //' @export

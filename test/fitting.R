@@ -4,11 +4,11 @@ library(microbenchmark)
 D = 2
 B = ilr_basis(D)
 
-X = rlrnm(n = 100, 100, rep(0,D-1), diag(D-1), B = B)
+X = rlrnm(n = 100, 10000, rep(0,D-1), diag(D-1), B = B)
 
 c_dm_fit_alpha(X)
-c_fit_lrnm_hermite(X, B, order = 5)
-c_fit_lrnm_hermite_fast(X, B, order = 5)
+c_fit_lrnm_hermite(X, B, order = 30, eps = 0.000001)
+c_fit_lrnm_hermite_precision(X, B, order = 15, eps = 0.000001)
 
 # microbenchmark(
 #   c_fit_lrnm_hermite(X, B, order = 5),

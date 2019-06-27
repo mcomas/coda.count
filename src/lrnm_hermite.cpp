@@ -5,6 +5,7 @@
 #include "hermite.h"
 #include "lrnm_utils.h"
 #include "coda_base.h"
+#include "lrnm_gaussian_approx.h"
 #include "dm.h"
 
 using namespace Rcpp;
@@ -199,6 +200,113 @@ arma::mat c_moments_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arm
 
 //' @export
 // [[Rcpp::export]]
+arma::mat c_moments_lrnm_hermite_precision(arma::vec x,
+                                           arma::vec mu, arma::mat sigma,
+                                           arma::vec mu_prior, arma::mat sigma_prior,
+                                           arma::mat Binv, int order){
+  unsigned d = x.n_elem - 1;
+  arma::mat uni_hermite = hermite(order);
+  uni_hermite.col(1) = log(uni_hermite.col(1));
+
+  arma::vec eigval;
+  arma::mat eigvec;
+
+  arma::mat inv_sigma = arma::inv_sympd(sigma);
+  arma::mat inv_sigma_prior = arma::inv_sympd(sigma_prior);
+
+  eig_sym(eigval, eigvec, sigma);
+  arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
+
+  unsigned int index[d+1];
+  for(unsigned int i = 0; i <= d; i++) index[i] = 0;
+  int position = 0, k = 0;
+  double M0 = 0;
+  arma::vec M1 = arma::zeros(d);
+  arma::mat M2 = arma::zeros(d,d);
+  double l_cmult = l_multinomial_const(x);
+
+  do{
+    double w = 0;
+    arma::vec h(d);
+    for(unsigned int i = 0; i < d; i++){
+      h(i) = uni_hermite(index[i],0);
+      w += uni_hermite(index[i],1);
+    }
+    h = mu + rotation * h;
+    arma::vec p = exp(Binv * h);
+    double dens = exp(w + ldnormal_vec(h, mu_prior, inv_sigma_prior) -
+                      ldnormal_vec(h, mu, inv_sigma) +
+                      l_multinomial(x, p/accu(p), l_cmult));
+    M0 += dens;
+    M1 += h * dens;
+    M2 += h * h.t() * dens;
+
+    // Calculate next coordinate
+    index[position]++;
+    while(index[position] == order){
+      index[position] = 0;
+      position++;
+      index[position]++;
+    }
+    position = 0;
+    k++;
+  } while (index[d] == 0);
+
+  arma::mat moments(d, d+1);
+  moments.col(d) = M1/M0;
+  moments.head_cols(d) = M2/M0;
+  return moments;
+}
+
+//' @export
+// [[Rcpp::export]]
+Rcpp::List c_fit_lrnm_hermite_precision(arma::mat X, arma::mat B, int order,
+                                        double eps = 0.00001, int max_iter = 200, int em_max_steps = 10){
+
+  int n = X.n_rows;
+  int d = X.n_cols - 1;
+  arma::vec alpha = c_dm_fit_alpha(X);
+  arma::mat Binv = pinv(B).t();
+  arma::mat P = arma::mat(X);
+  P.each_row() += alpha.t();
+
+  arma::mat H = arma::log(P) * B;
+  arma::vec mu = mean(H,0).t();
+  arma::vec mu_prev;
+  arma::mat sigma = cov(H);
+  int current_iter = 0;
+  do{
+    current_iter++;
+    arma::mat inv_sigma = arma::inv_sympd(sigma);
+    //Rcpp::Rcout << "Current: " << current_iter << std::endl;
+    mu_prev = arma::vec(mu);
+    arma::vec M1 = arma::zeros(d);
+    arma::mat M2 = arma::zeros(d, d);
+    for(int i = 0; i < H.n_rows; i++){
+      // Rcpp::Rcout << mu << std::endl;
+      // Rcpp::Rcout << sigma << std::endl;
+      arma::mat N_posterior = c_posterior_approximation(X.row(i).t(), mu, inv_sigma, Binv);
+      //Rcpp::Rcout << N_posterior;
+      arma::mat moments = c_moments_lrnm_hermite_precision(X.row(i).t(),
+                                                           N_posterior.col(d), N_posterior.head_cols(d),
+                                                           mu, sigma,
+                                                           Binv, order);
+      // Rcpp::Rcout << i << std::endl;
+      // Rcpp::Rcout << moments << std::endl;
+      M1 += moments.col(d);
+      M2 += moments.head_cols(d);
+      //Rcpp::Rcout << M1 << std::endl;
+      // Rcpp::Rcout << M2 << std::endl;
+    }
+    mu = M1 / n;
+    sigma = M2 / n - mu * mu.t();
+  } while ( norm(mu-mu_prev, 2) > eps && current_iter < max_iter);
+
+  return Rcpp::List::create(mu, sigma, current_iter);
+}
+
+//' @export
+// [[Rcpp::export]]
 Rcpp::List c_fit_lrnm_hermite(arma::mat X, arma::mat B, int order,
                               double eps = 0.00001, int max_iter = 200, int em_max_steps = 10){
 
@@ -221,12 +329,16 @@ Rcpp::List c_fit_lrnm_hermite(arma::mat X, arma::mat B, int order,
     arma::vec M1 = arma::zeros(d);
     arma::mat M2 = arma::zeros(d, d);
     for(int i = 0; i < H.n_rows; i++){
-      // Rcpp::Rcout << mu << std::endl;
-      // Rcpp::Rcout << sigma << std::endl;
-      double pX = c_d_lrnm_hermite(X.row(i).t(), mu, sigma, Binv, order);
-      //Rcpp::Rcout << pX << std::endl;
-      M1 += (c_m1_lrnm_hermite(X.row(i).t(), mu, sigma, Binv, order) / pX);
-      M2 += (c_m2_lrnm_hermite(X.row(i).t(), mu, sigma, Binv, order) / pX);
+
+      arma::mat moments = c_moments_lrnm_hermite(X.row(i).t(),
+                                                 mu, sigma,
+                                                 Binv, order);
+      // Rcpp::Rcout << i << std::endl;
+      // Rcpp::Rcout << moments << std::endl;
+      M1 += moments.col(d);
+      M2 += moments.head_cols(d);
+      //Rcpp::Rcout << M1 << std::endl;
+      // Rcpp::Rcout << M2 << std::endl;
     }
     mu = M1 / n;
     sigma = M2 / n - mu * mu.t();
@@ -237,38 +349,60 @@ Rcpp::List c_fit_lrnm_hermite(arma::mat X, arma::mat B, int order,
 
 //' @export
 // [[Rcpp::export]]
-Rcpp::List c_fit_lrnm_hermite_fast(arma::mat X, arma::mat B, int order,
-                                   double eps = 0.00001, int max_iter = 200, int em_max_steps = 10){
+Rcpp::List c_fit_lm_lrnm_hermite(arma::mat Y, arma::mat B, arma::mat X, int order,
+                                 double eps = 0.00001, int max_iter = 200, int em_max_steps = 10){
 
-  int n = X.n_rows;
-  int d = X.n_cols - 1;
-  arma::vec alpha = c_dm_fit_alpha(X);
+  int n = Y.n_rows;
+  int d = Y.n_cols - 1;
+  arma::vec alpha = c_dm_fit_alpha(Y);
   arma::mat Binv = pinv(B).t();
-  arma::mat P = arma::mat(X);
+  arma::mat P = arma::mat(Y);
   P.each_row() += alpha.t();
 
   arma::mat H = arma::log(P) * B;
+  arma::mat beta(X.n_cols, d);
+
+
   arma::vec mu = mean(H,0).t();
   arma::vec mu_prev;
   arma::mat sigma = cov(H);
   int current_iter = 0;
   do{
     current_iter++;
-    //Rcpp::Rcout << "Current: " << current_iter << std::endl;
+    beta = arma::inv(X.t() * X) * X.t() * H;
+    Rcpp::Rcout << beta << std::endl;
+    arma::mat inv_sigma = arma::inv_sympd(sigma);
     mu_prev = arma::vec(mu);
     arma::vec M1 = arma::zeros(d);
     arma::mat M2 = arma::zeros(d, d);
-    for(int i = 0; i < H.n_rows; i++){
-      // Rcpp::Rcout << mu << std::endl;
-      // Rcpp::Rcout << sigma << std::endl;
-      arma::mat moments = c_moments_lrnm_hermite(X.row(i).t(), mu, sigma, Binv, order);
-      //Rcpp::Rcout << pX << std::endl;
+    for(int i = 0; i < Y.n_rows; i++){
+
+      arma::mat N_posterior = c_posterior_approximation(Y.row(i).t(), mu, inv_sigma, Binv);
+      arma::mat moments = c_moments_lrnm_hermite_precision(Y.row(i).t(),
+                                                           N_posterior.col(d), N_posterior.head_cols(d),
+                                                           mu, sigma,
+                                                           Binv, order);
+      H.row(i) = moments.col(d).t();
       M1 += moments.col(d);
       M2 += moments.head_cols(d);
     }
     mu = M1 / n;
     sigma = M2 / n - mu * mu.t();
   } while ( norm(mu-mu_prev, 2) > eps && current_iter < max_iter);
+
+  // Last iteration
+  arma::mat inv_sigma = arma::inv_sympd(sigma);
+  for(int i = 0; i < Y.n_rows; i++){
+    arma::mat N_posterior = c_posterior_approximation(Y.row(i).t(), mu, inv_sigma, Binv);
+    arma::mat moments = c_moments_lrnm_hermite_precision(Y.row(i).t(),
+                                                         N_posterior.col(d), N_posterior.head_cols(d),
+                                                         mu, sigma,
+                                                         Binv, order);
+
+    H.row(i) = moments.col(d).t();
+  }
+  beta = arma::inv(X.t() * X) * X.t() * H;
+  Rcpp::Rcout << beta;
 
   return Rcpp::List::create(mu, sigma, current_iter);
 }
