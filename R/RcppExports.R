@@ -51,6 +51,11 @@ c_posterior_approximation <- function(x, mu, inv_sigma, Binv) {
 }
 
 #' @export
+c_fit_lrnm_gaussian_approx <- function(X, B, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
+    .Call('_coda_count_c_fit_lrnm_gaussian_approx', PACKAGE = 'coda.count', X, B, eps, max_iter, em_max_steps)
+}
+
+#' @export
 c_d_lrnm_hermite <- function(x, mu, sigma, Binv, order) {
     .Call('_coda_count_c_d_lrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, Binv, order)
 }
@@ -66,24 +71,18 @@ c_m2_lrnm_hermite <- function(x, mu, sigma, Binv, order) {
 }
 
 #' @export
+c_moments_lrnm_hermite <- function(x, mu, sigma, Binv, order) {
+    .Call('_coda_count_c_moments_lrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, Binv, order)
+}
+
+#' @export
 c_fit_lrnm_hermite <- function(X, B, order, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
     .Call('_coda_count_c_fit_lrnm_hermite', PACKAGE = 'coda.count', X, B, order, eps, max_iter, em_max_steps)
 }
 
-c_d_lrnm_hermite_ <- function(x, mu, sigma, Binv, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
-    .Call('_coda_count_c_d_lrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, Binv, order, step_by, eps, max_steps)
-}
-
-c_m1_lrnm_hermite_ <- function(x, mu, sigma, Binv, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
-    .Call('_coda_count_c_m1_lrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, Binv, order, step_by, eps, max_steps)
-}
-
-c_m2_lrnm_hermite_ <- function(x, mu, sigma, Binv, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L) {
-    .Call('_coda_count_c_m2_lrnm_hermite_', PACKAGE = 'coda.count', x, mu, sigma, Binv, order, step_by, eps, max_steps)
-}
-
-c_fit_lrnm_hermite_ <- function(X, mu0, sigma0, Binv, order = 100L, step_by = 100L, eps = 0.000001, max_steps = 10L, em_max_steps = 10L) {
-    .Call('_coda_count_c_fit_lrnm_hermite_', PACKAGE = 'coda.count', X, mu0, sigma0, Binv, order, step_by, eps, max_steps, em_max_steps)
+#' @export
+c_fit_lrnm_hermite_fast <- function(X, B, order, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
+    .Call('_coda_count_c_fit_lrnm_hermite_fast', PACKAGE = 'coda.count', X, B, order, eps, max_iter, em_max_steps)
 }
 
 #' @export

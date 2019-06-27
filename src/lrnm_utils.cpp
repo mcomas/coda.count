@@ -162,7 +162,7 @@ arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, a
     deriv2 = l_lrnm_join_d2(h, x, mu, inv_sigma, Binv);
     // Rcpp::Rcout << deriv1;
     // Rcpp::Rcout << deriv2;
-    step = arma::solve(deriv2, deriv1); // , arma::solve_opts::fast
+    step = arma::solve(deriv2, deriv1, arma::solve_opts::fast);
     h = h - 0.9 * step;
   }while( norm(step, 2) > eps && current_iter < max_iter);
 
