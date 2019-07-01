@@ -1,10 +1,10 @@
 library(coda.count)
 library(coda.base)
 library(MASS)
-D = 4
+D = 3
 
-MU = c(4,3,3)
-SIGMA = diag(D-1) * log(50)
+MU = c(4,3)
+SIGMA = diag(D-1)
 SIGMA[1,2] = SIGMA[2,1] = 0.8
 
 B1 = ilr_basis(D)

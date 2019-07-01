@@ -71,28 +71,13 @@ c_m2_lrnm_hermite <- function(x, mu, sigma, Binv, order) {
 }
 
 #' @export
-c_moments_lrnm_hermite <- function(x, mu, sigma, Binv, order) {
-    .Call('_coda_count_c_moments_lrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, Binv, order)
+c_moments_lrnm_hermite_precision_lm <- function(x, mu, sigma, mu_prior, sigma_prior, Binv, order) {
+    .Call('_coda_count_c_moments_lrnm_hermite_precision_lm', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, Binv, order)
 }
 
 #' @export
-c_moments_lrnm_hermite_precision <- function(x, mu, sigma, mu_prior, sigma_prior, Binv, order) {
-    .Call('_coda_count_c_moments_lrnm_hermite_precision', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, Binv, order)
-}
-
-#' @export
-c_fit_lrnm_hermite_precision <- function(X, B, order, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
-    .Call('_coda_count_c_fit_lrnm_hermite_precision', PACKAGE = 'coda.count', X, B, order, eps, max_iter, em_max_steps)
-}
-
-#' @export
-c_fit_lrnm_hermite <- function(X, B, order, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
-    .Call('_coda_count_c_fit_lrnm_hermite', PACKAGE = 'coda.count', X, B, order, eps, max_iter, em_max_steps)
-}
-
-#' @export
-c_fit_lm_lrnm_hermite <- function(Y, B, X, order, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
-    .Call('_coda_count_c_fit_lm_lrnm_hermite', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter, em_max_steps)
+c_fit_lm_lrnm_hermite_centered <- function(Y, B, X, order, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
+    .Call('_coda_count_c_fit_lm_lrnm_hermite_centered', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter, em_max_steps)
 }
 
 #' @export

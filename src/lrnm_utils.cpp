@@ -146,8 +146,13 @@ arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, a
                               double eps = 0.0001, int max_iter = 1000){
 
   int k = x.size() - 1;
+  arma::vec h;
+  if(x.min() > 10){
+    h = arma::pinv(Binv) * log(x);
+  }else{
+    h = arma::vec(mu);
+  }
 
-  arma::vec h = arma::vec(mu);
   arma::vec deriv1(k);
   arma::mat deriv2(k,k);
   arma::vec step = arma::zeros<arma::vec>(k);
