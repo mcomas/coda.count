@@ -17,6 +17,6 @@ Estimate the parameters of a Dirichlet-multinomial distribution
 }
 \examples{
 set.seed(1)
-X = rdm(c(1,4,0.5), 100, n = 100)
+X = rdm(n = 1000, size = 100, c(1,4,0.5))
 fit_dm(X)
 }

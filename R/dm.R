@@ -4,6 +4,14 @@
 #' @param alpha Parameter alpha of a Dirichlet-Multinomial distribution
 #' @return probability mass function evaluated in x
 #' @examples
+#' X = apply(simplex_lattice(19,2), 2, rev)
+#' sum(p <- apply(X, 1, ddm, c(1.5,2)))
+#' names(p) = sprintf("(%d,%d)", X[,1], X[,2])
+#' barplot(p, cex.axis = 0.8, cex.names = 0.8, las=2,
+#'         main = paste('Dirichlet-multinomial',
+#'                      'probability mass function', sep="\n"),
+#'                      xlab = 'Count', ylab = 'Probability')
+#' D = 3
 #' X = simplex_lattice(10,3)
 #' (pmf <- cbind(X, ddm(X, c(0.5,0.5,0.5))))
 #' sum(pmf[,4])
@@ -37,7 +45,7 @@ ddm <- function(x, alpha) {
 #' @return Estimated parameters alpha
 #' @examples
 #' set.seed(1)
-#' X = rdm(c(1,4,0.5), 100, n = 100)
+#' X = rdm(n = 1000, size = 100, c(1,4,0.5))
 #' fit_dm(X)
 #' @export
 fit_dm = function(X, eps = 0.0001, maxiter = 5000){

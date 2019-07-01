@@ -40,16 +40,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// c_dm_fit_alpha
-arma::vec c_dm_fit_alpha(arma::mat X, double eps, int maxiter);
-RcppExport SEXP _coda_count_c_dm_fit_alpha(SEXP XSEXP, SEXP epsSEXP, SEXP maxiterSEXP) {
+// c_dm_fit
+Rcpp::List c_dm_fit(arma::mat X, double eps, int maxiter);
+RcppExport SEXP _coda_count_c_dm_fit(SEXP XSEXP, SEXP epsSEXP, SEXP maxiterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_dm_fit_alpha(X, eps, maxiter));
+    rcpp_result_gen = Rcpp::wrap(c_dm_fit(X, eps, maxiter));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -420,7 +420,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_H", (DL_FUNC) &_coda_count_H, 1},
     {"_coda_count_F", (DL_FUNC) &_coda_count_F, 1},
     {"_coda_count_c_ddm", (DL_FUNC) &_coda_count_c_ddm, 2},
-    {"_coda_count_c_dm_fit_alpha", (DL_FUNC) &_coda_count_c_dm_fit_alpha, 3},
+    {"_coda_count_c_dm_fit", (DL_FUNC) &_coda_count_c_dm_fit, 3},
     {"_coda_count_c_dirichlet_alr_approx", (DL_FUNC) &_coda_count_c_dirichlet_alr_approx, 1},
     {"_coda_count_c_logistic_ilr_approximation", (DL_FUNC) &_coda_count_c_logistic_ilr_approximation, 1},
     {"_coda_count_c_logistic_alr_approximation", (DL_FUNC) &_coda_count_c_logistic_alr_approximation, 1},

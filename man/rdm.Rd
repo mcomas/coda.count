@@ -4,14 +4,14 @@
 \alias{rdm}
 \title{Dirichlet-multinomial random sample}
 \usage{
-rdm(alpha, size, n = length(size), probs = FALSE)
+rdm(n = NULL, size, alpha, probs = FALSE)
 }
 \arguments{
-\item{alpha}{Dirichlet-multinomial parameter}
+\item{n}{sample size}
 
 \item{size}{vector to set the multinomial sampling size. vector is reused to have length equal parameter n}
 
-\item{n}{sample size}
+\item{alpha}{Dirichlet-multinomial parameter}
 
 \item{probs}{logical indicating whether multinomial probabilities should be returned}
 }
@@ -22,5 +22,6 @@ Dirichlet-multinomial random sample
 Dirichlet-multinomial random sample
 }
 \examples{
-rdm(c(1,1,1), 1000, n = 100)
+rdm(100, 1000, c(1,1,1))
+rdm(size = c(1000, 100, 10, 2, 1), alpha = c(1,1,1))
 }

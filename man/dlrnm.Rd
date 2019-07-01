@@ -4,9 +4,8 @@
 \alias{dlrnm}
 \title{Probability mass function of a logratio-normal-multinomial distribution}
 \usage{
-dlrnm(x, mu, sigma, B = NULL, method = ifelse(length(mu) \%in\% 1:2,
-  "hermite", "mc"), hermite.order = 100, hermite.step_by = 100,
-  hermite.eps = 1e-06, hermite.max_steps = 10)
+dlrnm(x, mu, sigma, B = NULL, method = ifelse(length(mu) \%in\% 1:5,
+  "hermite", "mc"), hermite.order = 10)
 }
 \arguments{
 \item{x}{count vector}
@@ -24,8 +23,11 @@ probability mass function evaluated in x
 Probability mass function of a logratio-normal-multinomial distribution
 }
 \examples{
-X = apply(simplex_lattice(10,2), 2, rev)
+X = apply(simplex_lattice(19,2), 2, rev)
 sum(p <- apply(X, 1, dlrnm, -0.5, 0.1))
 names(p) = sprintf("(\%d,\%d)", X[,1], X[,2])
-barplot(p, cex.axis = 0.8, cex.names = 0.8)
+barplot(p, cex.axis = 0.8, cex.names = 0.8, las=2,
+        main = paste('Log-ratio-normal-multinomial',
+                     'probability mass function', sep="\\n"),
+        xlab = 'Count', ylab = 'Probability')
 }

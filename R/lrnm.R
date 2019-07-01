@@ -6,24 +6,26 @@
 #' @param method Methods available: 'hermite' for Hermite integration, 'mc' for Monte Carlo integration
 #' @return probability mass function evaluated in x
 #' @examples
-#' X = apply(simplex_lattice(10,2), 2, rev)
+#' X = apply(simplex_lattice(19,2), 2, rev)
 #' sum(p <- apply(X, 1, dlrnm, -0.5, 0.1))
 #' names(p) = sprintf("(%d,%d)", X[,1], X[,2])
-#' barplot(p, cex.axis = 0.8, cex.names = 0.8)
+#' barplot(p, cex.axis = 0.8, cex.names = 0.8, las=2,
+#'         main = paste('Log-ratio-normal-multinomial',
+#'                      'probability mass function', sep="\n"),
+#'         xlab = 'Count', ylab = 'Probability')
 #' @export
 dlrnm = function(x, mu, sigma, B = NULL,
-                 method = ifelse(length(mu) %in% 1:2, 'hermite', 'mc'),
-                 hermite.order = 100, hermite.step_by = 100, hermite.eps = 1e-06,
-                 hermite.max_steps = 10){
+                 method = ifelse(length(mu) %in% 1:5, 'hermite', 'mc'),
+                 hermite.order = 10){
   if(is.null(B)){
     B = coda.base::ilr_basis(length(mu)+1)
   }
   sigma = as.matrix(sigma)
   if(method == 'hermite'){
     if(is.vector(x)){
-      return(c_d_lrnm_hermite_(x, mu, sigma, pinv(t(B)), hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+      return(c_d_lrnm_hermite(x, mu, sigma, pinv(t(B)), hermite.order))
     }else{
-      return(apply(x, 1, c_d_lrnm_hermite_, mu, sigma, pinv(t(B)), hermite.order, hermite.step_by, hermite.eps, hermite.max_steps))
+      return(apply(x, 1, c_d_lrnm_hermite, mu, sigma, pinv(t(B)), hermite.order))
     }
   }
   if(method == 'mc'){
@@ -36,21 +38,17 @@ dlrnm = function(x, mu, sigma, B = NULL,
 #' @param X count sample
 #' @return Estimated parameters mu and sigma
 #' @export
-fit_lrnm = function(X, method = 'maximum', eps = 0.0001, maxiter = 100, min_evalue = 0.0001, ini.centered = FALSE){
-  xm = colSums(X)
-  mu_alr = log(xm[-ncol(X)] / xm[ncol(X)])
-  if(method == 'maximum'){
-    if(ini.centered){
-      A = c_fit_lrnm_maximum_alr_centered(X, mu_alr, diag(ncol(X)-1), tol = eps, em_max_steps = maxiter, min_evalue = min_evalue)
-    }else{
-      A = c_fit_lrnm_maximum_alr(X, mu_alr, diag(ncol(X)-1), tol = eps, em_max_steps = maxiter, min_evalue = min_evalue)
-    }
-
+fit_lrnm = function(X, B = NULL, probs = FALSE, order = 5, eps = 1e-8){
+  if(is.null(B)){
+    B = coda.base::ilr_basis(ncol(X))
   }
-  P = exp(cbind(A, 0))
-  H = ilr_coordinates(P)
-  mu = colMeans(H)
-  sigma = cov(H)
-  list('mu' = mu, 'sigma' = sigma, 'P' = P / rowSums(P))
+  fit = c_fit_lm_lrnm_hermite_centered(Y = X, B = B, X = matrix(1, nrow(X)), order = order, eps = eps)
+
+  if(probs){
+    return(list('mu' = fit[[1]], 'sigma' = fit[[2]], 'P' = coda.base::composition(fit[[3]], B), iter = fit[[4]]))
+  }else{
+    return(list('mu' = fit[[1]], 'sigma' = fit[[2]], iter = fit[[4]]))
+  }
+
 }
 

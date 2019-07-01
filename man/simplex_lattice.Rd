@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{simplex_lattice}
 \alias{simplex_lattice}
-\title{Create all elements of a (n,D)-simplex lattice}
+\title{Create all elements of an (n,D)-simplex lattice}
 \usage{
 simplex_lattice(n, D)
 }
@@ -12,10 +12,10 @@ simplex_lattice(n, D)
 \item{D}{simplex dimension}
 }
 \value{
-matrix containing all elements of a (n,D)-simplex lattice
+matrix containing all elements of an (n,D)-simplex lattice
 }
 \description{
-Create all elements of a (n,D)-simplex lattice
+Create all elements of an (n,D)-simplex lattice
 }
 \examples{
 simplex_lattice(4,3)

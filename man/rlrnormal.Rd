@@ -24,5 +24,12 @@ logratio-normal random sample defined on the Simplex
 \examples{
 mu = c(0,1)
 sigma = diag(2)
-rlrnormal(10, mu, sigma)
+P.ilr <- rlrnormal(100, mu, sigma)
+colMeans(coda.base::coordinates(P.ilr))
+cov(coda.base::coordinates(P.ilr))
+
+B = alr_basis(3)
+P.alr <- rlrnormal(100, mu, sigma, B)
+colMeans(coda.base::coordinates(P.alr, B))
+cov(coda.base::coordinates(P.alr, B))
 }

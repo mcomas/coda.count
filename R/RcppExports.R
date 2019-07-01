@@ -15,9 +15,8 @@ c_ddm <- function(x, alpha) {
     .Call('_coda_count_c_ddm', PACKAGE = 'coda.count', x, alpha)
 }
 
-#' @export
-c_dm_fit_alpha <- function(X, eps = 0.0001, maxiter = 5000L) {
-    .Call('_coda_count_c_dm_fit_alpha', PACKAGE = 'coda.count', X, eps, maxiter)
+c_dm_fit <- function(X, eps = 0.0001, maxiter = 5000L) {
+    .Call('_coda_count_c_dm_fit', PACKAGE = 'coda.count', X, eps, maxiter)
 }
 
 #' @export
@@ -76,7 +75,7 @@ c_moments_lrnm_hermite_precision_lm <- function(x, mu, sigma, mu_prior, sigma_pr
 }
 
 #' @export
-c_fit_lm_lrnm_hermite_centered <- function(Y, B, X, order, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
+c_fit_lm_lrnm_hermite_centered <- function(Y, B, X, order, eps, max_iter = 200L, em_max_steps = 10L) {
     .Call('_coda_count_c_fit_lm_lrnm_hermite_centered', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter, em_max_steps)
 }
 

@@ -478,7 +478,7 @@ arma::mat c_moments_lrnm_hermite_precision_lm(arma::vec x,
 //' @export
 // [[Rcpp::export]]
 Rcpp::List c_fit_lm_lrnm_hermite_centered(arma::mat Y, arma::mat B, arma::mat X, int order,
-                                          double eps = 0.00001, int max_iter = 200, int em_max_steps = 10){
+                                          double eps, int max_iter = 200, int em_max_steps = 10){
 
   int n = Y.n_rows;
   int k = X.n_cols;
