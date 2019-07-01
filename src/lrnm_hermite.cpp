@@ -10,7 +10,6 @@
 
 using namespace Rcpp;
 
-//' @export
 // [[Rcpp::export]]
 double c_d_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv,
                         int order){
@@ -55,7 +54,7 @@ double c_d_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Bi
   return integral;
 }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::vec c_m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
                             arma::mat Binv, int order){
@@ -100,7 +99,7 @@ arma::vec c_m1_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma,
   return integral;
 }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::mat c_m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv,
                             int order){
@@ -478,7 +477,7 @@ arma::mat c_moments_lrnm_hermite_precision_lm(arma::vec x,
 //' @export
 // [[Rcpp::export]]
 Rcpp::List c_fit_lm_lrnm_hermite_centered(arma::mat Y, arma::mat B, arma::mat X, int order,
-                                          double eps, int max_iter = 200, int em_max_steps = 10){
+                                          double eps, int max_iter){
 
   int n = Y.n_rows;
   int k = X.n_cols;

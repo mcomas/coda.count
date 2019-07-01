@@ -38,12 +38,15 @@ dlrnm = function(x, mu, sigma, B = NULL,
 #' @param X count sample
 #' @return Estimated parameters mu and sigma
 #' @export
-fit_lrnm = function(X, B = NULL, probs = FALSE, order = 5, eps = 1e-8){
+fit_lrnm = function(X, B = NULL, probs = FALSE, order = 5, eps = 1e-8, max_iter = 500){
   if(is.null(B)){
     B = coda.base::ilr_basis(ncol(X))
   }
-  fit = c_fit_lm_lrnm_hermite_centered(Y = X, B = B, X = matrix(1, nrow(X)), order = order, eps = eps)
-
+  fit = c_fit_lm_lrnm_hermite_centered(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
+                                       order = order, eps = eps, max_iter = max_iter)
+  if(fit[[4]] == max_iter){
+    warning("Maximum number of iterations exhausted.")
+  }
   if(probs){
     return(list('mu' = fit[[1]], 'sigma' = fit[[2]], 'P' = coda.base::composition(fit[[3]], B), iter = fit[[4]]))
   }else{

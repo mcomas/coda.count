@@ -4,7 +4,6 @@
 
 using namespace Rcpp;
 
-//' @export
 // [[Rcpp::export]]
 arma::mat c_dirichlet_alr_approx(arma::vec alpha){
   int d = alpha.n_elem-1;
@@ -21,7 +20,6 @@ arma::mat c_dirichlet_alr_approx(arma::vec alpha){
   return pars;
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat c_logistic_ilr_approximation(int d){
   arma::mat res = arma::zeros(d, d+1);
@@ -35,7 +33,6 @@ arma::mat c_logistic_ilr_approximation(int d){
   return(res);
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat c_logistic_alr_approximation(int d){
   arma::mat res(d, d+1);
@@ -52,7 +49,6 @@ arma::mat c_logistic_alr_approximation(int d){
   return(res);
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat c_gaussian_product(arma::mat pars1, arma::mat pars2){
   int d = pars1.n_rows;
@@ -65,7 +61,6 @@ arma::mat c_gaussian_product(arma::mat pars1, arma::mat pars2){
   return(res);
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat c_gaussian_division(arma::mat pars1, arma::mat pars_res){
   int d = pars1.n_rows;

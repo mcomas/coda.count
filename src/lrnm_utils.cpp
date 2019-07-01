@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 const double log2pi = std::log(M_2PI);
 
-//' @export
+
 // [[Rcpp::export]]
 double ldnormal_vec(arma::vec h, arma::vec mu, arma::mat inv_sigma){
   int k = h.n_elem;
@@ -47,8 +47,7 @@ double ldnormal_vec(arma::vec h, arma::vec mu, arma::mat inv_sigma){
 //   return(norm);
 // }
 
-//' @export
-// [[Rcpp::export]]
+
 double l_multinomial_const(arma::vec x){
   int K = x.size();
   double x_total = 0;
@@ -97,8 +96,6 @@ double l_dnormal_vec(arma::vec h, arma::vec mu, arma::mat inv_sigma){
   return(0.5 * (log_det_val - log_norm(0)));
 }
 
-//' @export
-// [[Rcpp::export]]
 double l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
 
   arma::vec Bh = Binv * h;
@@ -109,7 +106,6 @@ double l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_si
   return(lconst + lmult + lnormal);
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::vec l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   int k = h.size();
@@ -122,7 +118,6 @@ arma::vec l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_
   return(-inv_sigma * (h-mu) + Binv.t() * x - sum(x) * wBi / w);
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   int k = h.size();
@@ -140,7 +135,6 @@ arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_
   return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv,
                               double eps = 0.0001, int max_iter = 1000){
