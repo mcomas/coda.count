@@ -62,6 +62,11 @@ c_moments_lrnm_hermite_precision_lm <- function(x, mu, sigma, mu_prior, sigma_pr
 }
 
 #' @export
+c_obtain_moments_lrnm_hermite <- function(Y, mu, sigma, B, order) {
+    .Call('_coda_count_c_obtain_moments_lrnm_hermite', PACKAGE = 'coda.count', Y, mu, sigma, B, order)
+}
+
+#' @export
 c_fit_lm_lrnm_hermite_centered <- function(Y, B, X, order, eps, max_iter) {
     .Call('_coda_count_c_fit_lm_lrnm_hermite_centered', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter)
 }

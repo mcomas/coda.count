@@ -201,6 +201,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_obtain_moments_lrnm_hermite
+Rcpp::List c_obtain_moments_lrnm_hermite(arma::mat Y, arma::vec mu, arma::mat sigma, arma::mat B, int order);
+RcppExport SEXP _coda_count_c_obtain_moments_lrnm_hermite(SEXP YSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BSEXP, SEXP orderSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type B(BSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_obtain_moments_lrnm_hermite(Y, mu, sigma, B, order));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_fit_lm_lrnm_hermite_centered
 Rcpp::List c_fit_lm_lrnm_hermite_centered(arma::mat Y, arma::mat B, arma::mat X, int order, double eps, int max_iter);
 RcppExport SEXP _coda_count_c_fit_lm_lrnm_hermite_centered(SEXP YSEXP, SEXP BSEXP, SEXP XSEXP, SEXP orderSEXP, SEXP epsSEXP, SEXP max_iterSEXP) {
@@ -405,6 +420,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_m1_lrnm_hermite", (DL_FUNC) &_coda_count_c_m1_lrnm_hermite, 5},
     {"_coda_count_c_m2_lrnm_hermite", (DL_FUNC) &_coda_count_c_m2_lrnm_hermite, 5},
     {"_coda_count_c_moments_lrnm_hermite_precision_lm", (DL_FUNC) &_coda_count_c_moments_lrnm_hermite_precision_lm, 7},
+    {"_coda_count_c_obtain_moments_lrnm_hermite", (DL_FUNC) &_coda_count_c_obtain_moments_lrnm_hermite, 5},
     {"_coda_count_c_fit_lm_lrnm_hermite_centered", (DL_FUNC) &_coda_count_c_fit_lm_lrnm_hermite_centered, 6},
     {"_coda_count_ldnormal_vec", (DL_FUNC) &_coda_count_ldnormal_vec, 3},
     {"_coda_count_l_lrnm_join_d1", (DL_FUNC) &_coda_count_l_lrnm_join_d1, 5},

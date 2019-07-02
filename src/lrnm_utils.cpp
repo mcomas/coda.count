@@ -143,6 +143,8 @@ arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, a
   arma::vec h;
   if(x.min() > 10){
     h = arma::pinv(Binv) * log(x);
+  }else if(accu(x) > 100){
+    h = arma::pinv(Binv) * log(x+1);
   }else{
     h = arma::vec(mu);
   }

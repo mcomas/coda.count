@@ -88,7 +88,8 @@ ggtern() +
 For given parameters $mu$ and $\Sigma$ we can calculate the probability mass function
 
 ```{r, fig.width=6, fig.height=4.8, fig.align='center'}
-X = as.data.frame(simplex_lattice(SIZE, 3))
+SL3 = simplex_lattice(SIZE, 3)
+X = as.data.frame(SL3)
 X$p = apply(X, 1, dlrnm, mu, sigma)
 ggtern() +
   geom_point(data = X, aes(x = V1, y = V2, z = V3, col = p), size = 3) +
@@ -103,6 +104,66 @@ ggtern() +
 ```
 
 ```{r}
-fitting = fit_lrnm(Y)
+fitting = fit_lrnm(Y, probs = TRUE)
+```
+
+Expected estimated posterior probabilities
+
+```{r}
+P_exp = as.data.frame(fitting$P)
+H_exp = coordinates(P_exp)
+```
+
+```{r, warning=FALSE, out.width="45%", fig.width=4, fig.height=3.6, fig.show='hold'}
+ggtern() +
+  geom_point(data = P_exp, aes(x = x1, y = x2, z = x3))
+ggplot() +
+  geom_point(data = H_exp, aes(x = ilr1, y = ilr2))
+```
+
+```{r, fig.width=6, fig.height=4.8, fig.align='center'}
+SL3 = simplex_lattice(100, 3)
+M = c_obtain_moments_lrnm_hermite(SL3, mu, sigma, ilr_basis(3), order = 10)
+H1 = as.data.frame(t(M[[1]]))
+M1 = composition(H1)
+ellipse = function(mu, sigma, p){
+  s = -2 * log(1 - p);
+  ev = eigen(sigma * s)
+  t_ = seq(0, 2 * pi, length.out = 500)
+  a = mu + t((t(ev$vectors) * sqrt(ev$values))) %*% rbind(cos(t_), sin(t_)) 
+  as.data.frame(t(a))
+}
+coda_ellipse = function(mu, sigma, p, B = ilr_basis(length(mu) + 1)){
+  composition(ellipse(mu, sigma, p), B)
+}
+
+ggtern() + 
+  geom_point(data= as.data.frame(rlrnormal(100, mu, sigma)), aes(x = V1, y = V2, z = V3), alpha = 0.5) +
+  geom_path(data = coda_ellipse(mu, sigma, 0.95), aes(x = x1, y = x2, z = x3)) 
+```
+
+```{r}
+p = ggtern() +
+  geom_point(aes(x = 0.4359516, y = 0.4359516, z = 0.1280968), col = 'blue') +
+  geom_path(data = coda_ellipse(mu, sigma, 0.95), aes(x = x1, y = x2, z = x3), col = 'blue')
+for(i in 45){
+  p = p + 
+    geom_point(data = M1[i,], aes(x = x1, y = x2, z = x3), alpha = 0.5) +
+    geom_path(data = coda_ellipse(unlist(H1[i,]), M[[2]][,,i], 0.95), aes(x = x1, y = x2, z = x3), alpha = 0.5)
+}
+p
+```
+
+```{r}
+p = ggplot() +
+  geom_point(aes(x = mu[1], y = mu[2]), col = 'blue') +
+  geom_path(data = ellipse(mu, sigma, 0.95), aes(x = V1, y = V2), col = 'blue')
+for(i in 45){
+  p = p + 
+    #geom_point(data = coordinates(SL3[i,]), aes(x = V1, y = V2), alpha = 0.5) +
+    geom_point(data = H1[i,], aes(x = V1, y = V2), alpha = 0.5) +
+    geom_path(data = ellipse(unlist(H1[i,]), M[[2]][,,i], 0.95), aes(x = V1, y = V2), alpha = 0.5)
+}
+p
 ```
 

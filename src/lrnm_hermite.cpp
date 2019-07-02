@@ -257,7 +257,6 @@ arma::mat c_m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::ma
 //   return moments;
 // }
 
-
 // [[Rcpp::export]]
 arma::mat c_moments_lrnm_hermite_precision_lm(arma::vec x,
                                               arma::vec mu, arma::mat sigma,
@@ -473,6 +472,32 @@ arma::mat c_moments_lrnm_hermite_precision_lm(arma::vec x,
 //
 //   return Rcpp::List::create(beta, sigma_lm, current_iter);
 // }
+
+//' @export
+// [[Rcpp::export]]
+Rcpp::List c_obtain_moments_lrnm_hermite(arma::mat Y,
+                                         arma::vec mu, arma::mat sigma,
+                                         arma::mat B, int order){
+  int n = Y.n_rows;
+  int d = Y.n_cols - 1;
+
+  arma::mat Binv = pinv(B).t();
+  arma::mat inv_sigma = arma::inv_sympd(sigma);
+
+  arma::mat M1 = arma::zeros(d, n);
+  arma::cube M2 = arma::zeros(d, d, n);
+
+  for(int i = 0; i < Y.n_rows; i++){
+    arma::mat N_posterior = c_posterior_approximation(Y.row(i).t(), mu, inv_sigma, Binv);
+    arma::mat moments = c_moments_lrnm_hermite_precision_lm(Y.row(i).t(),
+                                                            N_posterior.col(d), N_posterior.head_cols(d),
+                                                            mu, sigma,
+                                                            Binv, order);
+    M1.col(i) = moments.col(d);
+    M2.slice(i) = moments.head_cols(d);
+  }
+  return Rcpp::List::create(M1, M2);
+}
 
 //' @export
 // [[Rcpp::export]]
