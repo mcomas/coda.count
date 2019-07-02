@@ -42,14 +42,16 @@ ddm <- function(x, alpha) {
 #' Estimate the parameters of a Dirichlet-multinomial distribution
 #'
 #' @param X count sample
+#' @param eps precision used for the final estimates
+#' @param max_iter maximum number of iterations for the iterative procedure used to estimate the parameter
 #' @return Estimated parameters alpha
 #' @examples
 #' set.seed(1)
 #' X = rdm(n = 1000, size = 100, c(1,4,0.5))
 #' fit_dm(X)
 #' @export
-fit_dm = function(X, eps = 0.0001, maxiter = 5000){
-  fitting = c_dm_fit(X, eps, maxiter)
+fit_dm = function(X, eps = 0.0001, max_iter = 500){
+  fitting = c_dm_fit(X, eps, max_iter)
   alpha = fitting[[1]]
   attr(alpha, 'iter') = fitting[[2]]
   alpha

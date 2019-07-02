@@ -11,13 +11,11 @@ arma::mat inv_B_coordinates(arma::mat ilrX, arma::mat Binv){
   return X;
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat H(int d){
   return(arma::eye(d,d) + arma::ones(d,d));
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat F(int d){
   arma::mat res = arma::zeros(d,d+1);

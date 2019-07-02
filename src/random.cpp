@@ -62,7 +62,7 @@ List c_rdirichletmultinomial(arma::vec alpha, arma::vec size){
   return(List::create(P, c_rmultinomial(P, size)));
 }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::mat c_rnormal(int n, arma::vec mu, arma::mat sigma) {
   int ncols = sigma.n_cols;
@@ -70,13 +70,13 @@ arma::mat c_rnormal(int n, arma::vec mu, arma::mat sigma) {
   return arma::repmat(mu, 1, n).t() + Y * arma::chol(sigma);
 }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::mat c_rnormalSimplex(int n, arma::vec mu, arma::mat sigma, arma::mat Binv) {
   return inv_B_coordinates(c_rnormal(n, mu, sigma), Binv);
 }
 
-//' @export
+
 // [[Rcpp::export]]
 List c_rnormalmultinomial(arma::vec mu, arma::mat sigma, arma::vec size, arma::mat Binv){
   int n = size.n_elem;

@@ -4,10 +4,21 @@
 \alias{fit_lrnm}
 \title{Estimate the parameters of a logratio-normal-multinomial distribution}
 \usage{
-fit_lrnm(X, B = NULL, probs = FALSE, order = 5, eps = 1e-08)
+fit_lrnm(X, B = NULL, probs = FALSE, hermite.order = 5,
+  eps = 1e-08, max_iter = 500)
 }
 \arguments{
 \item{X}{count sample}
+
+\item{B}{clr-basis in which mu and sigma are interpreted with. Default basis is given by coda.base::ilr_basis(length(x))}
+
+\item{probs}{boolean indicating if expected posterior probabilities are returned.}
+
+\item{hermite.order}{order of Hermite polynomials}
+
+\item{eps}{precision used for the final estimates}
+
+\item{max_iter}{maximum number of iterations for the iterative procedure used to estimate the parameter}
 }
 \value{
 Estimated parameters mu and sigma

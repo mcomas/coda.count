@@ -95,7 +95,7 @@ rlrnm = function(n = NULL, size, mu, sigma, B = NULL, probs = FALSE){
 #' colMeans(coda.base::coordinates(P.ilr))
 #' cov(coda.base::coordinates(P.ilr))
 #'
-#' B = alr_basis(3)
+#' B = coda.base::alr_basis(3)
 #' P.alr <- rlrnormal(100, mu, sigma, B)
 #' colMeans(coda.base::coordinates(P.alr, B))
 #' cov(coda.base::coordinates(P.alr, B))

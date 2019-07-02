@@ -4,10 +4,14 @@
 \alias{fit_dm}
 \title{Estimate the parameters of a Dirichlet-multinomial distribution}
 \usage{
-fit_dm(X, eps = 1e-04, maxiter = 5000)
+fit_dm(X, eps = 1e-04, max_iter = 500)
 }
 \arguments{
 \item{X}{count sample}
+
+\item{eps}{precision used for the final estimates}
+
+\item{max_iter}{maximum number of iterations for the iterative procedure used to estimate the parameter}
 }
 \value{
 Estimated parameters alpha

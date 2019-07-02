@@ -16,7 +16,7 @@
 //   return integral;
 // }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::mat c_posterior_approximation(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   unsigned d = x.n_elem - 1;
@@ -31,7 +31,7 @@ arma::mat c_posterior_approximation(arma::vec x, arma::vec mu, arma::mat &inv_si
   return(N_posterior);
 }
 
-//' @export
+
 // [[Rcpp::export]]
 Rcpp::List c_fit_lrnm_gaussian_approx(arma::mat X, arma::mat B,
                                       double eps = 0.00001, int max_iter = 200, int em_max_steps = 10){

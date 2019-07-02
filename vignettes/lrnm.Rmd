@@ -1,0 +1,108 @@
+---
+title: "The logratio-normal-multinomial distribution"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{lrnm}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = F
+)
+```
+
+```{r setup, message=FALSE}
+library(coda.count)
+library(coda.base)
+library(ggtern)
+theme_set(theme_minimal())
+```
+
+The logratio-normal-multinomial (LRNM) distribution is the distribution obtained from the compounding of a normal distribution defined on the Simplex using log-ratio coordinates with the multinomial distribution.
+
+We can build a sample of a LRNM as follows:
+
+* Firstly, for given parameters $\mu$ and $Sigma$ and a certain clr-basis, we generate a log-ratio normally distributed sample :
+
+```{r}
+set.seed(1)
+N = 200
+mu = c(0,1)
+sigma = matrix(c(1, -0.8, 
+                 -0.8, 1), nrow = 2)
+B = ilr_basis(3)
+P = as.data.frame(rlrnormal(n = N, mu, sigma, B))
+H = coordinates(P, B, label = 'ilr')
+```
+
+We can visualise either the compositional sample in a Ternary diagram or their coordinates (with respect basis $B$). 
+
+```{r, warning=FALSE, out.width="45%", fig.width=4, fig.height=3.6, fig.show='hold'}
+ggtern() +
+  geom_point(data = P, aes(x = V1, y = V2, z = V3))
+ggplot() +
+  geom_point(data = H, aes(x = ilr1, y = ilr2))
+```
+
+* After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution.
+
+```{r}
+SIZE = 8
+Y = as.data.frame(rmultinomial(size = SIZE, p = as.matrix(P)))
+```
+
+Visualizing a counting sample
+
+```{r, include=FALSE}
+Yj = as.data.frame(lapply(Y, jitter, factor = 0.5))
+ggtern() +
+  geom_point(data = Yj, aes(x = V1, y = V2, z = V3), size = 0.5) +
+  scale_T_continuous(minor_breaks = NULL, breaks = 0:SIZE/SIZE, labels = 0:SIZE) +
+  scale_L_continuous(minor_breaks = NULL, breaks = 0:SIZE/SIZE, labels = 0:SIZE) +
+  scale_R_continuous(minor_breaks = NULL, breaks = 0:SIZE/SIZE, labels = 0:SIZE) 
+```
+
+```{r, fig.width=6, fig.height=4.8, fig.align='center'}
+key = function(x) paste(x, collapse = '-')
+tab = table(apply(Y, 1, key))
+Yc = Y[duplicated(Y),]
+Yc$freq = as.numeric(tab[match(apply(Yc, 1, key), names(tab))])
+lbls = paste(' ', 0:SIZE, ' ')
+brks = 0:SIZE/SIZE
+ggtern() +
+  geom_point(data = Yc, aes(x = V1, y = V2, z = V3, col = freq), size = 3) +
+  theme(tern.axis.arrow.show = T,
+        tern.axis.title.show = F,
+        tern.axis.arrow.text = element_text(face = 'bold')) +
+  scale_color_gradient(low = 'blue', high = 'red') +
+  scale_T_continuous(minor_breaks = NULL, breaks = brks, labels = lbls) +
+  scale_L_continuous(minor_breaks = NULL, breaks = brks, labels = lbls) +
+  scale_R_continuous(minor_breaks = NULL, breaks = brks, labels = lbls) +
+  labs(col = 'Frequency')
+```
+
+For given parameters $mu$ and $\Sigma$ we can calculate the probability mass function
+
+```{r, fig.width=6, fig.height=4.8, fig.align='center'}
+X = as.data.frame(simplex_lattice(SIZE, 3))
+X$p = apply(X, 1, dlrnm, mu, sigma)
+ggtern() +
+  geom_point(data = X, aes(x = V1, y = V2, z = V3, col = p), size = 3) +
+  theme(tern.axis.arrow.show = T,
+        tern.axis.title.show = F,
+        tern.axis.arrow.text = element_text(face = 'bold')) +
+  scale_color_gradient(low = 'blue', high = 'red') +
+  scale_T_continuous(minor_breaks = NULL, breaks = brks, labels = lbls) +
+  scale_L_continuous(minor_breaks = NULL, breaks = brks, labels = lbls) +
+  scale_R_continuous(minor_breaks = NULL, breaks = brks, labels = lbls) +
+  labs(col = 'Probability')
+```
+
+```{r}
+fitting = fit_lrnm(Y)
+```
+

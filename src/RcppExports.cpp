@@ -202,8 +202,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_fit_lm_lrnm_hermite_centered
-Rcpp::List c_fit_lm_lrnm_hermite_centered(arma::mat Y, arma::mat B, arma::mat X, int order, double eps, int max_iter, int em_max_steps);
-RcppExport SEXP _coda_count_c_fit_lm_lrnm_hermite_centered(SEXP YSEXP, SEXP BSEXP, SEXP XSEXP, SEXP orderSEXP, SEXP epsSEXP, SEXP max_iterSEXP, SEXP em_max_stepsSEXP) {
+Rcpp::List c_fit_lm_lrnm_hermite_centered(arma::mat Y, arma::mat B, arma::mat X, int order, double eps, int max_iter);
+RcppExport SEXP _coda_count_c_fit_lm_lrnm_hermite_centered(SEXP YSEXP, SEXP BSEXP, SEXP XSEXP, SEXP orderSEXP, SEXP epsSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -213,8 +213,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type order(orderSEXP);
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
     Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
-    Rcpp::traits::input_parameter< int >::type em_max_steps(em_max_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_fit_lm_lrnm_hermite_centered(Y, B, X, order, eps, max_iter, em_max_steps));
+    rcpp_result_gen = Rcpp::wrap(c_fit_lm_lrnm_hermite_centered(Y, B, X, order, eps, max_iter));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -228,32 +227,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type inv_sigma(inv_sigmaSEXP);
     rcpp_result_gen = Rcpp::wrap(ldnormal_vec(h, mu, inv_sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
-// l_multinomial_const
-double l_multinomial_const(arma::vec x);
-RcppExport SEXP _coda_count_l_multinomial_const(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(l_multinomial_const(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// l_lrnm_join_vec
-double l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv);
-RcppExport SEXP _coda_count_l_lrnm_join_vec(SEXP hSEXP, SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
-    rcpp_result_gen = Rcpp::wrap(l_lrnm_join_vec(h, x, mu, inv_sigma, Binv));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -432,10 +405,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_m1_lrnm_hermite", (DL_FUNC) &_coda_count_c_m1_lrnm_hermite, 5},
     {"_coda_count_c_m2_lrnm_hermite", (DL_FUNC) &_coda_count_c_m2_lrnm_hermite, 5},
     {"_coda_count_c_moments_lrnm_hermite_precision_lm", (DL_FUNC) &_coda_count_c_moments_lrnm_hermite_precision_lm, 7},
-    {"_coda_count_c_fit_lm_lrnm_hermite_centered", (DL_FUNC) &_coda_count_c_fit_lm_lrnm_hermite_centered, 7},
+    {"_coda_count_c_fit_lm_lrnm_hermite_centered", (DL_FUNC) &_coda_count_c_fit_lm_lrnm_hermite_centered, 6},
     {"_coda_count_ldnormal_vec", (DL_FUNC) &_coda_count_ldnormal_vec, 3},
-    {"_coda_count_l_multinomial_const", (DL_FUNC) &_coda_count_l_multinomial_const, 1},
-    {"_coda_count_l_lrnm_join_vec", (DL_FUNC) &_coda_count_l_lrnm_join_vec, 5},
     {"_coda_count_l_lrnm_join_d1", (DL_FUNC) &_coda_count_l_lrnm_join_d1, 5},
     {"_coda_count_l_lrnm_join_d2", (DL_FUNC) &_coda_count_l_lrnm_join_d2, 5},
     {"_coda_count_l_lrnm_join_maximum", (DL_FUNC) &_coda_count_l_lrnm_join_maximum, 6},
