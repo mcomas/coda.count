@@ -103,6 +103,6 @@ ggtern() +
 ```
 
 ```{r}
-fitting = fit_lrnm(Y, order = 5)
+fitting = fit_lrnm(Y)
 ```
 

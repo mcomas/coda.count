@@ -57,7 +57,6 @@ c_m2_lrnm_hermite <- function(x, mu, sigma, Binv, order) {
     .Call('_coda_count_c_m2_lrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, Binv, order)
 }
 
-#' @export
 c_moments_lrnm_hermite_precision_lm <- function(x, mu, sigma, mu_prior, sigma_prior, Binv, order) {
     .Call('_coda_count_c_moments_lrnm_hermite_precision_lm', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, Binv, order)
 }
@@ -99,17 +98,14 @@ c_rdirichletmultinomial <- function(alpha, size) {
     .Call('_coda_count_c_rdirichletmultinomial', PACKAGE = 'coda.count', alpha, size)
 }
 
-#' @export
 c_rnormal <- function(n, mu, sigma) {
     .Call('_coda_count_c_rnormal', PACKAGE = 'coda.count', n, mu, sigma)
 }
 
-#' @export
 c_rnormalSimplex <- function(n, mu, sigma, Binv) {
     .Call('_coda_count_c_rnormalSimplex', PACKAGE = 'coda.count', n, mu, sigma, Binv)
 }
 
-#' @export
 c_rnormalmultinomial <- function(mu, sigma, size, Binv) {
     .Call('_coda_count_c_rnormalmultinomial', PACKAGE = 'coda.count', mu, sigma, size, Binv)
 }

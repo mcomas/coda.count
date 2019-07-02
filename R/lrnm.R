@@ -3,7 +3,9 @@
 #' @param x count vector
 #' @param mu Parameter mu of a logratio-normal-multinomial distribution
 #' @param sigma Parameter sigma of a logratio-normal-multinomial distribution
+#' @param B clr-basis in which mu and sigma are interpreted with. Default basis is given by coda.base::ilr_basis(length(x))
 #' @param method Methods available: 'hermite' for Hermite integration, 'mc' for Monte Carlo integration
+#' @param hermite.order order of Hermite polynomials
 #' @return probability mass function evaluated in x
 #' @examples
 #' X = apply(simplex_lattice(19,2), 2, rev)
@@ -36,14 +38,19 @@ dlrnm = function(x, mu, sigma, B = NULL,
 #' Estimate the parameters of a logratio-normal-multinomial distribution
 #'
 #' @param X count sample
+#' @param B clr-basis in which mu and sigma are interpreted with. Default basis is given by coda.base::ilr_basis(length(x))
+#' @param probs boolean indicating if expected posterior probabilities are returned.
+#' @param hermite.order order of Hermite polynomials
+#' @param eps precision used for the final estimates
+#' @param max_iter maximum number of iterations for the iterative procedure used to estimate the parameter
 #' @return Estimated parameters mu and sigma
 #' @export
-fit_lrnm = function(X, B = NULL, probs = FALSE, order = 5, eps = 1e-8, max_iter = 500){
+fit_lrnm = function(X, B = NULL, probs = FALSE, hermite.order = 5, eps = 1e-8, max_iter = 500){
   if(is.null(B)){
     B = coda.base::ilr_basis(ncol(X))
   }
   fit = c_fit_lm_lrnm_hermite_centered(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
-                                       order = order, eps = eps, max_iter = max_iter)
+                                       order = hermite.order, eps = eps, max_iter = max_iter)
   if(fit[[4]] == max_iter){
     warning("Maximum number of iterations exhausted.")
   }

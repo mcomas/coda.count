@@ -956,70 +956,70 @@ double r8_sign ( double x )
 }
 //****************************************************************************80
 
-void r8mat_write ( string output_filename, int m, int n, double table[] )
-
-  //****************************************************************************80
-  //
-  //  Purpose:
-  //
-  //    R8MAT_WRITE writes an R8MAT file with no header.
-  //
-  //  Licensing:
-  //
-  //    This code is distributed under the GNU LGPL license.
-  //
-  //  Modified:
-  //
-  //    29 June 2009
-  //
-  //  Author:
-  //
-  //    John Burkardt
-  //
-  //  Parameters:
-  //
-  //    Input, string OUTPUT_FILENAME, the output filename.
-  //
-  //    Input, int M, the spatial dimension.
-  //
-  //    Input, int N, the number of points.
-  //
-  //    Input, double TABLE[M*N], the table data.
-  //
-{
-  int i;
-  int j;
-  ofstream output;
-  //
-  //  Open the file.
-  //
-  output.open ( output_filename.c_str ( ) );
-
-  if ( !output )
-  {
-    cerr << "\n";
-    cerr << "R8MAT_WRITE - Fatal error!\n";
-    cerr << "  Could not open the output file.\n";
-    return;
-  }
-  //
-  //  Write the data.
-  //
-  for ( j = 0; j < n; j++ )
-  {
-    for ( i = 0; i < m; i++ )
-    {
-      output << "  " << setw(24) << setprecision(16) << table[i+j*m];
-    }
-    output << "\n";
-  }
-  //
-  //  Close the file.
-  //
-  output.close ( );
-
-  return;
-}
+// void r8mat_write ( string output_filename, int m, int n, double table[] )
+//
+//   //****************************************************************************80
+//   //
+//   //  Purpose:
+//   //
+//   //    R8MAT_WRITE writes an R8MAT file with no header.
+//   //
+//   //  Licensing:
+//   //
+//   //    This code is distributed under the GNU LGPL license.
+//   //
+//   //  Modified:
+//   //
+//   //    29 June 2009
+//   //
+//   //  Author:
+//   //
+//   //    John Burkardt
+//   //
+//   //  Parameters:
+//   //
+//   //    Input, string OUTPUT_FILENAME, the output filename.
+//   //
+//   //    Input, int M, the spatial dimension.
+//   //
+//   //    Input, int N, the number of points.
+//   //
+//   //    Input, double TABLE[M*N], the table data.
+//   //
+// {
+//   int i;
+//   int j;
+//   ofstream output;
+//   //
+//   //  Open the file.
+//   //
+//   output.open ( output_filename.c_str ( ) );
+//
+//   if ( !output )
+//   {
+//     cerr << "\n";
+//     cerr << "R8MAT_WRITE - Fatal error!\n";
+//     cerr << "  Could not open the output file.\n";
+//     return;
+//   }
+//   //
+//   //  Write the data.
+//   //
+//   for ( j = 0; j < n; j++ )
+//   {
+//     for ( i = 0; i < m; i++ )
+//     {
+//       output << "  " << setw(24) << setprecision(16) << table[i+j*m];
+//     }
+//     output << "\n";
+//   }
+//   //
+//   //  Close the file.
+//   //
+//   output.close ( );
+//
+//   return;
+// }
 //****************************************************************************80
 
 void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[],

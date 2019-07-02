@@ -14,7 +14,11 @@ dlrnm(x, mu, sigma, B = NULL, method = ifelse(length(mu) \%in\% 1:5,
 
 \item{sigma}{Parameter sigma of a logratio-normal-multinomial distribution}
 
+\item{B}{clr-basis in which mu and sigma are interpreted with. Default basis is given by coda.base::ilr_basis(length(x))}
+
 \item{method}{Methods available: 'hermite' for Hermite integration, 'mc' for Monte Carlo integration}
+
+\item{hermite.order}{order of Hermite polynomials}
 }
 \value{
 probability mass function evaluated in x

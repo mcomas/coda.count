@@ -257,7 +257,7 @@ arma::mat c_m2_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::ma
 //   return moments;
 // }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::mat c_moments_lrnm_hermite_precision_lm(arma::vec x,
                                               arma::vec mu, arma::mat sigma,
