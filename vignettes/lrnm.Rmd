@@ -48,14 +48,23 @@ ggplot() +
   geom_point(data = H, aes(x = ilr1, y = ilr2))
 ```
 
-* After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution.
+* After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution. With the function `rmultinomial()` we can generate that sample.
 
 ```{r}
 SIZE = 8
 Y = as.data.frame(rmultinomial(size = SIZE, p = as.matrix(P)))
 ```
 
-Visualizing a counting sample
+In `coda.count` we can compound this to generations using the function `rlrnm()`:
+
+```{r}
+sample = rlrnm(n = N, size = SIZE, mu = mu, sigma = sigma, probs = TRUE)
+Y = as.data.frame(sample)
+P = attr(sample, 'probs')
+```
+
+
+To visualise the counting sample we can use a ternary diagram, but observations will only appear in discrete positions. In general, we call the $(K-D)$-simplex lattice the sapce for the $D$-part count data with size $K$.
 
 ```{r, include=FALSE}
 Yj = as.data.frame(lapply(Y, jitter, factor = 0.5))
@@ -85,7 +94,7 @@ ggtern() +
   labs(col = 'Frequency')
 ```
 
-For given parameters $mu$ and $\Sigma$ we can calculate the probability mass function
+For given parameters $mu$ and $\Sigma$ we can calculate the probability mass function for each element in a $(8-3)$-simplex lattice:
 
 ```{r, fig.width=6, fig.height=4.8, fig.align='center'}
 SL3 = simplex_lattice(SIZE, 3)
@@ -102,6 +111,8 @@ ggtern() +
   scale_R_continuous(minor_breaks = NULL, breaks = brks, labels = lbls) +
   labs(col = 'Probability')
 ```
+
+For the sample `Y` we can
 
 ```{r}
 fitting = fit_lrnm(Y, probs = TRUE)
