@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 library(coda.count)
 library(coda.base)
 library(ggtern)
+library(gganimate)
 theme_set(theme_minimal())
 ```
 
@@ -63,17 +64,7 @@ Y = as.data.frame(sample)
 P = attr(sample, 'probs')
 ```
 
-
 To visualise the counting sample we can use a ternary diagram, but observations will only appear in discrete positions. In general, we call the $(K-D)$-simplex lattice the sapce for the $D$-part count data with size $K$.
-
-```{r, include=FALSE}
-Yj = as.data.frame(lapply(Y, jitter, factor = 0.5))
-ggtern() +
-  geom_point(data = Yj, aes(x = V1, y = V2, z = V3), size = 0.5) +
-  scale_T_continuous(minor_breaks = NULL, breaks = 0:SIZE/SIZE, labels = 0:SIZE) +
-  scale_L_continuous(minor_breaks = NULL, breaks = 0:SIZE/SIZE, labels = 0:SIZE) +
-  scale_R_continuous(minor_breaks = NULL, breaks = 0:SIZE/SIZE, labels = 0:SIZE) 
-```
 
 ```{r, fig.width=6, fig.height=4.8, fig.align='center'}
 key = function(x) paste(x, collapse = '-')
@@ -112,20 +103,6 @@ ggtern() +
   labs(col = 'Probability')
 ```
 
-```{r, eval=FALSE}
-SL3 = simplex_lattice(100, 3)
-X100 = as.data.frame(SL3)
-X100$p = apply(X100, 1, dlrnm, mu, sigma, hermite.order = 100)
-X100 = X100[order(X100$p, decreasing = FALSE),]
-ggtern() +
-  geom_point(data = X100, aes(x = V1, y = V2, z = V3, col = p), size = 1) +
-  theme(tern.axis.arrow.show = T,
-        tern.axis.title.show = F,
-        tern.axis.arrow.text = element_text(face = 'bold')) +
-  scale_color_gradient(low = 'blue', high = 'red') +
-  labs(col = 'Probability')
-```
-
 For the sample `Y` we can
 
 ```{r}
@@ -136,21 +113,31 @@ Expected estimated posterior probabilities
 
 ```{r}
 P_exp = as.data.frame(fitting$P)
-H_exp = coordinates(P_exp)
+tab = table(apply(P_exp, 1, key))
+P_exp = P_exp[duplicated(P_exp),]
+P_exp$freq = as.numeric(tab[match(apply(P_exp, 1, key), names(tab))])
+H_exp = coordinates(P_exp[,1:3])
+H_exp$freq = P_exp$freq
 ```
 
 ```{r, warning=FALSE, out.width="45%", fig.width=4, fig.height=3.6, fig.show='hold'}
 ggtern() +
-  geom_point(data = P_exp, aes(x = x1, y = x2, z = x3))
+  geom_point(data = P_exp, aes(x = x1, y = x2, z = x3, col = freq)) +
+  scale_color_gradient(low = 'blue', high = 'red')
 ggplot() +
-  geom_point(data = H_exp, aes(x = ilr1, y = ilr2))
+  geom_point(data = H_exp, aes(x = ilr1, y = ilr2, col = freq)) +
+  scale_color_gradient(low = 'blue', high = 'red')
 ```
 
-```{r, fig.width=6, fig.height=4.8, fig.align='center'}
-SL3 = simplex_lattice(100, 3)
-M = c_obtain_moments_lrnm_hermite(SL3, mu, sigma, ilr_basis(3), order = 10)
-H1 = as.data.frame(t(M[[1]]))
-M1 = composition(H1)
+```{r}
+SL3 = simplex_lattice(SIZE, 3)
+# We calculate the posterior probabilities for each multivariate count
+lM = lapply(split(SL3, 1:nrow(SL3)), c_posterior_approximation, mu, solve(sigma), t(MASS::ginv(B)))
+H_MAX = as.data.frame(t(sapply(lM, function(l)l[,3])))
+MAX = composition(H_MAX, B)
+H_E = as.data.frame(t(c_obtain_moments_lrnm_hermite(SL3, mu, sigma, ilr_basis(3), order = 10)[[1]]))
+E = composition(H_E, B)
+
 ellipse = function(mu, sigma, p){
   s = -2 * log(1 - p);
   ev = eigen(sigma * s)
@@ -161,34 +148,42 @@ ellipse = function(mu, sigma, p){
 coda_ellipse = function(mu, sigma, p, B = ilr_basis(length(mu) + 1)){
   composition(ellipse(mu, sigma, p), B)
 }
-
-ggtern() + 
-  geom_point(data= as.data.frame(rlrnormal(100, mu, sigma)), aes(x = V1, y = V2, z = V3), alpha = 0.5) +
-  geom_path(data = coda_ellipse(mu, sigma, 0.95), aes(x = x1, y = x2, z = x3)) 
+mu_center = composition(mu, B)
 ```
 
-```{r}
+```{r, fig.width=6, fig.height=4.8, fig.align='center'}
+df_ellip0 = coda_ellipse(mu, sigma, 0.95)
 p = ggtern() +
-  geom_point(aes(x = 0.4359516, y = 0.4359516, z = 0.1280968), col = 'blue') +
-  geom_path(data = coda_ellipse(mu, sigma, 0.95), aes(x = x1, y = x2, z = x3), col = 'blue')
-for(i in 45){
+  geom_point(aes(x = mu_center[1], 
+                 y = mu_center[2], 
+                 z = mu_center[3]), col = 'blue') +
+  geom_path(data = df_ellip0, aes(x = x1, y = x2, z = x3), col = 'blue') +
+  geom_point(data=MAX,  aes(x = x1, y = x2, z = x3), col = 'red')+
+  geom_point(data=E,  aes(x = x1, y = x2, z = x3))
+for(i in 1:nrow(SL3)){
+  df_ellip = coda_ellipse(lM[[i]][,3], lM[[i]][1:2,1:2], 0.95)
+  df_ellip$state = i
   p = p + 
-    geom_point(data = M1[i,], aes(x = x1, y = x2, z = x3), alpha = 0.5) +
-    geom_path(data = coda_ellipse(unlist(H1[i,]), M[[2]][,,i], 0.95), aes(x = x1, y = x2, z = x3), alpha = 0.5)
+    geom_path(data = df_ellip, 
+              aes(x = x1, y = x2, z = x3), alpha = 0.5, col = 'red')
 }
 p
 ```
 
-```{r}
+```{r, fig.width=6, fig.height=4.8, fig.align='center'}
+df_ellip0 = ellipse(mu, sigma, 0.95)
 p = ggplot() +
   geom_point(aes(x = mu[1], y = mu[2]), col = 'blue') +
-  geom_path(data = ellipse(mu, sigma, 0.95), aes(x = V1, y = V2), col = 'blue')
-for(i in 45){
+  geom_path(data = df_ellip0, aes(x = V1, y = V2), col = 'blue') +
+  geom_point(data=H_MAX,  aes(x = V1, y = V2), col = 'red')+
+  geom_point(data=H_E,  aes(x = V1, y = V2))
+for(i in 1:nrow(SL3)){
+  df_ellip = ellipse(lM[[i]][,3], lM[[i]][1:2,1:2], 0.95)
   p = p + 
-    #geom_point(data = coordinates(SL3[i,]), aes(x = V1, y = V2), alpha = 0.5) +
-    geom_point(data = H1[i,], aes(x = V1, y = V2), alpha = 0.5) +
-    geom_path(data = ellipse(unlist(H1[i,]), M[[2]][,,i], 0.95), aes(x = V1, y = V2), alpha = 0.5)
+    geom_path(data = df_ellip, 
+              aes(x = V1, y = V2), alpha = 0.5, col = 'red')
 }
-p
+p + coord_equal()
 ```
+
 

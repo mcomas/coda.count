@@ -111,16 +111,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_posterior_approximation
-arma::mat c_posterior_approximation(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv);
-RcppExport SEXP _coda_count_c_posterior_approximation(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
+arma::cube c_posterior_approximation(arma::mat X, arma::vec mu, arma::mat& sigma, arma::mat& B);
+RcppExport SEXP _coda_count_c_posterior_approximation(SEXP XSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_posterior_approximation(x, mu, inv_sigma, Binv));
+    Rcpp::traits::input_parameter< arma::mat& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type B(BSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_posterior_approximation(X, mu, sigma, B));
     return rcpp_result_gen;
 END_RCPP
 }

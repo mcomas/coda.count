@@ -62,3 +62,16 @@ fit_lrnm = function(X, B = NULL, probs = FALSE, hermite.order = 5, eps = 1e-8, m
 
 }
 
+#' Estimate an approximation for the posterior distribution of the log-ratio-normal-multinomial
+#' distribution.
+#'
+#' @param X matrix of counts
+#' @param mu mean parameter
+#' @param sigma covariance parameter
+#' @param B compositional basis
+#' @param method Default 'laplace'
+lrnm_posterior_approx = function(X, mu, sigma, B, method = 'laplace'){
+  if(method == 'laplace'){
+    c_posterior_approximation(X, mu, sigma, B)
+  }
+}

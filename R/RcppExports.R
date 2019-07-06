@@ -37,8 +37,8 @@ c_gaussian_division <- function(pars1, pars_res) {
     .Call('_coda_count_c_gaussian_division', PACKAGE = 'coda.count', pars1, pars_res)
 }
 
-c_posterior_approximation <- function(x, mu, inv_sigma, Binv) {
-    .Call('_coda_count_c_posterior_approximation', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv)
+c_posterior_approximation <- function(X, mu, sigma, B) {
+    .Call('_coda_count_c_posterior_approximation', PACKAGE = 'coda.count', X, mu, sigma, B)
 }
 
 c_fit_lrnm_gaussian_approx <- function(X, B, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
@@ -83,7 +83,7 @@ l_lrnm_join_d2 <- function(h, x, mu, inv_sigma, Binv) {
     .Call('_coda_count_l_lrnm_join_d2', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
 }
 
-l_lrnm_join_maximum <- function(x, mu, inv_sigma, Binv, eps = 0.0001, max_iter = 1000L) {
+l_lrnm_join_maximum <- function(x, mu, inv_sigma, Binv, eps = 1e-8, max_iter = 1000L) {
     .Call('_coda_count_l_lrnm_join_maximum', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv, eps, max_iter)
 }
 

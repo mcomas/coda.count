@@ -7,22 +7,11 @@
 #include "coda_base.h"
 #include "dm.h"
 
-// //' @export
-// // [[Rcpp::export]]
-// double c_d_lrnm_gaussian_approx(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv){
-//
-//   double integral = 0;
-//
-//   return integral;
-// }
-
-
-// [[Rcpp::export]]
-arma::mat c_posterior_approximation(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
+arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   unsigned d = x.n_elem - 1;
 
   arma::mat N_posterior(d,d+1);
-  N_posterior.col(d) = l_lrnm_join_maximum(x, mu, inv_sigma, Binv, 0.000001, 100);
+  N_posterior.col(d) = l_lrnm_join_maximum(x, mu, inv_sigma, Binv, 1e-5, 1000);
   //Rcpp::Rcout << N_posterior.col(d);
   arma::mat D2 = l_lrnm_join_d2(N_posterior.col(d), x, mu, inv_sigma, Binv);
   //Rcpp::Rcout << D2;
@@ -31,6 +20,17 @@ arma::mat c_posterior_approximation(arma::vec x, arma::vec mu, arma::mat &inv_si
   return(N_posterior);
 }
 
+// [[Rcpp::export]]
+arma::cube c_posterior_approximation(arma::mat X, arma::vec mu, arma::mat &sigma, arma::mat &B){
+  arma::mat Binv = pinv(B).t();
+  arma::mat inv_sigma = inv_sympd(sigma);
+  arma::mat Xt = X.t();
+  arma::cube approx = arma::cube(mu.n_elem, X.n_cols, X.n_rows);
+  for(int i = 0; i < X.n_rows; i++){
+    approx.slice(i) = c_posterior_approximation_vec(X.col(i), mu, inv_sigma, Binv);
+  }
+  return(approx);
+}
 
 // [[Rcpp::export]]
 Rcpp::List c_fit_lrnm_gaussian_approx(arma::mat X, arma::mat B,
@@ -51,16 +51,12 @@ Rcpp::List c_fit_lrnm_gaussian_approx(arma::mat X, arma::mat B,
   do{
     arma::mat inv_sigma = arma::inv_sympd(sigma);
     current_iter++;
-    //Rcpp::Rcout << "Current: " << current_iter << std::endl;
+
     mu_prev = arma::vec(mu);
     arma::vec M1 = arma::zeros(d);
     arma::mat M2 = arma::zeros(d, d);
     for(int i = 0; i < H.n_rows; i++){
-      arma::mat N_posterior = c_posterior_approximation(X.row(i).t(), mu, inv_sigma, Binv);
-      // Rcpp::Rcout << mu << std::endl;
-      // Rcpp::Rcout << sigma << std::endl;
-
-      //Rcpp::Rcout << pX << std::endl;
+      arma::mat N_posterior = c_posterior_approximation_vec(X.row(i).t(), mu, inv_sigma, Binv);
       M1 += N_posterior.col(d);
       M2 += (N_posterior.head_cols(d) + N_posterior.col(d) * N_posterior.col(d).t());
     }
@@ -70,45 +66,3 @@ Rcpp::List c_fit_lrnm_gaussian_approx(arma::mat X, arma::mat B,
 
   return Rcpp::List::create(mu, sigma, current_iter);
 }
-
-// //' @export
-// // [[Rcpp::export]]
-// arma::mat c_posterior_alr_approximation(arma::vec x, arma::vec mu, arma::mat sigma){
-//   unsigned d = x.n_elem - 1;
-//   arma::vec integral = arma::zeros(d);
-//   arma::mat N_dirichlet_lebesgue = c_dirichlet_alr_approx(x+1);
-//
-//   // SIGMA_logistic = 1/(2 * pi * prod(composition(0))^2)
-//
-//   arma::mat N_logistic = c_logistic_alr_approximation(d);
-//   arma::mat N_dirichlet_aitchison = c_gaussian_division(N_logistic, N_dirichlet_lebesgue);
-//
-//   //Rcpp::Rcout << N_logistic << std::endl;
-//   //Rcpp::Rcout << N_dirichlet_lebesgue << std::endl;
-//   //Rcpp::Rcout << N_dirichlet_aitchison << std::endl;
-//   arma::mat N_prior(d,d+1);
-//   N_prior.head_cols(d) = sigma;
-//   N_prior.col(d) = mu;
-//
-//   return(c_gaussian_product(N_prior, N_dirichlet_aitchison));
-// }
-//
-// //' @export
-// // [[Rcpp::export]]
-// arma::vec c_m1_lrnm_gaussian_approx(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv){
-//   unsigned d = x.n_elem - 1;
-//   arma::vec integral = arma::zeros(d);
-//
-//
-//   return integral;
-// }
-//
-// //' @export
-// // [[Rcpp::export]]
-// arma::mat c_m2_lrnm_gaussian_approx(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv){
-//   unsigned d = x.n_elem - 1;
-//   arma::mat integral = arma::zeros(d,d);
-//
-//   return integral;
-// }
-
