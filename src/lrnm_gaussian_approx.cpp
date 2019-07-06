@@ -27,7 +27,7 @@ arma::cube c_posterior_approximation(arma::mat X, arma::vec mu, arma::mat &sigma
   arma::mat Xt = X.t();
   arma::cube approx = arma::cube(mu.n_elem, X.n_cols, X.n_rows);
   for(int i = 0; i < X.n_rows; i++){
-    approx.slice(i) = c_posterior_approximation_vec(X.col(i), mu, inv_sigma, Binv);
+    approx.slice(i) = c_posterior_approximation_vec(Xt.col(i), mu, inv_sigma, Binv);
   }
   return(approx);
 }

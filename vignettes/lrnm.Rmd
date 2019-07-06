@@ -129,15 +129,8 @@ ggplot() +
   scale_color_gradient(low = 'blue', high = 'red')
 ```
 
-```{r}
-SL3 = simplex_lattice(SIZE, 3)
-# We calculate the posterior probabilities for each multivariate count
-lM = lapply(split(SL3, 1:nrow(SL3)), c_posterior_approximation, mu, solve(sigma), t(MASS::ginv(B)))
-H_MAX = as.data.frame(t(sapply(lM, function(l)l[,3])))
-MAX = composition(H_MAX, B)
-H_E = as.data.frame(t(c_obtain_moments_lrnm_hermite(SL3, mu, sigma, ilr_basis(3), order = 10)[[1]]))
-E = composition(H_E, B)
 
+```{r}
 ellipse = function(mu, sigma, p){
   s = -2 * log(1 - p);
   ev = eigen(sigma * s)
@@ -148,6 +141,18 @@ ellipse = function(mu, sigma, p){
 coda_ellipse = function(mu, sigma, p, B = ilr_basis(length(mu) + 1)){
   composition(ellipse(mu, sigma, p), B)
 }
+```
+
+```{r}
+SL3 = simplex_lattice(SIZE, 3)
+# We calculate the posterior probabilities for each multivariate count
+lM = lrnm_posterior_approx(SL3, mu, sigma, B)
+
+H_MAX = as.data.frame(t(sapply(lM, function(l)l$mu)))
+MAX = composition(H_MAX, B)
+H_E = as.data.frame(t(c_obtain_moments_lrnm_hermite(SL3, mu, sigma, ilr_basis(3), order = 10)[[1]]))
+E = composition(H_E, B)
+
 mu_center = composition(mu, B)
 ```
 
@@ -161,7 +166,7 @@ p = ggtern() +
   geom_point(data=MAX,  aes(x = x1, y = x2, z = x3), col = 'red')+
   geom_point(data=E,  aes(x = x1, y = x2, z = x3))
 for(i in 1:nrow(SL3)){
-  df_ellip = coda_ellipse(lM[[i]][,3], lM[[i]][1:2,1:2], 0.95)
+  df_ellip = coda_ellipse(lM[[i]]$mu, lM[[i]]$sigma, 0.95)
   df_ellip$state = i
   p = p + 
     geom_path(data = df_ellip, 
@@ -175,10 +180,10 @@ df_ellip0 = ellipse(mu, sigma, 0.95)
 p = ggplot() +
   geom_point(aes(x = mu[1], y = mu[2]), col = 'blue') +
   geom_path(data = df_ellip0, aes(x = V1, y = V2), col = 'blue') +
-  geom_point(data=H_MAX,  aes(x = V1, y = V2), col = 'red')+
+  geom_point(data=H_MAX,  aes(x = V1, y = V2), col = 'red') +
   geom_point(data=H_E,  aes(x = V1, y = V2))
 for(i in 1:nrow(SL3)){
-  df_ellip = ellipse(lM[[i]][,3], lM[[i]][1:2,1:2], 0.95)
+  df_ellip = ellipse(lM[[i]]$mu, lM[[i]]$sigma, 0.95)
   p = p + 
     geom_path(data = df_ellip, 
               aes(x = V1, y = V2), alpha = 0.5, col = 'red')

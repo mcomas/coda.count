@@ -70,8 +70,13 @@ fit_lrnm = function(X, B = NULL, probs = FALSE, hermite.order = 5, eps = 1e-8, m
 #' @param sigma covariance parameter
 #' @param B compositional basis
 #' @param method Default 'laplace'
+#' @return A cube with the parameters
+#' @export
 lrnm_posterior_approx = function(X, mu, sigma, B, method = 'laplace'){
+  D = length(mu) + 1
   if(method == 'laplace'){
-    c_posterior_approximation(X, mu, sigma, B)
+    res = c_posterior_approximation(X, mu, sigma, B)
+    res = apply(res, 3, function(x) list(mu = x[,D], sigma = x[,-D]))
   }
+  res
 }
