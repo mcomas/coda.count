@@ -112,6 +112,20 @@ ggtern() +
   labs(col = 'Probability')
 ```
 
+```{r, eval=FALSE}
+SL3 = simplex_lattice(100, 3)
+X100 = as.data.frame(SL3)
+X100$p = apply(X100, 1, dlrnm, mu, sigma, hermite.order = 100)
+X100 = X100[order(X100$p, decreasing = FALSE),]
+ggtern() +
+  geom_point(data = X100, aes(x = V1, y = V2, z = V3, col = p), size = 1) +
+  theme(tern.axis.arrow.show = T,
+        tern.axis.title.show = F,
+        tern.axis.arrow.text = element_text(face = 'bold')) +
+  scale_color_gradient(low = 'blue', high = 'red') +
+  labs(col = 'Probability')
+```
+
 For the sample `Y` we can
 
 ```{r}
