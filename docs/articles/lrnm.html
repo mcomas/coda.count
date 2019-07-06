@@ -87,6 +87,8 @@
 <div class="sourceLine" id="cb1-3" data-line-number="3">
 <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggtern)</div>
 <div class="sourceLine" id="cb1-4" data-line-number="4">
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(gganimate)</div>
+<div class="sourceLine" id="cb1-5" data-line-number="5">
 <span class="kw">theme_set</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern_themes">theme_minimal</a></span>())</div></code></pre>
 <p>The logratio-normal-multinomial (LRNM) distribution is the distribution obtained from the compounding of a normal distribution defined on the Simplex using log-ratio coordinates with the multinomial distribution.</p>
 <p>We can build a sample of a LRNM as follows:</p>
@@ -116,74 +118,177 @@
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> ilr1, <span class="dt">y =</span> ilr2))</div></code></pre>
 <p><img src="lrnm_files/figure-html/unnamed-chunk-3-1.png" width="45%"><img src="lrnm_files/figure-html/unnamed-chunk-3-2.png" width="45%"></p>
 <ul>
-<li>After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution.</li>
+<li>After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution. With the function <code><a href="../reference/rmultinomial.html">rmultinomial()</a></code> we can generate that sample.</li>
 </ul>
 <pre class="sourceCode r" id="cb4"><code class="sourceCode r"><div class="sourceLine" id="cb4-1" data-line-number="1">SIZE =<span class="st"> </span><span class="dv">8</span>
 </div>
 <div class="sourceLine" id="cb4-2" data-line-number="2">Y =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="../reference/rmultinomial.html">rmultinomial</a></span>(<span class="dt">size =</span> SIZE, <span class="dt">p =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(P)))</div></code></pre>
-<p>Visualizing a counting sample</p>
-<pre class="sourceCode r" id="cb5"><code class="sourceCode r"><div class="sourceLine" id="cb5-1" data-line-number="1">key =<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(x, <span class="dt">collapse =</span> <span class="st">'-'</span>)</div>
-<div class="sourceLine" id="cb5-2" data-line-number="2">tab =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(Y, <span class="dv">1</span>, key))</div>
-<div class="sourceLine" id="cb5-3" data-line-number="3">Yc =<span class="st"> </span>Y[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/duplicated">duplicated</a></span>(Y),]</div>
-<div class="sourceLine" id="cb5-4" data-line-number="4">Yc<span class="op">$</span>freq =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(tab[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(Yc, <span class="dv">1</span>, key), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(tab))])</div>
-<div class="sourceLine" id="cb5-5" data-line-number="5">lbls =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">' '</span>, <span class="dv">0</span><span class="op">:</span>SIZE, <span class="st">' '</span>)</div>
-<div class="sourceLine" id="cb5-6" data-line-number="6">brks =<span class="st"> </span><span class="dv">0</span><span class="op">:</span>SIZE<span class="op">/</span>SIZE</div>
-<div class="sourceLine" id="cb5-7" data-line-number="7">
+<p>In <code>coda.count</code> we can compound this to generations using the function <code><a href="../reference/rlrnm.html">rlrnm()</a></code>:</p>
+<pre class="sourceCode r" id="cb5"><code class="sourceCode r"><div class="sourceLine" id="cb5-1" data-line-number="1">sample =<span class="st"> </span><span class="kw"><a href="../reference/rlrnm.html">rlrnm</a></span>(<span class="dt">n =</span> N, <span class="dt">size =</span> SIZE, <span class="dt">mu =</span> mu, <span class="dt">sigma =</span> sigma, <span class="dt">probs =</span> <span class="ot">TRUE</span>)</div>
+<div class="sourceLine" id="cb5-2" data-line-number="2">Y =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(sample)</div>
+<div class="sourceLine" id="cb5-3" data-line-number="3">P =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(sample, <span class="st">'probs'</span>)</div></code></pre>
+<p>To visualise the counting sample we can use a ternary diagram, but observations will only appear in discrete positions. In general, we call the <span class="math inline">\((K-D)\)</span>-simplex lattice the sapce for the <span class="math inline">\(D\)</span>-part count data with size <span class="math inline">\(K\)</span>.</p>
+<pre class="sourceCode r" id="cb6"><code class="sourceCode r"><div class="sourceLine" id="cb6-1" data-line-number="1">key =<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(x, <span class="dt">collapse =</span> <span class="st">'-'</span>)</div>
+<div class="sourceLine" id="cb6-2" data-line-number="2">tab =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(Y, <span class="dv">1</span>, key))</div>
+<div class="sourceLine" id="cb6-3" data-line-number="3">Yc =<span class="st"> </span>Y[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/duplicated">duplicated</a></span>(Y),]</div>
+<div class="sourceLine" id="cb6-4" data-line-number="4">Yc<span class="op">$</span>freq =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(tab[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(Yc, <span class="dv">1</span>, key), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(tab))])</div>
+<div class="sourceLine" id="cb6-5" data-line-number="5">lbls =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">' '</span>, <span class="dv">0</span><span class="op">:</span>SIZE, <span class="st">' '</span>)</div>
+<div class="sourceLine" id="cb6-6" data-line-number="6">brks =<span class="st"> </span><span class="dv">0</span><span class="op">:</span>SIZE<span class="op">/</span>SIZE</div>
+<div class="sourceLine" id="cb6-7" data-line-number="7">
 <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb5-8" data-line-number="8">
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> Yc, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> freq), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb5-9" data-line-number="9">
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/theme">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,</div>
-<div class="sourceLine" id="cb5-10" data-line-number="10">        <span class="dt">tern.axis.title.show =</span> F,</div>
-<div class="sourceLine" id="cb5-11" data-line-number="11">        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb5-12" data-line-number="12">
-<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb5-13" data-line-number="13">
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb5-14" data-line-number="14">
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb5-15" data-line-number="15">
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb5-16" data-line-number="16">
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Frequency'</span>)</div></code></pre>
-<p><img src="lrnm_files/figure-html/unnamed-chunk-6-1.png" width="576" style="display: block; margin: auto;"></p>
-<p>For given parameters <span class="math inline">\(mu\)</span> and <span class="math inline">\(\Sigma\)</span> we can calculate the probability mass function</p>
-<pre class="sourceCode r" id="cb6"><code class="sourceCode r"><div class="sourceLine" id="cb6-1" data-line-number="1">X =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="../reference/simplex_lattice.html">simplex_lattice</a></span>(SIZE, <span class="dv">3</span>))</div>
-<div class="sourceLine" id="cb6-2" data-line-number="2">X<span class="op">$</span>p =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(X, <span class="dv">1</span>, dlrnm, mu, sigma)</div>
-<div class="sourceLine" id="cb6-3" data-line-number="3">
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb6-4" data-line-number="4">
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> X, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> p), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb6-5" data-line-number="5">
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/theme">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,</div>
-<div class="sourceLine" id="cb6-6" data-line-number="6">        <span class="dt">tern.axis.title.show =</span> F,</div>
-<div class="sourceLine" id="cb6-7" data-line-number="7">        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span>
 </div>
 <div class="sourceLine" id="cb6-8" data-line-number="8">
-<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> Yc, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> freq), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span>
 </div>
 <div class="sourceLine" id="cb6-9" data-line-number="9">
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb6-10" data-line-number="10">
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-</div>
-<div class="sourceLine" id="cb6-11" data-line-number="11">
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/theme">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,</div>
+<div class="sourceLine" id="cb6-10" data-line-number="10">        <span class="dt">tern.axis.title.show =</span> F,</div>
+<div class="sourceLine" id="cb6-11" data-line-number="11">        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span>
 </div>
 <div class="sourceLine" id="cb6-12" data-line-number="12">
+<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb6-13" data-line-number="13">
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb6-14" data-line-number="14">
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb6-15" data-line-number="15">
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb6-16" data-line-number="16">
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Frequency'</span>)</div></code></pre>
+<p><img src="lrnm_files/figure-html/unnamed-chunk-6-1.png" width="576" style="display: block; margin: auto;"></p>
+<p>For given parameters <span class="math inline">\(mu\)</span> and <span class="math inline">\(\Sigma\)</span> we can calculate the probability mass function for each element in a <span class="math inline">\((8-3)\)</span>-simplex lattice:</p>
+<pre class="sourceCode r" id="cb7"><code class="sourceCode r"><div class="sourceLine" id="cb7-1" data-line-number="1">SL3 =<span class="st"> </span><span class="kw"><a href="../reference/simplex_lattice.html">simplex_lattice</a></span>(SIZE, <span class="dv">3</span>)</div>
+<div class="sourceLine" id="cb7-2" data-line-number="2">X =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(SL3)</div>
+<div class="sourceLine" id="cb7-3" data-line-number="3">X<span class="op">$</span>p =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(X, <span class="dv">1</span>, dlrnm, mu, sigma)</div>
+<div class="sourceLine" id="cb7-4" data-line-number="4">
+<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb7-5" data-line-number="5">
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> X, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> p), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb7-6" data-line-number="6">
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/theme">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,</div>
+<div class="sourceLine" id="cb7-7" data-line-number="7">        <span class="dt">tern.axis.title.show =</span> F,</div>
+<div class="sourceLine" id="cb7-8" data-line-number="8">        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb7-9" data-line-number="9">
+<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb7-10" data-line-number="10">
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb7-11" data-line-number="11">
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb7-12" data-line-number="12">
+<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb7-13" data-line-number="13">
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Probability'</span>)</div></code></pre>
 <p><img src="lrnm_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;"></p>
-<pre class="sourceCode r" id="cb7"><code class="sourceCode r"><div class="sourceLine" id="cb7-1" data-line-number="1">fitting =<span class="st"> </span><span class="kw"><a href="../reference/fit_lrnm.html">fit_lrnm</a></span>(Y, <span class="dt">order =</span> <span class="dv">5</span>)</div></code></pre>
+<p>For the sample <code>Y</code> we can</p>
+<pre class="sourceCode r" id="cb8"><code class="sourceCode r"><div class="sourceLine" id="cb8-1" data-line-number="1">fitting =<span class="st"> </span><span class="kw"><a href="../reference/fit_lrnm.html">fit_lrnm</a></span>(Y, <span class="dt">probs =</span> <span class="ot">TRUE</span>)</div></code></pre>
+<p>Expected estimated posterior probabilities</p>
+<pre class="sourceCode r" id="cb9"><code class="sourceCode r"><div class="sourceLine" id="cb9-1" data-line-number="1">P_exp =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(fitting<span class="op">$</span>P)</div>
+<div class="sourceLine" id="cb9-2" data-line-number="2">tab =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(P_exp, <span class="dv">1</span>, key))</div>
+<div class="sourceLine" id="cb9-3" data-line-number="3">P_exp =<span class="st"> </span>P_exp[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/duplicated">duplicated</a></span>(P_exp),]</div>
+<div class="sourceLine" id="cb9-4" data-line-number="4">P_exp<span class="op">$</span>freq =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(tab[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(P_exp, <span class="dv">1</span>, key), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(tab))])</div>
+<div class="sourceLine" id="cb9-5" data-line-number="5">H_exp =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/coordinates">coordinates</a></span>(P_exp[,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>])</div>
+<div class="sourceLine" id="cb9-6" data-line-number="6">H_exp<span class="op">$</span>freq =<span class="st"> </span>P_exp<span class="op">$</span>freq</div></code></pre>
+<pre class="sourceCode r" id="cb10"><code class="sourceCode r"><div class="sourceLine" id="cb10-1" data-line-number="1">
+<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb10-2" data-line-number="2">
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> P_exp, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3, <span class="dt">col =</span> freq)) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb10-3" data-line-number="3">
+<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>)</div>
+<div class="sourceLine" id="cb10-4" data-line-number="4">
+<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggplot">ggplot</a></span>() <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb10-5" data-line-number="5">
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_exp, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> ilr1, <span class="dt">y =</span> ilr2, <span class="dt">col =</span> freq)) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb10-6" data-line-number="6">
+<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>)</div></code></pre>
+<p><img src="lrnm_files/figure-html/unnamed-chunk-10-1.png" width="45%"><img src="lrnm_files/figure-html/unnamed-chunk-10-2.png" width="45%"></p>
+<pre class="sourceCode r" id="cb11"><code class="sourceCode r"><div class="sourceLine" id="cb11-1" data-line-number="1">ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p){</div>
+<div class="sourceLine" id="cb11-2" data-line-number="2">  s =<span class="st"> </span><span class="dv">-2</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p);</div>
+<div class="sourceLine" id="cb11-3" data-line-number="3">  ev =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/eigen">eigen</a></span>(sigma <span class="op">*</span><span class="st"> </span>s)</div>
+<div class="sourceLine" id="cb11-4" data-line-number="4">  t_ =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>pi, <span class="dt">length.out =</span> <span class="dv">500</span>)</div>
+<div class="sourceLine" id="cb11-5" data-line-number="5">  a =<span class="st"> </span>mu <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>((<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(ev<span class="op">$</span>vectors) <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(ev<span class="op">$</span>values))) <span class="op">%*%</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">rbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">cos</a></span>(t_), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">sin</a></span>(t_)) </div>
+<div class="sourceLine" id="cb11-6" data-line-number="6">  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(a))</div>
+<div class="sourceLine" id="cb11-7" data-line-number="7">}</div>
+<div class="sourceLine" id="cb11-8" data-line-number="8">coda_ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p, <span class="dt">B =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/ilr_basis">ilr_basis</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(mu) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)){</div>
+<div class="sourceLine" id="cb11-9" data-line-number="9">  <span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/composition">composition</a></span>(<span class="kw">ellipse</span>(mu, sigma, p), B)</div>
+<div class="sourceLine" id="cb11-10" data-line-number="10">}</div></code></pre>
+<pre class="sourceCode r" id="cb12"><code class="sourceCode r"><div class="sourceLine" id="cb12-1" data-line-number="1">SL3 =<span class="st"> </span><span class="kw"><a href="../reference/simplex_lattice.html">simplex_lattice</a></span>(SIZE, <span class="dv">3</span>)</div>
+<div class="sourceLine" id="cb12-2" data-line-number="2"><span class="co"># We calculate the posterior probabilities for each multivariate count</span></div>
+<div class="sourceLine" id="cb12-3" data-line-number="3">lM =<span class="st"> </span><span class="kw"><a href="../reference/lrnm_posterior_approx.html">lrnm_posterior_approx</a></span>(SL3, mu, sigma, B)</div>
+<div class="sourceLine" id="cb12-4" data-line-number="4"></div>
+<div class="sourceLine" id="cb12-5" data-line-number="5">H_MAX =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lapply">sapply</a></span>(lM, <span class="cf">function</span>(l)l<span class="op">$</span>mu)))</div>
+<div class="sourceLine" id="cb12-6" data-line-number="6">MAX =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/composition">composition</a></span>(H_MAX, B)</div>
+<div class="sourceLine" id="cb12-7" data-line-number="7">H_E =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(<span class="kw">c_obtain_moments_lrnm_hermite</span>(SL3, mu, sigma, <span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/ilr_basis">ilr_basis</a></span>(<span class="dv">3</span>), <span class="dt">order =</span> <span class="dv">10</span>)[[<span class="dv">1</span>]]))</div>
+<div class="sourceLine" id="cb12-8" data-line-number="8">E =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/composition">composition</a></span>(H_E, B)</div>
+<div class="sourceLine" id="cb12-9" data-line-number="9"></div>
+<div class="sourceLine" id="cb12-10" data-line-number="10">mu_center =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/composition">composition</a></span>(mu, B)</div></code></pre>
+<pre class="sourceCode r" id="cb13"><code class="sourceCode r"><div class="sourceLine" id="cb13-1" data-line-number="1">df_ellip0 =<span class="st"> </span><span class="kw">coda_ellipse</span>(mu, sigma, <span class="fl">0.95</span>)</div>
+<div class="sourceLine" id="cb13-2" data-line-number="2">p =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb13-3" data-line-number="3">
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> mu_center[<span class="dv">1</span>], </div>
+<div class="sourceLine" id="cb13-4" data-line-number="4">                 <span class="dt">y =</span> mu_center[<span class="dv">2</span>], </div>
+<div class="sourceLine" id="cb13-5" data-line-number="5">                 <span class="dt">z =</span> mu_center[<span class="dv">3</span>]), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb13-6" data-line-number="6">
+<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_ellip0, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb13-7" data-line-number="7">
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>MAX,  <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'red'</span>)<span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb13-8" data-line-number="8">
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>E,  <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3))</div>
+<div class="sourceLine" id="cb13-9" data-line-number="9">
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(SL3)){</div>
+<div class="sourceLine" id="cb13-10" data-line-number="10">  df_ellip =<span class="st"> </span><span class="kw">coda_ellipse</span>(lM[[i]]<span class="op">$</span>mu, lM[[i]]<span class="op">$</span>sigma, <span class="fl">0.95</span>)</div>
+<div class="sourceLine" id="cb13-11" data-line-number="11">  df_ellip<span class="op">$</span>state =<span class="st"> </span>i</div>
+<div class="sourceLine" id="cb13-12" data-line-number="12">  p =<span class="st"> </span>p <span class="op">+</span><span class="st"> </span>
+</div>
+<div class="sourceLine" id="cb13-13" data-line-number="13">
+<span class="st">    </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_ellip, </div>
+<div class="sourceLine" id="cb13-14" data-line-number="14">              <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">col =</span> <span class="st">'red'</span>)</div>
+<div class="sourceLine" id="cb13-15" data-line-number="15">}</div>
+<div class="sourceLine" id="cb13-16" data-line-number="16">p</div></code></pre>
+<p><img src="lrnm_files/figure-html/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;"></p>
+<pre class="sourceCode r" id="cb14"><code class="sourceCode r"><div class="sourceLine" id="cb14-1" data-line-number="1">df_ellip0 =<span class="st"> </span><span class="kw">ellipse</span>(mu, sigma, <span class="fl">0.95</span>)</div>
+<div class="sourceLine" id="cb14-2" data-line-number="2">p =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggplot">ggplot</a></span>() <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb14-3" data-line-number="3">
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> mu[<span class="dv">1</span>], <span class="dt">y =</span> mu[<span class="dv">2</span>]), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb14-4" data-line-number="4">
+<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_ellip0, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb14-5" data-line-number="5">
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>H_MAX,  <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'red'</span>) <span class="op">+</span>
+</div>
+<div class="sourceLine" id="cb14-6" data-line-number="6">
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span>H_E,  <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2))</div>
+<div class="sourceLine" id="cb14-7" data-line-number="7">
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(SL3)){</div>
+<div class="sourceLine" id="cb14-8" data-line-number="8">  df_ellip =<span class="st"> </span><span class="kw">ellipse</span>(lM[[i]]<span class="op">$</span>mu, lM[[i]]<span class="op">$</span>sigma, <span class="fl">0.95</span>)</div>
+<div class="sourceLine" id="cb14-9" data-line-number="9">  p =<span class="st"> </span>p <span class="op">+</span><span class="st"> </span>
+</div>
+<div class="sourceLine" id="cb14-10" data-line-number="10">
+<span class="st">    </span><span class="kw">geom_path</span>(<span class="dt">data =</span> df_ellip, </div>
+<div class="sourceLine" id="cb14-11" data-line-number="11">              <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">col =</span> <span class="st">'red'</span>)</div>
+<div class="sourceLine" id="cb14-12" data-line-number="12">}</div>
+<div class="sourceLine" id="cb14-13" data-line-number="13">p <span class="op">+</span><span class="st"> </span><span class="kw">coord_equal</span>()</div></code></pre>
+<p><img src="lrnm_files/figure-html/unnamed-chunk-14-1.png" width="576" style="display: block; margin: auto;"></p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

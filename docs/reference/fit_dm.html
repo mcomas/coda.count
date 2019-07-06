@@ -117,7 +117,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>fit_dm</span>(<span class='no'>X</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>maxiter</span> <span class='kw'>=</span> <span class='fl'>5000</span>)</pre>
+    <pre class="usage"><span class='fu'>fit_dm</span>(<span class='no'>X</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='fl'>1e-04</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>500</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -125,6 +125,14 @@
     <tr>
       <th>X</th>
       <td><p>count sample</p></td>
+    </tr>
+    <tr>
+      <th>eps</th>
+      <td><p>precision used for the final estimates</p></td>
+    </tr>
+    <tr>
+      <th>max_iter</th>
+      <td><p>maximum number of iterations for the iterative procedure used to estimate the parameter</p></td>
     </tr>
     </table>
     

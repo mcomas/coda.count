@@ -117,8 +117,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>fit_lrnm</span>(<span class='no'>X</span>, <span class='kw'>B</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>probs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>order</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='fl'>1e-08</span>,
-  <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>500</span>)</pre>
+    <pre class="usage"><span class='fu'>fit_lrnm</span>(<span class='no'>X</span>, <span class='kw'>B</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>probs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>hermite.order</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>eps</span> <span class='kw'>=</span> <span class='fl'>1e-08</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>500</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -126,6 +126,26 @@
     <tr>
       <th>X</th>
       <td><p>count sample</p></td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td><p>clr-basis in which mu and sigma are interpreted with. Default basis is given by coda.base::ilr_basis(length(x))</p></td>
+    </tr>
+    <tr>
+      <th>probs</th>
+      <td><p>boolean indicating if expected posterior probabilities are returned.</p></td>
+    </tr>
+    <tr>
+      <th>hermite.order</th>
+      <td><p>order of Hermite polynomials</p></td>
+    </tr>
+    <tr>
+      <th>eps</th>
+      <td><p>precision used for the final estimates</p></td>
+    </tr>
+    <tr>
+      <th>max_iter</th>
+      <td><p>maximum number of iterations for the iterative procedure used to estimate the parameter</p></td>
     </tr>
     </table>
     
