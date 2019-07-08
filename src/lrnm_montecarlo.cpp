@@ -9,7 +9,6 @@
 
 using namespace Rcpp;
 
-//' @export
 // [[Rcpp::export]]
 double c_d_lrnm_montecarlo(arma::vec x, arma::vec mu_prior, arma::mat sigma_prior, arma::mat Binv,
                            arma::mat &Z){
@@ -40,7 +39,7 @@ double c_d_lrnm_montecarlo(arma::vec x, arma::vec mu_prior, arma::mat sigma_prio
   return integral/n;
 }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::mat c_moments_lrnm_montecarlo_precision_lm(arma::vec x,
                                                  arma::vec mu, arma::mat sigma,
@@ -110,7 +109,7 @@ Rcpp::List c_obtain_moments_lrnm_montecarlo(arma::mat Y,
   return Rcpp::List::create(M1, M2);
 }
 
-//' @export
+
 // [[Rcpp::export]]
 Rcpp::List c_fit_lm_lrnm_montecarlo_centered(arma::mat Y, arma::mat B, arma::mat X, arma::mat &Z,
                                              double eps, int max_iter){
