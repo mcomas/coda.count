@@ -34,7 +34,7 @@ ddm <- function(x, alpha) {
   if(is.vector(x)){
     c_ddm(x, alpha)
   }else{
-    apply(X, 1, c_ddm, alpha)
+    apply(x, 1, c_ddm, alpha)
   }
 
 }

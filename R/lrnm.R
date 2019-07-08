@@ -40,17 +40,30 @@ dlrnm = function(x, mu, sigma, B = NULL,
 #' @param X count sample
 #' @param B clr-basis in which mu and sigma are interpreted with. Default basis is given by coda.base::ilr_basis(length(x))
 #' @param probs boolean indicating if expected posterior probabilities are returned.
+#' @param montecarlo.n number of samples in the Montecarlo integration process.
 #' @param hermite.order order of Hermite polynomials
 #' @param eps precision used for the final estimates
 #' @param max_iter maximum number of iterations for the iterative procedure used to estimate the parameter
 #' @return Estimated parameters mu and sigma
 #' @export
-fit_lrnm = function(X, B = NULL, probs = FALSE, hermite.order = 5, eps = 1e-8, max_iter = 500){
+fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo',
+                    montecarlo.n = 100, hermite.order = 5, Z = NULL, eps = 1e-8, max_iter = 500){
   if(is.null(B)){
     B = coda.base::ilr_basis(ncol(X))
   }
-  fit = c_fit_lm_lrnm_hermite_centered(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
-                                       order = hermite.order, eps = eps, max_iter = max_iter)
+  d = ncol(X)-1
+  if(method=='hermite'){
+    fit = c_fit_lm_lrnm_hermite_centered(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
+                                         order = hermite.order, eps = eps, max_iter = max_iter)
+  }
+  if(method=='montecarlo'){
+    if(is.null(Z)){
+      Z = matrix(rnorm(montecarlo.n*d), ncol = d)
+      Z = rbind(Z,-Z)
+    }
+    fit = c_fit_lm_lrnm_montecarlo_centered(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
+                                            Z = Z, eps = eps, max_iter = max_iter)
+  }
   if(fit[[4]] == max_iter){
     warning("Maximum number of iterations exhausted.")
   }

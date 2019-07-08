@@ -4,8 +4,9 @@
 \alias{fit_lrnm}
 \title{Estimate the parameters of a logratio-normal-multinomial distribution}
 \usage{
-fit_lrnm(X, B = NULL, probs = FALSE, hermite.order = 5,
-  eps = 1e-08, max_iter = 500)
+fit_lrnm(X, B = NULL, probs = FALSE, method = "montecarlo",
+  montecarlo.n = 100, hermite.order = 5, Z = NULL, eps = 1e-08,
+  max_iter = 500)
 }
 \arguments{
 \item{X}{count sample}
@@ -13,6 +14,8 @@ fit_lrnm(X, B = NULL, probs = FALSE, hermite.order = 5,
 \item{B}{clr-basis in which mu and sigma are interpreted with. Default basis is given by coda.base::ilr_basis(length(x))}
 
 \item{probs}{boolean indicating if expected posterior probabilities are returned.}
+
+\item{montecarlo.n}{number of samples in the Montecarlo integration process.}
 
 \item{hermite.order}{order of Hermite polynomials}
 

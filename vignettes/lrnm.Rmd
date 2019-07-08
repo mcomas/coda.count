@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 library(coda.count)
 library(coda.base)
 library(ggtern)
-library(gganimate)
 theme_set(theme_minimal())
 ```
 
