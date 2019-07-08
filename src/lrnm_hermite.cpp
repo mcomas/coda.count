@@ -65,6 +65,7 @@ double c_d_lrnm_hermite(arma::vec x,
   return integral;
 }
 
+//' @export
 // [[Rcpp::export]]
 arma::mat c_moments_lrnm_hermite_precision_lm(arma::vec x,
                                               arma::vec mu, arma::mat sigma,
