@@ -105,7 +105,7 @@ ggtern() +
 For the sample `Y` we can
 
 ```{r}
-fitting = fit_lrnm(Y, probs = TRUE)
+fitting = fit_lrnm(Y, method = 'hermite', probs = TRUE)
 ```
 
 Expected estimated posterior probabilities
