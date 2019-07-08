@@ -11,10 +11,19 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-double c_d_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv,
-                        int order){
+double c_d_lrnm_hermite(arma::vec x,
+                        arma::vec mu_prior, arma::mat sigma_prior,
+                        arma::mat Binv, int order){
 
   unsigned d = x.n_elem - 1;
+
+
+  arma::mat inv_sigma_prior = arma::inv_sympd(sigma_prior);
+  arma::mat N_posterior = c_posterior_approximation_vec(x, mu_prior, inv_sigma_prior, Binv);
+  arma::vec mu = N_posterior.col(d);
+  arma::mat sigma = N_posterior.head_cols(d);
+  arma::mat inv_sigma = arma::inv_sympd(sigma);
+
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
 
@@ -39,7 +48,9 @@ double c_d_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Bi
     }
     h = mu + rotation * h;
     arma::vec p = exp(Binv * h);
-    integral += exp(w + l_multinomial(x, p/accu(p), l_cmult));
+    integral += exp(w + ldnormal_vec(h, mu_prior, inv_sigma_prior) -
+      ldnormal_vec(h, mu, inv_sigma) +
+      l_multinomial(x, p/accu(p), l_cmult));
     // Calculate next coordinate
     index[position]++;
     while(index[position] == order){
