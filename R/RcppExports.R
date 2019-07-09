@@ -57,6 +57,10 @@ c_fit_lrnm_lm_hermite <- function(Y, B, X, order, eps, max_iter) {
     .Call('_coda_count_c_fit_lrnm_lm_hermite', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter)
 }
 
+c_fit_lrnm_lm_laplace <- function(Y, B, X, eps, max_iter) {
+    .Call('_coda_count_c_fit_lrnm_lm_laplace', PACKAGE = 'coda.count', Y, B, X, eps, max_iter)
+}
+
 c_d_lrnm_montecarlo <- function(x, mu_prior, sigma_prior, Binv, Z) {
     .Call('_coda_count_c_d_lrnm_montecarlo', PACKAGE = 'coda.count', x, mu_prior, sigma_prior, Binv, Z)
 }

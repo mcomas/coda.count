@@ -142,7 +142,7 @@ coda_ellipse = function(mu, sigma, p, B = ilr_basis(length(mu) + 1)){
 }
 ```
 
-```{r}
+```{r, eval=FALSE, include=FALSE}
 SL3 = simplex_lattice(SIZE, 3)
 # We calculate the posterior probabilities for each multivariate count
 lM = lrnm_posterior_approx(SL3, mu, sigma, B)
@@ -155,7 +155,7 @@ E = composition(H_E, B)
 mu_center = composition(mu, B)
 ```
 
-```{r, fig.width=6, fig.height=4.8, fig.align='center'}
+```{r, fig.width=6, fig.height=4.8, fig.align='center', eval=FALSE, include=FALSE}
 df_ellip0 = coda_ellipse(mu, sigma, 0.95)
 p = ggtern() +
   geom_point(aes(x = mu_center[1], 
@@ -174,7 +174,7 @@ for(i in 1:nrow(SL3)){
 p
 ```
 
-```{r, fig.width=6, fig.height=4.8, fig.align='center'}
+```{r, fig.width=6, fig.height=4.8, fig.align='center', eval=FALSE, include=FALSE}
 df_ellip0 = ellipse(mu, sigma, 0.95)
 p = ggplot() +
   geom_point(aes(x = mu[1], y = mu[2]), col = 'blue') +

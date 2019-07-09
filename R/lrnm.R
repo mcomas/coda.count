@@ -42,11 +42,11 @@ dlrnm = function(x, mu, sigma, B = NULL,
 #' @param probs boolean indicating if expected posterior probabilities are returned.
 #' @param montecarlo.n number of samples in the Montecarlo integration process.
 #' @param hermite.order order of Hermite polynomials
-#' @param eps precision used for the final estimates. 1e-8 for hermite method and 0.001 for montecarlo method.
+#' @param eps precision used for the final estimates. 1e-5 for hermite method and 1e-3 for montecarlo method.
 #' @param max_iter maximum number of iterations for the iterative procedure used to estimate the parameter
 #' @return Estimated parameters mu and sigma
 #' @export
-fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo',
+fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'laplace',
                     montecarlo.n = 500, hermite.order = 5, Z = NULL, eps = NULL, max_iter = 500){
   if(is.null(B)){
     B = coda.base::ilr_basis(ncol(X))
@@ -54,14 +54,21 @@ fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo',
   d = ncol(X)-1
   if(method=='hermite'){
     if(is.null(eps)){
-      eps = 1e-08
+      eps = 1e-05
     }
     fit = c_fit_lrnm_lm_hermite(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
                                 order = hermite.order, eps = eps, max_iter = max_iter)
   }
+  if(method=='laplace'){
+    if(is.null(eps)){
+      eps = 1e-05
+    }
+    fit = c_fit_lrnm_lm_laplace(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
+                                eps = eps, max_iter = max_iter)
+  }
   if(method=='montecarlo'){
     if(is.null(eps)){
-      eps = 0.001
+      eps = 1e-3
     }
     if(is.null(Z)){
       Z = matrix(rnorm(montecarlo.n*d), ncol = d)

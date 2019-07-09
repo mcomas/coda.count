@@ -4,8 +4,8 @@
 \alias{fit_lrnm}
 \title{Estimate the parameters of a logratio-normal-multinomial distribution}
 \usage{
-fit_lrnm(X, B = NULL, probs = FALSE, method = "montecarlo",
-  montecarlo.n = 100, hermite.order = 5, Z = NULL, eps = 1e-08,
+fit_lrnm(X, B = NULL, probs = FALSE, method = "laplace",
+  montecarlo.n = 500, hermite.order = 5, Z = NULL, eps = NULL,
   max_iter = 500)
 }
 \arguments{
@@ -19,7 +19,7 @@ fit_lrnm(X, B = NULL, probs = FALSE, method = "montecarlo",
 
 \item{hermite.order}{order of Hermite polynomials}
 
-\item{eps}{precision used for the final estimates}
+\item{eps}{precision used for the final estimates. 1e-5 for hermite method and 1e-3 for montecarlo method.}
 
 \item{max_iter}{maximum number of iterations for the iterative procedure used to estimate the parameter}
 }

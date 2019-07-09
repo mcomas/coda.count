@@ -187,6 +187,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_fit_lrnm_lm_laplace
+Rcpp::List c_fit_lrnm_lm_laplace(arma::mat Y, arma::mat B, arma::mat X, double eps, int max_iter);
+RcppExport SEXP _coda_count_c_fit_lrnm_lm_laplace(SEXP YSEXP, SEXP BSEXP, SEXP XSEXP, SEXP epsSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type B(BSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_fit_lrnm_lm_laplace(Y, B, X, eps, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_d_lrnm_montecarlo
 double c_d_lrnm_montecarlo(arma::vec x, arma::vec mu_prior, arma::mat sigma_prior, arma::mat Binv, arma::mat& Z);
 RcppExport SEXP _coda_count_c_d_lrnm_montecarlo(SEXP xSEXP, SEXP mu_priorSEXP, SEXP sigma_priorSEXP, SEXP BinvSEXP, SEXP ZSEXP) {
@@ -435,6 +450,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_d_lrnm_hermite", (DL_FUNC) &_coda_count_c_d_lrnm_hermite, 5},
     {"_coda_count_c_moments_lrnm_hermite", (DL_FUNC) &_coda_count_c_moments_lrnm_hermite, 7},
     {"_coda_count_c_fit_lrnm_lm_hermite", (DL_FUNC) &_coda_count_c_fit_lrnm_lm_hermite, 6},
+    {"_coda_count_c_fit_lrnm_lm_laplace", (DL_FUNC) &_coda_count_c_fit_lrnm_lm_laplace, 5},
     {"_coda_count_c_d_lrnm_montecarlo", (DL_FUNC) &_coda_count_c_d_lrnm_montecarlo, 5},
     {"_coda_count_c_moments_lrnm_montecarlo", (DL_FUNC) &_coda_count_c_moments_lrnm_montecarlo, 7},
     {"_coda_count_c_fit_lrnm_lm_montecarlo", (DL_FUNC) &_coda_count_c_fit_lrnm_lm_montecarlo, 6},

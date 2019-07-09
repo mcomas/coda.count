@@ -16,15 +16,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -49,7 +47,6 @@
 <![endif]-->
 
 
-
   </head>
 
   <body>
@@ -66,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.count</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.13</span>
       </span>
     </div>
 
@@ -74,7 +71,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -88,6 +85,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/clustering.html">Clustering multivariate count data using the log-ratio-normal-multinomial distribution</a>
+    </li>
     <li>
       <a href="../articles/lrnm.html">The logratio-normal-multinomial distribution</a>
     </li>
@@ -104,7 +104,6 @@
 </div><!--/.navbar -->
 
       
-
       </header>
 
 <div class="row">
@@ -142,14 +141,80 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='fu'><a href='simplex_lattice.html'>simplex_lattice</a></span>(<span class='fl'>19</span>,<span class='fl'>2</span>), <span class='fl'>2</span>, <span class='no'>rev</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='no'>X</span>, <span class='fl'>1</span>, <span class='no'>ddm</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1.5</span>,<span class='fl'>2</span>)))</div><div class='output co'>#&gt; [1] 1</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>p</span>) <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span>(<span class='st'>"(%d,%d)"</span>, <span class='no'>X</span>[,<span class='fl'>1</span>], <span class='no'>X</span>[,<span class='fl'>2</span>])
-<span class='fu'><a href='https://rdrr.io/r/graphics/barplot.html'>barplot</a></span>(<span class='no'>p</span>, <span class='kw'>cex.axis</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>cex.names</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>las</span><span class='kw'>=</span><span class='fl'>2</span>,
-        <span class='kw'>main</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span>(<span class='st'>'Dirichlet-multinomial'</span>,
+    <pre class="examples"><div class='input'><span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/apply'>apply</a></span>(<span class='fu'><a href='simplex_lattice.html'>simplex_lattice</a></span>(<span class='fl'>19</span>,<span class='fl'>2</span>), <span class='fl'>2</span>, <span class='no'>rev</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sum'>sum</a></span>(<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/apply'>apply</a></span>(<span class='no'>X</span>, <span class='fl'>1</span>, <span class='no'>ddm</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1.5</span>,<span class='fl'>2</span>)))</div><div class='output co'>#&gt; [1] 1</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>p</span>) <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sprintf'>sprintf</a></span>(<span class='st'>"(%d,%d)"</span>, <span class='no'>X</span>[,<span class='fl'>1</span>], <span class='no'>X</span>[,<span class='fl'>2</span>])
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/barplot'>barplot</a></span>(<span class='no'>p</span>, <span class='kw'>cex.axis</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>cex.names</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>las</span><span class='kw'>=</span><span class='fl'>2</span>,
+        <span class='kw'>main</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/paste'>paste</a></span>(<span class='st'>'Dirichlet-multinomial'</span>,
                      <span class='st'>'probability mass function'</span>, <span class='kw'>sep</span><span class='kw'>=</span><span class='st'>"\n"</span>),
                      <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>'Count'</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>'Probability'</span>)</div><div class='img'><img src='ddm-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='no'>D</span> <span class='kw'>=</span> <span class='fl'>3</span>
 <span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='simplex_lattice.html'>simplex_lattice</a></span>(<span class='fl'>10</span>,<span class='fl'>3</span>)
-(<span class='no'>pmf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>X</span>, <span class='fu'>ddm</span>(<span class='no'>X</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.5</span>,<span class='fl'>0.5</span>,<span class='fl'>0.5</span>))))</div><div class='output co'>#&gt; <span class='error'>Error in apply(X, 1, c_ddm, alpha): object 'X' not found</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span>(<span class='no'>pmf</span>[,<span class='fl'>4</span>])</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'pmf' not found</span></div></pre>
+(<span class='no'>pmf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='no'>X</span>, <span class='fu'>ddm</span>(<span class='no'>X</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.5</span>,<span class='fl'>0.5</span>,<span class='fl'>0.5</span>))))</div><div class='output co'>#&gt;       [,1] [,2] [,3]        [,4]
+#&gt;  [1,]   10    0    0 0.047619048
+#&gt;  [2,]    9    1    0 0.025062657
+#&gt;  [3,]    9    0    1 0.025062657
+#&gt;  [4,]    8    2    0 0.019902698
+#&gt;  [5,]    8    1    1 0.013268465
+#&gt;  [6,]    8    0    2 0.019902698
+#&gt;  [7,]    7    3    0 0.017691287
+#&gt;  [8,]    7    2    1 0.010614772
+#&gt;  [9,]    7    1    2 0.010614772
+#&gt; [10,]    7    0    3 0.017691287
+#&gt; [11,]    6    4    0 0.016670636
+#&gt; [12,]    6    3    1 0.009526078
+#&gt; [13,]    6    2    2 0.008573470
+#&gt; [14,]    6    1    3 0.009526078
+#&gt; [15,]    6    0    4 0.016670636
+#&gt; [16,]    5    5    0 0.016367533
+#&gt; [17,]    5    4    1 0.009093074
+#&gt; [18,]    5    3    2 0.007794064
+#&gt; [19,]    5    2    3 0.007794064
+#&gt; [20,]    5    1    4 0.009093074
+#&gt; [21,]    5    0    5 0.016367533
+#&gt; [22,]    4    6    0 0.016670636
+#&gt; [23,]    4    5    1 0.009093074
+#&gt; [24,]    4    4    2 0.007577562
+#&gt; [25,]    4    3    3 0.007216725
+#&gt; [26,]    4    2    4 0.007577562
+#&gt; [27,]    4    1    5 0.009093074
+#&gt; [28,]    4    0    6 0.016670636
+#&gt; [29,]    3    7    0 0.017691287
+#&gt; [30,]    3    6    1 0.009526078
+#&gt; [31,]    3    5    2 0.007794064
+#&gt; [32,]    3    4    3 0.007216725
+#&gt; [33,]    3    3    4 0.007216725
+#&gt; [34,]    3    2    5 0.007794064
+#&gt; [35,]    3    1    6 0.009526078
+#&gt; [36,]    3    0    7 0.017691287
+#&gt; [37,]    2    8    0 0.019902698
+#&gt; [38,]    2    7    1 0.010614772
+#&gt; [39,]    2    6    2 0.008573470
+#&gt; [40,]    2    5    3 0.007794064
+#&gt; [41,]    2    4    4 0.007577562
+#&gt; [42,]    2    3    5 0.007794064
+#&gt; [43,]    2    2    6 0.008573470
+#&gt; [44,]    2    1    7 0.010614772
+#&gt; [45,]    2    0    8 0.019902698
+#&gt; [46,]    1    9    0 0.025062657
+#&gt; [47,]    1    8    1 0.013268465
+#&gt; [48,]    1    7    2 0.010614772
+#&gt; [49,]    1    6    3 0.009526078
+#&gt; [50,]    1    5    4 0.009093074
+#&gt; [51,]    1    4    5 0.009093074
+#&gt; [52,]    1    3    6 0.009526078
+#&gt; [53,]    1    2    7 0.010614772
+#&gt; [54,]    1    1    8 0.013268465
+#&gt; [55,]    1    0    9 0.025062657
+#&gt; [56,]    0   10    0 0.047619048
+#&gt; [57,]    0    9    1 0.025062657
+#&gt; [58,]    0    8    2 0.019902698
+#&gt; [59,]    0    7    3 0.017691287
+#&gt; [60,]    0    6    4 0.016670636
+#&gt; [61,]    0    5    5 0.016367533
+#&gt; [62,]    0    4    6 0.016670636
+#&gt; [63,]    0    3    7 0.017691287
+#&gt; [64,]    0    2    8 0.019902698
+#&gt; [65,]    0    1    9 0.025062657
+#&gt; [66,]    0    0   10 0.047619048</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sum'>sum</a></span>(<span class='no'>pmf</span>[,<span class='fl'>4</span>])</div><div class='output co'>#&gt; [1] 1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -164,23 +229,19 @@
   </div>
 </div>
 
-
       <footer>
       <div class="copyright">
   <p>Developed by Marc Comas-Cufí.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
-
       </footer>
    </div>
 
   
 
-
   </body>
 </html>
-
 
