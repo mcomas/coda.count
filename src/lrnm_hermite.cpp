@@ -172,9 +172,18 @@ Rcpp::List c_fit_lm_lrnm_hermite_centered(arma::mat Y, arma::mat B, arma::mat X,
 
 
   int current_iter = 0;
+  arma::vec eigval;
+  arma::mat eigvec;
   do{
+    Rcpp::checkUserInterrupt();
+
     current_iter++;
 
+    bool cor = eig_sym(eigval, eigvec, sigma_lm);
+    if(eigval.min() < 1e-10){
+      Rcpp::Rcout << "Covariance matrix is degenerate" << std::endl;
+      return Rcpp::List::create(beta, sigma_lm, H, current_iter, eigval, sigma_lm);
+    }
     inv_sigma_lm = arma::inv_sympd(sigma_lm);
     beta_prev = arma::mat(beta);
     arma::vec M1 = arma::zeros(d);
