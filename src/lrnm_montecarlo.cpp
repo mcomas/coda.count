@@ -30,10 +30,10 @@ double c_d_lrnm_montecarlo(arma::vec x, arma::vec mu_prior, arma::mat sigma_prio
   double integral = 0;
   for(int i=0; i<n; i++){
     h = Hz.row(i).t() + mu;
-    p = exp(Binv * h);
+    p = arma::exp(Binv * h);
 
-    integral += exp(ldnormal_vec(h, mu_prior, inv_sigma_prior) -
-      ldnormal_vec(h, mu, inv_sigma) +
+    integral += exp(l_dnormal_vec(h, mu_prior, inv_sigma_prior) -
+      l_dnormal_vec(h, mu, inv_sigma) +
       l_multinomial(x, p/accu(p), l_cmult));
   }
   return integral/n;
@@ -41,22 +41,21 @@ double c_d_lrnm_montecarlo(arma::vec x, arma::vec mu_prior, arma::mat sigma_prio
 
 
 // [[Rcpp::export]]
-arma::mat c_moments_lrnm_montecarlo_precision_lm(arma::vec x,
-                                                 arma::vec mu, arma::mat sigma,
-                                                 arma::vec mu_prior, arma::mat sigma_prior,
-                                                 arma::mat Binv, arma::mat &Z){
+arma::mat c_moments_lrnm_montecarlo(arma::vec x,
+                                    arma::vec mu, arma::mat sigma,
+                                    arma::vec mu_prior, arma::mat inv_sigma_prior,
+                                    arma::mat Binv, arma::mat &Z){
   unsigned d = x.n_elem - 1;
-  unsigned n = Z.n_rows;
+  unsigned n = Z.n_cols;
 
   arma::mat inv_sigma = arma::inv_sympd(sigma);
-  arma::mat inv_sigma_prior = arma::inv_sympd(sigma_prior);
 
 
   unsigned int index[d+1];
   for(unsigned int i = 0; i <= d; i++) index[i] = 0;
   int position = 0, k = 0;
 
-  arma::mat Hz = Z * arma::chol(sigma);
+  arma::mat Hz = arma::chol(sigma).t() * Z;
 
   double l_cmult = l_multinomial_const(x);
 
@@ -64,13 +63,20 @@ arma::mat c_moments_lrnm_montecarlo_precision_lm(arma::vec x,
   double M0 = 0;
   arma::vec M1 = arma::zeros(d);
   arma::mat M2 = arma::zeros(d,d);
-  for(int i=0; i<n; i++){
-    h = Hz.row(i).t() + mu;
-    p = exp(Binv * h);
 
-    double dens = exp(ldnormal_vec(h, mu_prior, inv_sigma_prior) -
-                      ldnormal_vec(h, mu, inv_sigma) +
-                      l_multinomial(x, p/accu(p), l_cmult));
+  arma::mat INV_SIGMA = inv_sigma_prior - inv_sigma;
+  arma::mat MU = inv_sympd(INV_SIGMA) * (inv_sigma_prior * mu_prior - inv_sigma * mu);
+
+  for(int i=0; i<n; i++){
+    h = Hz.col(i) + mu;
+    p = arma::exp(Binv * h);
+
+    double dens = exp(l_dnormal_prop_vec(h, MU, INV_SIGMA) +
+                      arma::dot(log(p/accu(p)),x));
+
+    // double dens = exp(l_dnormal_prop_vec(h, mu_prior, inv_sigma_prior) -
+    //                   l_dnormal_prop_vec(h, mu, inv_sigma) +
+    //                   arma::dot(log(p/accu(p)),x));
 
     M0 += dens;
     M1 += h * dens;
@@ -83,40 +89,43 @@ arma::mat c_moments_lrnm_montecarlo_precision_lm(arma::vec x,
   return moments;
 }
 
-//' @export
+// //' @export
+// // [[Rcpp::export]]
+// Rcpp::List c_obtain_moments_lrnm_montecarlo(arma::mat Y,
+//                                             arma::vec mu, arma::mat sigma,
+//                                             arma::mat B, arma::mat &Z){
+//   int n = Y.n_rows;
+//   int d = Y.n_cols - 1;
+//
+//   arma::mat Binv = pinv(B).t();
+//   arma::mat inv_sigma = arma::inv_sympd(sigma);
+//
+//   arma::mat M1 = arma::zeros(d, n);
+//   arma::cube M2 = arma::zeros(d, d, n);
+//
+//   for(int i = 0; i < Y.n_rows; i++){
+//     arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu, inv_sigma, Binv);
+//     arma::mat moments = c_moments_lrnm_montecarlo_precision_lm(Y.row(i).t(),
+//                                                                N_posterior.col(d), N_posterior.head_cols(d),
+//                                                                mu, inv_sigma,
+//                                                                Binv, Z);
+//     M1.col(i) = moments.col(d);
+//     M2.slice(i) = moments.head_cols(d);
+//   }
+//   return Rcpp::List::create(M1, M2);
+// }
+
+
 // [[Rcpp::export]]
-Rcpp::List c_obtain_moments_lrnm_montecarlo(arma::mat Y,
-                                            arma::vec mu, arma::mat sigma,
-                                            arma::mat B, arma::mat &Z){
-  int n = Y.n_rows;
-  int d = Y.n_cols - 1;
-
-  arma::mat Binv = pinv(B).t();
-  arma::mat inv_sigma = arma::inv_sympd(sigma);
-
-  arma::mat M1 = arma::zeros(d, n);
-  arma::cube M2 = arma::zeros(d, d, n);
-
-  for(int i = 0; i < Y.n_rows; i++){
-    arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu, inv_sigma, Binv);
-    arma::mat moments = c_moments_lrnm_montecarlo_precision_lm(Y.row(i).t(),
-                                                               N_posterior.col(d), N_posterior.head_cols(d),
-                                                               mu, sigma,
-                                                               Binv, Z);
-    M1.col(i) = moments.col(d);
-    M2.slice(i) = moments.head_cols(d);
-  }
-  return Rcpp::List::create(M1, M2);
-}
-
-
-// [[Rcpp::export]]
-Rcpp::List c_fit_lm_lrnm_montecarlo_centered(arma::mat Y, arma::mat B, arma::mat X, arma::mat &Z,
-                                             double eps, int max_iter){
+Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma::mat &Z,
+                                    double eps, int max_iter){
 
   int n = Y.n_rows;
   int k = X.n_cols;
   int d = Y.n_cols - 1;
+
+  arma::mat Zt = Z.t();
+
   arma::vec alpha = c_dm_fit_alpha(Y);
   arma::mat Binv = pinv(B).t();
   arma::mat P = arma::mat(Y);
@@ -149,10 +158,10 @@ Rcpp::List c_fit_lm_lrnm_montecarlo_centered(arma::mat Y, arma::mat B, arma::mat
     for(int i = 0; i < Y.n_rows; i++){
       arma::mat mu_i =  X.row(i) * beta;
       arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu_i.t(), inv_sigma_lm, Binv);
-      arma::mat moments = c_moments_lrnm_montecarlo_precision_lm(Y.row(i).t(),
-                                                                 N_posterior.col(d), N_posterior.head_cols(d),
-                                                                 mu_i.t(), sigma_lm,
-                                                                 Binv, Z);
+      arma::mat moments = c_moments_lrnm_montecarlo(Y.row(i).t(),
+                                                    N_posterior.col(d), N_posterior.head_cols(d),
+                                                    mu_i.t(), inv_sigma_lm,
+                                                    Binv, Zt);
       H.row(i) = moments.col(d).t();
       M1 += moments.col(d);
       M2 += moments.head_cols(d);
@@ -168,11 +177,10 @@ Rcpp::List c_fit_lm_lrnm_montecarlo_centered(arma::mat Y, arma::mat B, arma::mat
   for(int i = 0; i < Y.n_rows; i++){
     arma::mat mu_i =  X.row(i) * beta;
     arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu_i.t(), inv_sigma_lm, Binv);
-    arma::mat moments = c_moments_lrnm_montecarlo_precision_lm(Y.row(i).t(),
-                                                               N_posterior.col(d), N_posterior.head_cols(d),
-                                                               mu_i.t(), sigma_lm,
-                                                               Binv, Z);
-
+    arma::mat moments = c_moments_lrnm_montecarlo(Y.row(i).t(),
+                                                  N_posterior.col(d), N_posterior.head_cols(d),
+                                                  mu_i.t(), inv_sigma_lm,
+                                                  Binv, Zt);
     H.row(i) = moments.col(d).t();
   }
   beta = arma::inv(X.t() * X) * X.t() * H;

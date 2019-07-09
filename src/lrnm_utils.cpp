@@ -8,7 +8,7 @@ using namespace Rcpp;
 const double log2pi = std::log(M_2PI);
 
 // [[Rcpp::export]]
-double ldnormal_vec(arma::vec h, arma::vec mu, arma::mat inv_sigma){
+double l_dnormal_vec(arma::vec h, arma::vec mu, arma::mat inv_sigma){
   int k = h.n_elem;
 
   double log_det_val;
@@ -25,6 +25,18 @@ double ldnormal_vec(arma::vec h, arma::vec mu, arma::mat inv_sigma){
   return(norm_const + log_norm);
 }
 
+// [[Rcpp::export]]
+double l_dnormal_prop_vec(arma::vec h, arma::vec mu, arma::mat inv_sigma){
+  double log_norm = 0;
+  arma::vec x;
+  x = h - mu;
+  x = x.t() * inv_sigma * x;
+  log_norm = -0.5 * x(0);
+
+  return(log_norm);
+}
+
+
 double l_multinomial_const(arma::vec x){
   int K = x.size();
   double x_total = 0;
@@ -40,18 +52,6 @@ double l_multinomial_const(arma::vec x){
 double l_multinomial(arma::vec x, arma::vec p, double lconst){
   //double lconst = lpmultinomial_const(x);
   return( lconst + arma::dot(log(p),x) );
-}
-
-double l_dnormal_vec(arma::vec h, arma::vec mu, arma::mat inv_sigma){
-
-  double log_det_val;
-  double sign;
-  log_det(log_det_val, sign,  inv_sigma/M_2PI);
-
-  arma::mat log_norm = (h - mu).t() * inv_sigma * (h - mu);
-
-
-  return(0.5 * (log_det_val - log_norm(0)));
 }
 
 double l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){

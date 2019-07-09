@@ -48,8 +48,8 @@ double c_d_lrnm_hermite(arma::vec x,
     }
     h = mu + rotation * h;
     arma::vec p = exp(Binv * h);
-    integral += exp(w + ldnormal_vec(h, mu_prior, inv_sigma_prior) -
-      ldnormal_vec(h, mu, inv_sigma) +
+    integral += exp(w + l_dnormal_vec(h, mu_prior, inv_sigma_prior) -
+      l_dnormal_vec(h, mu, inv_sigma) +
       l_multinomial(x, p/accu(p), l_cmult));
     // Calculate next coordinate
     index[position]++;
@@ -67,10 +67,10 @@ double c_d_lrnm_hermite(arma::vec x,
 
 
 // [[Rcpp::export]]
-arma::mat c_moments_lrnm_hermite_precision_lm(arma::vec x,
-                                              arma::vec mu, arma::mat sigma,
-                                              arma::vec mu_prior, arma::mat sigma_prior,
-                                              arma::mat Binv, int order){
+arma::mat c_moments_lrnm_hermite(arma::vec x,
+                                 arma::vec mu, arma::mat sigma,
+                                 arma::vec mu_prior, arma::mat sigma_prior,
+                                 arma::mat Binv, int order){
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
@@ -101,8 +101,8 @@ arma::mat c_moments_lrnm_hermite_precision_lm(arma::vec x,
     }
     h = mu + rotation * h;
     arma::vec p = exp(Binv * h);
-    double dens = exp(w + ldnormal_vec(h, mu_prior, inv_sigma_prior) -
-                      ldnormal_vec(h, mu, inv_sigma) +
+    double dens = exp(w + l_dnormal_vec(h, mu_prior, inv_sigma_prior) -
+                      l_dnormal_vec(h, mu, inv_sigma) +
                       l_multinomial(x, p/accu(p), l_cmult));
     M0 += dens;
     M1 += h * dens;
@@ -125,36 +125,35 @@ arma::mat c_moments_lrnm_hermite_precision_lm(arma::vec x,
   return moments;
 }
 
-//' @export
+// //' @export
+// // [[Rcpp::export]]
+// Rcpp::List c_obtain_moments_lrnm_hermite(arma::mat Y,
+//                                          arma::vec mu, arma::mat sigma,
+//                                          arma::mat B, int order){
+//   int n = Y.n_rows;
+//   int d = Y.n_cols - 1;
+//
+//   arma::mat Binv = pinv(B).t();
+//   arma::mat inv_sigma = arma::inv_sympd(sigma);
+//
+//   arma::mat M1 = arma::zeros(d, n);
+//   arma::cube M2 = arma::zeros(d, d, n);
+//
+//   for(int i = 0; i < Y.n_rows; i++){
+//     arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu, inv_sigma, Binv);
+//     arma::mat moments = c_moments_lrnm_hermite_precision_lm(Y.row(i).t(),
+//                                                             N_posterior.col(d), N_posterior.head_cols(d),
+//                                                             mu, sigma,
+//                                                             Binv, order);
+//     M1.col(i) = moments.col(d);
+//     M2.slice(i) = moments.head_cols(d);
+//   }
+//   return Rcpp::List::create(M1, M2);
+// }
+
 // [[Rcpp::export]]
-Rcpp::List c_obtain_moments_lrnm_hermite(arma::mat Y,
-                                         arma::vec mu, arma::mat sigma,
-                                         arma::mat B, int order){
-  int n = Y.n_rows;
-  int d = Y.n_cols - 1;
-
-  arma::mat Binv = pinv(B).t();
-  arma::mat inv_sigma = arma::inv_sympd(sigma);
-
-  arma::mat M1 = arma::zeros(d, n);
-  arma::cube M2 = arma::zeros(d, d, n);
-
-  for(int i = 0; i < Y.n_rows; i++){
-    arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu, inv_sigma, Binv);
-    arma::mat moments = c_moments_lrnm_hermite_precision_lm(Y.row(i).t(),
-                                                            N_posterior.col(d), N_posterior.head_cols(d),
-                                                            mu, sigma,
-                                                            Binv, order);
-    M1.col(i) = moments.col(d);
-    M2.slice(i) = moments.head_cols(d);
-  }
-  return Rcpp::List::create(M1, M2);
-}
-
-//' @export
-// [[Rcpp::export]]
-Rcpp::List c_fit_lm_lrnm_hermite_centered(arma::mat Y, arma::mat B, arma::mat X, int order,
-                                          double eps, int max_iter){
+Rcpp::List c_fit_lrnm_lm_hermite(arma::mat Y, arma::mat B, arma::mat X, int order,
+                                 double eps, int max_iter){
 
   int n = Y.n_rows;
   int k = X.n_cols;
@@ -191,10 +190,10 @@ Rcpp::List c_fit_lm_lrnm_hermite_centered(arma::mat Y, arma::mat B, arma::mat X,
     for(int i = 0; i < Y.n_rows; i++){
       arma::mat mu_i =  X.row(i) * beta;
       arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu_i.t(), inv_sigma_lm, Binv);
-      arma::mat moments = c_moments_lrnm_hermite_precision_lm(Y.row(i).t(),
-                                                              N_posterior.col(d), N_posterior.head_cols(d),
-                                                              mu_i.t(), sigma_lm,
-                                                              Binv, order);
+      arma::mat moments = c_moments_lrnm_hermite(Y.row(i).t(),
+                                                 N_posterior.col(d), N_posterior.head_cols(d),
+                                                 mu_i.t(), sigma_lm,
+                                                 Binv, order);
       H.row(i) = moments.col(d).t();
       M1 += moments.col(d);
       M2 += moments.head_cols(d);
@@ -210,10 +209,10 @@ Rcpp::List c_fit_lm_lrnm_hermite_centered(arma::mat Y, arma::mat B, arma::mat X,
   for(int i = 0; i < Y.n_rows; i++){
     arma::mat mu_i =  X.row(i) * beta;
     arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu_i.t(), inv_sigma_lm, Binv);
-    arma::mat moments = c_moments_lrnm_hermite_precision_lm(Y.row(i).t(),
-                                                            N_posterior.col(d), N_posterior.head_cols(d),
-                                                            mu_i.t(), sigma_lm,
-                                                            Binv, order);
+    arma::mat moments = c_moments_lrnm_hermite(Y.row(i).t(),
+                                               N_posterior.col(d), N_posterior.head_cols(d),
+                                               mu_i.t(), sigma_lm,
+                                               Binv, order);
 
     H.row(i) = moments.col(d).t();
   }
