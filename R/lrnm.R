@@ -46,7 +46,7 @@ dlrnm = function(x, mu, sigma, B = NULL,
 #' @param max_iter maximum number of iterations for the iterative procedure used to estimate the parameter
 #' @return Estimated parameters mu and sigma
 #' @export
-fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'laplace',
+fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo',
                     montecarlo.n = 500, hermite.order = 5, Z = NULL, eps = NULL, max_iter = 500){
   if(is.null(B)){
     B = coda.base::ilr_basis(ncol(X))
