@@ -35,6 +35,11 @@ dlrnm = function(x, mu, sigma, B = NULL,
   }
 }
 
+#' @export
+log_join_lrnm = function(x, h, mu, sigma, B = NULL){
+  l_lrnm_join_vec(h, x, mu, solve(sigma), pinv(t(B)))
+}
+
 #' Estimate the parameters of a logratio-normal-multinomial distribution
 #'
 #' @param X count sample
