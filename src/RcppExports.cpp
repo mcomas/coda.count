@@ -276,6 +276,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// l_lrnm_join_vec
+double l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv);
+RcppExport SEXP _coda_count_l_lrnm_join_vec(SEXP hSEXP, SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(l_lrnm_join_vec(h, x, mu, inv_sigma, Binv));
+    return rcpp_result_gen;
+END_RCPP
+}
 // l_lrnm_join_d1
 arma::vec l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv);
 RcppExport SEXP _coda_count_l_lrnm_join_d1(SEXP hSEXP, SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
@@ -411,6 +426,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_rlrnm_posterior
+arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv);
+RcppExport SEXP _coda_count_c_rlrnm_posterior(SEXP nSEXP, SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_rlrnm_posterior(n, x, mu, sigma, Binv));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pinv
 arma::mat pinv(arma::mat X);
 RcppExport SEXP _coda_count_pinv(SEXP XSEXP) {
@@ -456,6 +486,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_fit_lrnm_lm_montecarlo", (DL_FUNC) &_coda_count_c_fit_lrnm_lm_montecarlo, 6},
     {"_coda_count_l_dnormal_vec", (DL_FUNC) &_coda_count_l_dnormal_vec, 3},
     {"_coda_count_l_dnormal_prop_vec", (DL_FUNC) &_coda_count_l_dnormal_prop_vec, 3},
+    {"_coda_count_l_lrnm_join_vec", (DL_FUNC) &_coda_count_l_lrnm_join_vec, 5},
     {"_coda_count_l_lrnm_join_d1", (DL_FUNC) &_coda_count_l_lrnm_join_d1, 5},
     {"_coda_count_l_lrnm_join_d2", (DL_FUNC) &_coda_count_l_lrnm_join_d2, 5},
     {"_coda_count_l_lrnm_join_maximum", (DL_FUNC) &_coda_count_l_lrnm_join_maximum, 6},
@@ -466,6 +497,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_rnormal", (DL_FUNC) &_coda_count_c_rnormal, 3},
     {"_coda_count_c_rnormalSimplex", (DL_FUNC) &_coda_count_c_rnormalSimplex, 4},
     {"_coda_count_c_rnormalmultinomial", (DL_FUNC) &_coda_count_c_rnormalmultinomial, 4},
+    {"_coda_count_c_rlrnm_posterior", (DL_FUNC) &_coda_count_c_rlrnm_posterior, 5},
     {"_coda_count_pinv", (DL_FUNC) &_coda_count_pinv, 1},
     {"_coda_count_c_simplex_lattice", (DL_FUNC) &_coda_count_c_simplex_lattice, 2},
     {NULL, NULL, 0}

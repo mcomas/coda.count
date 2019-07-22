@@ -81,6 +81,10 @@ l_dnormal_prop_vec <- function(h, mu, inv_sigma) {
     .Call('_coda_count_l_dnormal_prop_vec', PACKAGE = 'coda.count', h, mu, inv_sigma)
 }
 
+l_lrnm_join_vec <- function(h, x, mu, inv_sigma, Binv) {
+    .Call('_coda_count_l_lrnm_join_vec', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
+}
+
 l_lrnm_join_d1 <- function(h, x, mu, inv_sigma, Binv) {
     .Call('_coda_count_l_lrnm_join_d1', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
 }
@@ -89,6 +93,7 @@ l_lrnm_join_d2 <- function(h, x, mu, inv_sigma, Binv) {
     .Call('_coda_count_l_lrnm_join_d2', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
 }
 
+#' @export
 l_lrnm_join_maximum <- function(x, mu, inv_sigma, Binv, eps = 1e-8, max_iter = 1000L) {
     .Call('_coda_count_l_lrnm_join_maximum', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv, eps, max_iter)
 }
@@ -119,6 +124,11 @@ c_rnormalSimplex <- function(n, mu, sigma, Binv) {
 
 c_rnormalmultinomial <- function(mu, sigma, size, Binv) {
     .Call('_coda_count_c_rnormalmultinomial', PACKAGE = 'coda.count', mu, sigma, size, Binv)
+}
+
+#' @export
+c_rlrnm_posterior <- function(n, x, mu, sigma, Binv) {
+    .Call('_coda_count_c_rlrnm_posterior', PACKAGE = 'coda.count', n, x, mu, sigma, Binv)
 }
 
 pinv <- function(X) {

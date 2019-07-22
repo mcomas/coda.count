@@ -57,7 +57,7 @@ P = as.data.frame(rlrnormal(n = N, mu, sigma, B))
 H = coordinates(P, B)
 ```
 
-We can visualise either the compositional sample in a Ternary diagram or their coordinates (with respect basis $B$). 
+We can visualise either the compositional sample in a Ternary diagram or their coordinates (with respect basis $B$) in the real space. 
 
 ```{r, warning=FALSE, out.width="45%", fig.width=4, fig.height=3.6, fig.show='hold'}
 ggtern() +
@@ -106,7 +106,7 @@ fit = fit_lrnm(Y, method = 'hermite', probs = TRUE, B = B)
 fit[1:2]
 ```
 
-Together with the expected probabilities to generate the counts:
+Together with the expected a posteri probabilities for the multinomial distribution:
 
 ```{r, warning=FALSE, out.width="45%", fig.width=4, fig.height=3.6, fig.show='hold'}
 E = as.data.frame(fit$P)
@@ -122,6 +122,67 @@ ggplot() +
 ## Defining a distance between multivariate count data when the total is not of importance
 
 Once the parameters have been estimated, we can approximate the posterior distribution of each observation using a Laplace approximation.
+
+Consider the followint observation
+
+```{r}
+x = Y[1,]
+H_E[1,]
+lN[[1]]$mu
+d0 = dlrnm(x, mu, sigma, B)
+```
+
+```{r}
+MU = fit$mu
+SIGMA = fit$sigma
+
+lN = lrnm_posterior_approx(Y, MU, SIGMA, B)
+h_max = lN[[1]]$mu
+
+
+eig = eigen(lN[[1]]$sigma)
+V = 1
+h1_ = h_max + eig$vectors[,1,drop=F] * sqrt(eig$values[1]) * V
+h2_ = h_max + eig$vectors[,2,drop=F] * sqrt(eig$values[2]) * V
+
+exp(log_join_lrnm(x, h_max, MU, SIGMA, B)) / d0
+exp(log_join_lrnm(x, h1_, MU, SIGMA, B))/d0
+exp(log_join_lrnm(x, h2_, MU, SIGMA, B))/d0
+```
+
+```{r}
+x = c(0,10,0)
+lx = lrnm_posterior_approx(rbind(x), MU, SIGMA, B)
+gH = data.frame(expand.grid(x = seq(-2, 5, length.out = 100), y = seq(0, 6, length.out = 100)))
+gH$z = exp(apply(gH,1,function(h_) log_join_lrnm(x, h_, MU, SIGMA, B))) / d0
+
+ggplot() +
+  geom_contour(data = gH, aes(x=x, y=y, z=z), bins = 20) +
+  geom_path(data = ellipse(lx[[1]]$mu, lx[[1]]$sigma, 0.95),  aes(x = V1, y = V2), col = 'red')
+
+set.seed(1)
+rH = data.frame(c_rlrnm_posterior(10000, x, MU, SIGMA, t(MASS::ginv(B))))
+ggplot() +
+  geom_density_2d(data = rH, aes(x = X1, y = X2)) +
+  geom_path(data = ellipse(lx[[1]]$mu, lx[[1]]$sigma, 0.95),  aes(x = V1, y = V2), col = 'red')
+```
+
+```{r}
+summary(mchain)
+summary(H)
+
+par(mfrow=c(1,2))
+plot(mchain)
+plot(H, col = 'red')
+
+```
+
+
+```{r}
+out = mcmc::metrop(f, h1_, 1000)
+out$accept
+```
+
 
 ```{r}
 lN = lrnm_posterior_approx(Y, fit$mu, fit$sigma, B)

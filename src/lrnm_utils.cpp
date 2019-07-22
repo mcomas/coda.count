@@ -54,6 +54,7 @@ double l_multinomial(arma::vec x, arma::vec p, double lconst){
   return( lconst + arma::dot(log(p),x) );
 }
 
+// [[Rcpp::export]]
 double l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
 
   arma::vec Bh = Binv * h;
@@ -93,6 +94,7 @@ arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_
   return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
 }
 
+//' @export
 // [[Rcpp::export]]
 arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv,
                               double eps = 1e-8, int max_iter = 1000){
