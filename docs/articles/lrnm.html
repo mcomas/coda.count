@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The logratio-normal-multinomial distribution • coda.count</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="The logratio-normal-multinomial distribution">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -70,6 +71,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -83,97 +85,97 @@
 
     
     
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(coda.count)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(coda.base)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggtern)
-<span class="kw">theme_set</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern_themes">theme_minimal</a></span>())</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(coda.count)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(coda.base)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggtern)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">theme_set</span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern_themes.html">theme_minimal</a></span>())</a></code></pre></div>
 <p>The logratio-normal-multinomial (LRNM) distribution is the distribution obtained from the compounding of a normal distribution defined on the Simplex using log-ratio coordinates with the multinomial distribution.</p>
 <p>We can build a sample of a LRNM as follows:</p>
 <ul>
 <li>Firstly, for given parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(Sigma\)</span> and a certain clr-basis, we generate a log-ratio normally distributed sample :</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1</span>)
-N =<span class="st"> </span><span class="dv">200</span>
-mu =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>)
-sigma =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="fl">-0.8</span>, 
-                 <span class="fl">-0.8</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">2</span>)
-B =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/ilr_basis">ilr_basis</a></span>(<span class="dv">3</span>)
-P =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="../reference/rlrnormal.html">rlrnormal</a></span>(<span class="dt">n =</span> N, mu, sigma, B))
-H =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/coordinates">coordinates</a></span>(P, B, <span class="dt">label =</span> <span class="st">'ilr'</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">N =<span class="st"> </span><span class="dv">200</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">mu =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">sigma =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="fl">-0.8</span>, </a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">                 <span class="fl">-0.8</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">B =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/ilr_basis.html">ilr_basis</a></span>(<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">P =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw"><a href="../reference/rlrnormal.html">rlrnormal</a></span>(<span class="dt">n =</span> N, mu, sigma, B))</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">H =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/coordinates.html">coordinates</a></span>(P, B, <span class="dt">label =</span> <span class="st">'ilr'</span>)</a></code></pre></div>
 <p>We can visualise either the compositional sample in a Ternary diagram or their coordinates (with respect basis <span class="math inline">\(B\)</span>).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> P, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggplot">ggplot</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> ilr1, <span class="dt">y =</span> ilr2))</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern.html">ggtern</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> P, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3))</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> ilr1, <span class="dt">y =</span> ilr2))</a></code></pre></div>
 <p><img src="lrnm_files/figure-html/unnamed-chunk-3-1.png" width="45%"><img src="lrnm_files/figure-html/unnamed-chunk-3-2.png" width="45%"></p>
 <ul>
 <li>After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution. With the function <code><a href="../reference/rmultinomial.html">rmultinomial()</a></code> we can generate that sample.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SIZE =<span class="st"> </span><span class="dv">8</span>
-Y =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="../reference/rmultinomial.html">rmultinomial</a></span>(<span class="dt">size =</span> SIZE, <span class="dt">p =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(P)))</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">SIZE =<span class="st"> </span><span class="dv">8</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">Y =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw"><a href="../reference/rmultinomial.html">rmultinomial</a></span>(<span class="dt">size =</span> SIZE, <span class="dt">p =</span> <span class="kw"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(P)))</a></code></pre></div>
 <p>In <code>coda.count</code> we can compound this to generations using the function <code><a href="../reference/rlrnm.html">rlrnm()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sample =<span class="st"> </span><span class="kw"><a href="../reference/rlrnm.html">rlrnm</a></span>(<span class="dt">n =</span> N, <span class="dt">size =</span> SIZE, <span class="dt">mu =</span> mu, <span class="dt">sigma =</span> sigma, <span class="dt">probs =</span> <span class="ot">TRUE</span>)
-Y =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(sample)
-P =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/attr">attr</a></span>(sample, <span class="st">'probs'</span>)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">sample =<span class="st"> </span><span class="kw"><a href="../reference/rlrnm.html">rlrnm</a></span>(<span class="dt">n =</span> N, <span class="dt">size =</span> SIZE, <span class="dt">mu =</span> mu, <span class="dt">sigma =</span> sigma, <span class="dt">probs =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">Y =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(sample)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">P =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(sample, <span class="st">'probs'</span>)</a></code></pre></div>
 <p>To visualise the counting sample we can use a ternary diagram, but observations will only appear in discrete positions. In general, we call the <span class="math inline">\((K-D)\)</span>-simplex lattice the sapce for the <span class="math inline">\(D\)</span>-part count data with size <span class="math inline">\(K\)</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">key =<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(x, <span class="dt">collapse =</span> <span class="st">'-'</span>)
-tab =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(Y, <span class="dv">1</span>, key))
-Yc =<span class="st"> </span>Y[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/duplicated">duplicated</a></span>(Y),]
-Yc<span class="op">$</span>freq =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(tab[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(Yc, <span class="dv">1</span>, key), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(tab))])
-lbls =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">' '</span>, <span class="dv">0</span><span class="op">:</span>SIZE, <span class="st">' '</span>)
-brks =<span class="st"> </span><span class="dv">0</span><span class="op">:</span>SIZE<span class="op">/</span>SIZE
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> Yc, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> freq), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/theme">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,
-        <span class="dt">tern.axis.title.show =</span> F,
-        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Frequency'</span>)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">key =<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(x, <span class="dt">collapse =</span> <span class="st">'-'</span>)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">tab =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(Y, <span class="dv">1</span>, key))</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">Yc =<span class="st"> </span>Y[<span class="kw"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span>(Y),]</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">Yc<span class="op">$</span>freq =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(tab[<span class="kw"><a href="https://rdrr.io/r/base/match.html">match</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(Yc, <span class="dv">1</span>, key), <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(tab))])</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">lbls =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">' '</span>, <span class="dv">0</span><span class="op">:</span>SIZE, <span class="st">' '</span>)</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">brks =<span class="st"> </span><span class="dv">0</span><span class="op">:</span>SIZE<span class="op">/</span>SIZE</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern.html">ggtern</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> Yc, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> freq), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/theme.html">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,</a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">        <span class="dt">tern.axis.title.show =</span> F,</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/scale_X_continuous.html">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/scale_X_continuous.html">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/scale_X_continuous.html">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Frequency'</span>)</a></code></pre></div>
 <p><img src="lrnm_files/figure-html/unnamed-chunk-6-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>For given parameters <span class="math inline">\(mu\)</span> and <span class="math inline">\(\Sigma\)</span> we can calculate the probability mass function for each element in a <span class="math inline">\((8-3)\)</span>-simplex lattice:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SL3 =<span class="st"> </span><span class="kw"><a href="../reference/simplex_lattice.html">simplex_lattice</a></span>(SIZE, <span class="dv">3</span>)
-X =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(SL3)
-X<span class="op">$</span>p =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(X, <span class="dv">1</span>, dlrnm, mu, sigma)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> X, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> p), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/theme">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,
-        <span class="dt">tern.axis.title.show =</span> F,
-        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Probability'</span>)</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">SL3 =<span class="st"> </span><span class="kw"><a href="../reference/simplex_lattice.html">simplex_lattice</a></span>(SIZE, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">X =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(SL3)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">X<span class="op">$</span>p =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(X, <span class="dv">1</span>, dlrnm, mu, sigma)</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern.html">ggtern</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> X, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> p), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/theme.html">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">        <span class="dt">tern.axis.title.show =</span> F,</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/scale_X_continuous.html">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/scale_X_continuous.html">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/scale_X_continuous.html">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Probability'</span>)</a></code></pre></div>
 <p><img src="lrnm_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>For the sample <code>Y</code> we can</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fitting =<span class="st"> </span><span class="kw"><a href="../reference/fit_lrnm.html">fit_lrnm</a></span>(Y, <span class="dt">method =</span> <span class="st">'hermite'</span>, <span class="dt">probs =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">fitting =<span class="st"> </span><span class="kw"><a href="../reference/fit_lrnm.html">fit_lrnm</a></span>(Y, <span class="dt">method =</span> <span class="st">'hermite'</span>, <span class="dt">probs =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>Expected estimated posterior probabilities</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">P_exp =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(fitting<span class="op">$</span>P)
-tab =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(P_exp, <span class="dv">1</span>, key))
-P_exp =<span class="st"> </span>P_exp[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/duplicated">duplicated</a></span>(P_exp),]
-P_exp<span class="op">$</span>freq =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(tab[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(P_exp, <span class="dv">1</span>, key), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(tab))])
-H_exp =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/coordinates">coordinates</a></span>(P_exp[,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>])
-H_exp<span class="op">$</span>freq =<span class="st"> </span>P_exp<span class="op">$</span>freq</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> P_exp, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3, <span class="dt">col =</span> freq)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggplot">ggplot</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_exp, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> ilr1, <span class="dt">y =</span> ilr2, <span class="dt">col =</span> freq)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">P_exp =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(fitting<span class="op">$</span>P)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">tab =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(P_exp, <span class="dv">1</span>, key))</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">P_exp =<span class="st"> </span>P_exp[<span class="kw"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span>(P_exp),]</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">P_exp<span class="op">$</span>freq =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(tab[<span class="kw"><a href="https://rdrr.io/r/base/match.html">match</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(P_exp, <span class="dv">1</span>, key), <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(tab))])</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">H_exp =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/coordinates.html">coordinates</a></span>(P_exp[,<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>])</a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">H_exp<span class="op">$</span>freq =<span class="st"> </span>P_exp<span class="op">$</span>freq</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern.html">ggtern</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> P_exp, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3, <span class="dt">col =</span> freq)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>)</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_exp, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> ilr1, <span class="dt">y =</span> ilr2, <span class="dt">col =</span> freq)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>)</a></code></pre></div>
 <p><img src="lrnm_files/figure-html/unnamed-chunk-10-1.png" width="45%"><img src="lrnm_files/figure-html/unnamed-chunk-10-2.png" width="45%"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p){
-  s =<span class="st"> </span><span class="dv">-2</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p);
-  ev =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/eigen">eigen</a></span>(sigma <span class="op">*</span><span class="st"> </span>s)
-  t_ =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>pi, <span class="dt">length.out =</span> <span class="dv">500</span>)
-  a =<span class="st"> </span>mu <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>((<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(ev<span class="op">$</span>vectors) <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(ev<span class="op">$</span>values))) <span class="op">%*%</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">rbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">cos</a></span>(t_), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">sin</a></span>(t_)) 
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(a))
-}
-coda_ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p, <span class="dt">B =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/ilr_basis">ilr_basis</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(mu) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)){
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/composition">composition</a></span>(<span class="kw">ellipse</span>(mu, sigma, p), B)
-}</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p){</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">  s =<span class="st"> </span><span class="dv">-2</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p);</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">  ev =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/eigen.html">eigen</a></span>(sigma <span class="op">*</span><span class="st"> </span>s)</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">  t_ =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>pi, <span class="dt">length.out =</span> <span class="dv">500</span>)</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">  a =<span class="st"> </span>mu <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/t.html">t</a></span>((<span class="kw"><a href="https://rdrr.io/r/base/t.html">t</a></span>(ev<span class="op">$</span>vectors) <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(ev<span class="op">$</span>values))) <span class="op">%*%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span>(t_), <span class="kw"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span>(t_)) </a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">  <span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/t.html">t</a></span>(a))</a>
+<a class="sourceLine" id="cb11-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb11-8" data-line-number="8">coda_ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p, <span class="dt">B =</span> <span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/ilr_basis.html">ilr_basis</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(mu) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)){</a>
+<a class="sourceLine" id="cb11-9" data-line-number="9">  <span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/composition.html">composition</a></span>(<span class="kw">ellipse</span>(mu, sigma, p), B)</a>
+<a class="sourceLine" id="cb11-10" data-line-number="10">}</a></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -182,17 +184,20 @@ coda_ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigm
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Marc Comas-Cufí.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clustering multivariate count data using the log-ratio-normal-multinomial distribution • coda.count</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Clustering multivariate count data using the log-ratio-normal-multinomial distribution">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -70,6 +71,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -83,50 +85,50 @@
 
     
     
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(coda.base)
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'coda.base'</span>
-<span class="co">#&gt; The following object is masked from 'package:stats':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     dist</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(coda.count)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggtern)
-<span class="co">#&gt; Loading required package: ggplot2</span>
-<span class="co">#&gt; Registered S3 methods overwritten by 'ggtern':</span>
-<span class="co">#&gt;   method           from   </span>
-<span class="co">#&gt;   +.gg             ggplot2</span>
-<span class="co">#&gt;   grid.draw.ggplot ggplot2</span>
-<span class="co">#&gt;   plot.ggplot      ggplot2</span>
-<span class="co">#&gt;   print.ggplot     ggplot2</span>
-<span class="co">#&gt; --</span>
-<span class="co">#&gt; Remember to cite, run citation(package = 'ggtern') for further info.</span>
-<span class="co">#&gt; --</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attaching package: 'ggtern'</span>
-<span class="co">#&gt; The following objects are masked from 'package:ggplot2':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     %+%, aes, annotate, calc_element, ggplot, ggplot_build,</span>
-<span class="co">#&gt;     ggplot_gtable, ggplotGrob, ggsave, layer_data, theme,</span>
-<span class="co">#&gt;     theme_bw, theme_classic, theme_dark, theme_gray, theme_light,</span>
-<span class="co">#&gt;     theme_linedraw, theme_minimal, theme_void</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(randtoolbox)
-<span class="co">#&gt; Loading required package: rngWELL</span>
-<span class="co">#&gt; This is randtoolbox. For an overview, type 'help("randtoolbox")'.</span>
-ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p){
-  mu =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/vector">as.vector</a></span>(mu)
-  s =<span class="st"> </span><span class="dv">-2</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p);
-  ev =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/eigen">eigen</a></span>(sigma <span class="op">*</span><span class="st"> </span>s)
-  t_ =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>pi, <span class="dt">length.out =</span> <span class="dv">500</span>)
-  a =<span class="st"> </span>mu <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(ev<span class="op">$</span>vectors) <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(ev<span class="op">$</span>values)) <span class="op">%*%</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">rbind</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">cos</a></span>(t_), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Trig">sin</a></span>(t_)) 
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(a))
-}
-coda_ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p, <span class="dt">B =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/ilr_basis">ilr_basis</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(mu) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)){
-  <span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/composition">composition</a></span>(<span class="kw">ellipse</span>(mu, sigma, p), B)
-}
-<span class="kw">theme_set</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern_themes">theme_minimal</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/theme">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,
-        <span class="dt">tern.axis.title.show =</span> F,
-        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)))</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(coda.base)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co">#&gt; Attaching package: 'coda.base'</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co">#&gt; The following object is masked from 'package:stats':</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt;     dist</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(coda.count)</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggtern)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt; Loading required package: ggplot2</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt; Registered S3 methods overwritten by 'ggtern':</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt;   method           from   </span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt;   +.gg             ggplot2</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt;   grid.draw.ggplot ggplot2</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#&gt;   plot.ggplot      ggplot2</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#&gt;   print.ggplot     ggplot2</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt; --</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt; Remember to cite, run citation(package = 'ggtern') for further info.</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; --</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#&gt; Attaching package: 'ggtern'</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co">#&gt; The following objects are masked from 'package:ggplot2':</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co">#&gt;     %+%, aes, annotate, calc_element, ggplot, ggplot_build,</span></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co">#&gt;     ggplot_gtable, ggplotGrob, ggsave, layer_data, theme,</span></a>
+<a class="sourceLine" id="cb1-25" data-line-number="25"><span class="co">#&gt;     theme_bw, theme_classic, theme_dark, theme_gray, theme_light,</span></a>
+<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="co">#&gt;     theme_linedraw, theme_minimal, theme_void</span></a>
+<a class="sourceLine" id="cb1-27" data-line-number="27"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(randtoolbox)</a>
+<a class="sourceLine" id="cb1-28" data-line-number="28"><span class="co">#&gt; Loading required package: rngWELL</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29"><span class="co">#&gt; This is randtoolbox. For an overview, type 'help("randtoolbox")'.</span></a>
+<a class="sourceLine" id="cb1-30" data-line-number="30">ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p){</a>
+<a class="sourceLine" id="cb1-31" data-line-number="31">  mu =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(mu)</a>
+<a class="sourceLine" id="cb1-32" data-line-number="32">  s =<span class="st"> </span><span class="dv">-2</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p);</a>
+<a class="sourceLine" id="cb1-33" data-line-number="33">  ev =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/eigen.html">eigen</a></span>(sigma <span class="op">*</span><span class="st"> </span>s)</a>
+<a class="sourceLine" id="cb1-34" data-line-number="34">  t_ =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>pi, <span class="dt">length.out =</span> <span class="dv">500</span>)</a>
+<a class="sourceLine" id="cb1-35" data-line-number="35">  a =<span class="st"> </span>mu <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/t.html">t</a></span>(ev<span class="op">$</span>vectors) <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(ev<span class="op">$</span>values)) <span class="op">%*%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span>(t_), <span class="kw"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span>(t_)) </a>
+<a class="sourceLine" id="cb1-36" data-line-number="36">  <span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/t.html">t</a></span>(a))</a>
+<a class="sourceLine" id="cb1-37" data-line-number="37">}</a>
+<a class="sourceLine" id="cb1-38" data-line-number="38">coda_ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigma, p, <span class="dt">B =</span> <span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/ilr_basis.html">ilr_basis</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(mu) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)){</a>
+<a class="sourceLine" id="cb1-39" data-line-number="39">  <span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/composition.html">composition</a></span>(<span class="kw">ellipse</span>(mu, sigma, p), B)</a>
+<a class="sourceLine" id="cb1-40" data-line-number="40">}</a>
+<a class="sourceLine" id="cb1-41" data-line-number="41"><span class="kw">theme_set</span>(<span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern_themes.html">theme_minimal</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-42" data-line-number="42"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/theme.html">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,</a>
+<a class="sourceLine" id="cb1-43" data-line-number="43">        <span class="dt">tern.axis.title.show =</span> F,</a>
+<a class="sourceLine" id="cb1-44" data-line-number="44">        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)))</a></code></pre></div>
 <div id="the-log-ratio-normal-multinomial-distribution" class="section level1">
 <h1 class="hasAnchor">
 <a href="#the-log-ratio-normal-multinomial-distribution" class="anchor"></a>The log-ratio-normal-multinomial distribution</h1>
@@ -135,117 +137,117 @@ coda_ellipse =<span class="st"> </span><span class="cf">function</span>(mu, sigm
 <ul>
 <li>Firstly, for given parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\Sigma\)</span> and a certain log-ratio-basis, we generate a log-ratio normally distributed sample. For example, for <span class="math inline">\(\mu=(0,1)\)</span>, <span class="math inline">\(\Sigma=\left(\begin{matrix}1&amp;-0.5\\-0.5&amp;1\end{matrix}\right)\)</span> and compositional basis <span class="math inline">\(B=\left\{(e^{\sqrt{1/2}},e^{-\sqrt{1/2}}, e), (e^{\sqrt{1/6}},e^{\sqrt{1/6}},e^{-\sqrt{2/3}}) \right\}\)</span>.</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">N =<span class="st"> </span><span class="dv">30</span>
-mu =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>)
-sigma =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="fl">-0.5</span>, 
-                 <span class="fl">-0.5</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">2</span>)
-B =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/ilr_basis">ilr_basis</a></span>(<span class="dv">3</span>)
-
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1</span>)
-P =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(<span class="kw"><a href="../reference/rlrnormal.html">rlrnormal</a></span>(<span class="dt">n =</span> N, mu, sigma, B))
-H =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/coordinates">coordinates</a></span>(P, B)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">N =<span class="st"> </span><span class="dv">30</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">mu =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">sigma =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="fl">-0.5</span>, </a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">                 <span class="fl">-0.5</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">B =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/ilr_basis.html">ilr_basis</a></span>(<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">P =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw"><a href="../reference/rlrnormal.html">rlrnormal</a></span>(<span class="dt">n =</span> N, mu, sigma, B))</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">H =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/coordinates.html">coordinates</a></span>(P, B)</a></code></pre></div>
 <p>We can visualise either the compositional sample in a Ternary diagram or their coordinates (with respect basis <span class="math inline">\(B\)</span>).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(mu, sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> P, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggplot">ggplot</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(mu, sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2))</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern.html">ggtern</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(mu, sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> P, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3))</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(mu, sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2))</a></code></pre></div>
 <p><img src="clustering_files/figure-html/unnamed-chunk-3-1.png" width="45%"><img src="clustering_files/figure-html/unnamed-chunk-3-2.png" width="45%"></p>
 <ul>
 <li>After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution. With the function <code><a href="../reference/rmultinomial.html">rmultinomial()</a></code> we can generate that sample:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SIZE =<span class="st"> </span><span class="dv">10</span>
-Y =<span class="st"> </span><span class="kw"><a href="../reference/rmultinomial.html">rmultinomial</a></span>(<span class="dt">size =</span> SIZE, <span class="dt">p =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">as.matrix</a></span>(P))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cat">cat</a></span>(Y_labels &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/sprintf">sprintf</a></span>(<span class="st">"(%s)"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(Y, <span class="dv">1</span>, paste, <span class="dt">collapse =</span> <span class="st">','</span>)), <span class="dt">sep =</span> <span class="st">', '</span>)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">SIZE =<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">Y =<span class="st"> </span><span class="kw"><a href="../reference/rmultinomial.html">rmultinomial</a></span>(<span class="dt">size =</span> SIZE, <span class="dt">p =</span> <span class="kw"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(P))</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(Y_labels &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"(%s)"</span>, <span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(Y, <span class="dv">1</span>, paste, <span class="dt">collapse =</span> <span class="st">','</span>)), <span class="dt">sep =</span> <span class="st">', '</span>)</a></code></pre></div>
 <p>(0,9,1), (2,6,2), (6,4,0), (6,3,1), (6,4,0), (6,2,2), (7,3,0), (5,4,1), (6,4,0), (4,6,0), (2,8,0), (2,8,0), (8,0,2), (3,7,0), (7,1,2), (6,4,0), (3,6,1), (3,3,4), (3,1,6), (1,9,0), (3,7,0), (5,3,2), (7,2,1), (2,8,0), (4,6,0), (3,0,7), (8,2,0), (1,9,0), (5,2,3), (6,4,0)</p>
 <p>To visualise the counting sample we can use a ternary diagram, but observations will only appear in discrete positions. In general, we call the <span class="math inline">\((K,D)\)</span>-simplex lattice the space for the <span class="math inline">\(D\)</span>-part count data with size <span class="math inline">\(K\)</span>. In gradient color we can visualise the previous sample in the ternary diagram:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">key =<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(x, <span class="dt">collapse =</span> <span class="st">'-'</span>)
-tab =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/table">table</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(Y, <span class="dv">1</span>, key))
-Yc =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(Y[<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/duplicated">duplicated</a></span>(Y),])
-Yc<span class="op">$</span>freq =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">as.numeric</a></span>(tab[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/match">match</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/apply">apply</a></span>(Yc, <span class="dv">1</span>, key), <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(tab))])
-lbls =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">' '</span>, <span class="dv">0</span><span class="op">:</span>SIZE, <span class="st">' '</span>)
-brks =<span class="st"> </span><span class="dv">0</span><span class="op">:</span>SIZE<span class="op">/</span>SIZE
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> Yc, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> freq), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/theme">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,
-        <span class="dt">tern.axis.title.show =</span> F,
-        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-<span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/scale_X_continuous">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Frequency'</span>)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">key =<span class="st"> </span><span class="cf">function</span>(x) <span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(x, <span class="dt">collapse =</span> <span class="st">'-'</span>)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">tab =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(Y, <span class="dv">1</span>, key))</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">Yc =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(Y[<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span>(Y),])</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">Yc<span class="op">$</span>freq =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(tab[<span class="kw"><a href="https://rdrr.io/r/base/match.html">match</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(Yc, <span class="dv">1</span>, key), <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(tab))])</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">lbls =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">' '</span>, <span class="dv">0</span><span class="op">:</span>SIZE, <span class="st">' '</span>)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">brks =<span class="st"> </span><span class="dv">0</span><span class="op">:</span>SIZE<span class="op">/</span>SIZE</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern.html">ggtern</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> Yc, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2, <span class="dt">z =</span> V3, <span class="dt">col =</span> freq), <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/theme.html">theme</a></span>(<span class="dt">tern.axis.arrow.show =</span> T,</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">        <span class="dt">tern.axis.title.show =</span> F,</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">        <span class="dt">tern.axis.arrow.text =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">'bold'</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="st">  </span><span class="kw">scale_color_gradient</span>(<span class="dt">low =</span> <span class="st">'blue'</span>, <span class="dt">high =</span> <span class="st">'red'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/scale_X_continuous.html">scale_T_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/scale_X_continuous.html">scale_L_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/scale_X_continuous.html">scale_R_continuous</a></span>(<span class="dt">minor_breaks =</span> <span class="ot">NULL</span>, <span class="dt">breaks =</span> brks, <span class="dt">labels =</span> lbls) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">col =</span> <span class="st">'Frequency'</span>)</a></code></pre></div>
 <p><img src="clustering_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;"></p>
 <div id="estimating-the-parameters-of-a-lrnm" class="section level2">
 <h2 class="hasAnchor">
 <a href="#estimating-the-parameters-of-a-lrnm" class="anchor"></a>Estimating the parameters of a LRNM</h2>
 <p>To estimate the parameters of a LRNM distribution we need of numerical integration methods. Using Hermite polynomials we can estimate the parameters of the LRNM distribution:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fit =<span class="st"> </span><span class="kw"><a href="../reference/fit_lrnm.html">fit_lrnm</a></span>(Y, <span class="dt">method =</span> <span class="st">'hermite'</span>, <span class="dt">probs =</span> <span class="ot">TRUE</span>, <span class="dt">B =</span> B)
-fit[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]
-<span class="co">#&gt; $mu</span>
-<span class="co">#&gt;            [,1]     [,2]</span>
-<span class="co">#&gt; [1,] 0.05051636 1.708725</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $sigma</span>
-<span class="co">#&gt;            [,1]       [,2]</span>
-<span class="co">#&gt; [1,]  0.5265051 -0.8120179</span>
-<span class="co">#&gt; [2,] -0.8120179  1.9798821</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">fit =<span class="st"> </span><span class="kw"><a href="../reference/fit_lrnm.html">fit_lrnm</a></span>(Y, <span class="dt">method =</span> <span class="st">'hermite'</span>, <span class="dt">probs =</span> <span class="ot">TRUE</span>, <span class="dt">B =</span> B)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">fit[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt; $mu</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt;            [,1]     [,2]</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; [1,] 0.05051636 1.708725</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt; $sigma</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt;            [,1]       [,2]</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">#&gt; [1,]  0.5265051 -0.8120179</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt; [2,] -0.8120179  1.9798821</span></a></code></pre></div>
 <p>Together with the expected probabilities to generate the counts:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">E =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(fit<span class="op">$</span>P)
-H_E =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/coda.base/topics/coordinates">coordinates</a></span>(E, B)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> E, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggplot">ggplot</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_E, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2))</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">E =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(fit<span class="op">$</span>P)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">H_E =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/coda.base/man/coordinates.html">coordinates</a></span>(E, B)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern.html">ggtern</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> E, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3))</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_E, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2))</a></code></pre></div>
 <p><img src="clustering_files/figure-html/unnamed-chunk-7-1.png" width="45%"><img src="clustering_files/figure-html/unnamed-chunk-7-2.png" width="45%"></p>
 </div>
 <div id="defining-a-distance-between-multivariate-count-data-when-the-total-is-not-of-importance" class="section level2">
 <h2 class="hasAnchor">
 <a href="#defining-a-distance-between-multivariate-count-data-when-the-total-is-not-of-importance" class="anchor"></a>Defining a distance between multivariate count data when the total is not of importance</h2>
 <p>Once the parameters have been estimated, we can approximate the posterior distribution of each observation using a Laplace approximation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lN =<span class="st"> </span><span class="kw"><a href="../reference/lrnm_posterior_approx.html">lrnm_posterior_approx</a></span>(Y, fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, B)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">lN =<span class="st"> </span><span class="kw"><a href="../reference/lrnm_posterior_approx.html">lrnm_posterior_approx</a></span>(Y, fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, B)</a></code></pre></div>
 <p>For example, the Laplace approximation for the posterior distribution of the first and second observations are</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">I =<span class="st"> </span><span class="dv">1</span>
-J =<span class="st"> </span><span class="dv">2</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggtern">ggtern</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> E, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">alpha=</span><span class="fl">0.1</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> E[I,,<span class="dt">drop=</span>F], <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'#880023'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(lN[[I]]<span class="op">$</span>mu, lN[[I]]<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'#880023'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> E[J,,<span class="dt">drop=</span>F], <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'#238800'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(lN[[J]]<span class="op">$</span>mu, lN[[J]]<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'#238800'</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/ggplot">ggplot</a></span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_E, <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2), <span class="dt">alpha=</span><span class="fl">0.1</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_E[I,,<span class="dt">drop=</span>F], <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2), <span class="dt">col =</span> <span class="st">'#880023'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(lN[[I]]<span class="op">$</span>mu, lN[[I]]<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'#880023'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_E[J,,<span class="dt">drop=</span>F], <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2), <span class="dt">col =</span> <span class="st">'#238800'</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(lN[[J]]<span class="op">$</span>mu, lN[[J]]<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://www.rdocumentation.org/packages/ggtern/topics/aes">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'#238800'</span>)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">I =<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">J =<span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggtern.html">ggtern</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> E, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">alpha=</span><span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> E[I,,<span class="dt">drop=</span>F], <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'#880023'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(lN[[I]]<span class="op">$</span>mu, lN[[I]]<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'#880023'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> E[J,,<span class="dt">drop=</span>F], <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'#238800'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">coda_ellipse</span>(lN[[J]]<span class="op">$</span>mu, lN[[J]]<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2, <span class="dt">z =</span> x3), <span class="dt">col =</span> <span class="st">'#238800'</span>)</a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/ggplot.html">ggplot</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(fit<span class="op">$</span>mu, fit<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'blue'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_E, <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2), <span class="dt">alpha=</span><span class="fl">0.1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_E[I,,<span class="dt">drop=</span>F], <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2), <span class="dt">col =</span> <span class="st">'#880023'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(lN[[I]]<span class="op">$</span>mu, lN[[I]]<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'#880023'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> H_E[J,,<span class="dt">drop=</span>F], <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> x1, <span class="dt">y =</span> x2), <span class="dt">col =</span> <span class="st">'#238800'</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="st">  </span><span class="kw">geom_path</span>(<span class="dt">data =</span> <span class="kw">ellipse</span>(lN[[J]]<span class="op">$</span>mu, lN[[J]]<span class="op">$</span>sigma, <span class="fl">0.95</span>), <span class="kw"><a href="https://rdrr.io/pkg/ggtern/man/aes.html">aes</a></span>(<span class="dt">x =</span> V1, <span class="dt">y =</span> V2), <span class="dt">col =</span> <span class="st">'#238800'</span>)</a></code></pre></div>
 <p><img src="clustering_files/figure-html/unnamed-chunk-9-1.png" width="45%"><img src="clustering_files/figure-html/unnamed-chunk-9-2.png" width="45%"></p>
 <p>This approximation allows to define a distance between two multivariate count observations as the distance between their repective posterior distributions approximations. Because the approximation is Gaussian, it seems natural to use the well-known Bhattacharyya distance.</p>
 <p><span class="math display">\[
 D_{\text{Bhattacharyya}}(N(\mu_1, \Sigma_1), N(\mu_2, \Sigma_2)) = \frac{1}{8}(\mu_1-\mu_2)^T \Sigma^{-1} (\mu_1-\mu_2) + \frac{1}{2} \log( \frac{\text{det}(\Sigma)}{\sqrt{\text{det}(\Sigma_1) \text{det}(\Sigma_2)}})
 \]</span></p>
 <p>Using this definition, we can calculate the distance between each pair of observations and use classical approaches to cluster the data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Bhattacharyya =<span class="st"> </span><span class="cf">function</span>(N1, N2){
-  SIGMA =<span class="st"> </span>(N1<span class="op">$</span>sigma <span class="op">+</span><span class="st"> </span>N2<span class="op">$</span>sigma) <span class="op">/</span><span class="st"> </span><span class="dv">2</span>
-  invSIGMA =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/solve">solve</a></span>( SIGMA )
-  d =<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">8</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(N1<span class="op">$</span>mu <span class="op">-</span><span class="st"> </span>N2<span class="op">$</span>mu) <span class="op">%*%</span><span class="st"> </span>invSIGMA <span class="op">%*%</span><span class="st"> </span>(N1<span class="op">$</span>mu <span class="op">-</span><span class="st"> </span>N2<span class="op">$</span>mu) <span class="op">+</span>
-<span class="st">    </span><span class="dv">1</span><span class="op">/</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Log">log</a></span>( <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/det">det</a></span>(SIGMA) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/det">det</a></span>(N1<span class="op">$</span>sigma)<span class="op">*</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/det">det</a></span>(N2<span class="op">$</span>sigma)) )
-  d[<span class="dv">1</span>]
-}
-D =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/matrix">matrix</a></span>(<span class="dv">0</span>, <span class="dt">nrow =</span> N, <span class="dt">ncol =</span> N)
-<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N){
-  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N){
-    D[i,j] =<span class="st"> </span><span class="kw">Bhattacharyya</span>(lN[[i]], lN[[j]])
-  }
-}
-D =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/dist">as.dist</a></span>(D)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hc =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/hclust">hclust</a></span>(D)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(hc, <span class="dt">xlab =</span> <span class="st">'Observations'</span>, <span class="dt">labels =</span>Y_labels)</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">Bhattacharyya =<span class="st"> </span><span class="cf">function</span>(N1, N2){</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">  SIGMA =<span class="st"> </span>(N1<span class="op">$</span>sigma <span class="op">+</span><span class="st"> </span>N2<span class="op">$</span>sigma) <span class="op">/</span><span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">  invSIGMA =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/solve.html">solve</a></span>( SIGMA )</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">  d =<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">8</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/t.html">t</a></span>(N1<span class="op">$</span>mu <span class="op">-</span><span class="st"> </span>N2<span class="op">$</span>mu) <span class="op">%*%</span><span class="st"> </span>invSIGMA <span class="op">%*%</span><span class="st"> </span>(N1<span class="op">$</span>mu <span class="op">-</span><span class="st"> </span>N2<span class="op">$</span>mu) <span class="op">+</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="st">    </span><span class="dv">1</span><span class="op">/</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">log</a></span>( <span class="kw"><a href="https://rdrr.io/r/base/det.html">det</a></span>(SIGMA) <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/det.html">det</a></span>(N1<span class="op">$</span>sigma)<span class="op">*</span><span class="kw"><a href="https://rdrr.io/r/base/det.html">det</a></span>(N2<span class="op">$</span>sigma)) )</a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">  d[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb10-8" data-line-number="8">D =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="dv">0</span>, <span class="dt">nrow =</span> N, <span class="dt">ncol =</span> N)</a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N){</a>
+<a class="sourceLine" id="cb10-10" data-line-number="10">  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N){</a>
+<a class="sourceLine" id="cb10-11" data-line-number="11">    D[i,j] =<span class="st"> </span><span class="kw">Bhattacharyya</span>(lN[[i]], lN[[j]])</a>
+<a class="sourceLine" id="cb10-12" data-line-number="12">  }</a>
+<a class="sourceLine" id="cb10-13" data-line-number="13">}</a>
+<a class="sourceLine" id="cb10-14" data-line-number="14">D =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/dist.html">as.dist</a></span>(D)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">hc =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/hclust.html">hclust</a></span>(D)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(hc, <span class="dt">xlab =</span> <span class="st">'Observations'</span>, <span class="dt">labels =</span>Y_labels)</a></code></pre></div>
 <p><img src="clustering_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 </div>
 </div>
@@ -269,17 +271,20 @@ D =<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Marc Comas-Cufí.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

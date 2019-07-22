@@ -4,7 +4,7 @@
 \alias{fit_lrnm}
 \title{Estimate the parameters of a logratio-normal-multinomial distribution}
 \usage{
-fit_lrnm(X, B = NULL, probs = FALSE, method = "laplace",
+fit_lrnm(X, B = NULL, probs = FALSE, method = "montecarlo",
   montecarlo.n = 500, hermite.order = 5, Z = NULL, eps = NULL,
   max_iter = 500)
 }
