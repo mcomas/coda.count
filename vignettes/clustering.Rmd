@@ -119,70 +119,40 @@ ggplot() +
   geom_point(data = H_E, aes(x = x1, y = x2))
 ```
 
-## Defining a distance between multivariate count data when the total is not of importance
+## Approximate the posterior distribution using the Laplace method
 
-Once the parameters have been estimated, we can approximate the posterior distribution of each observation using a Laplace approximation.
-
-Consider the followint observation
+Once parameters have been estimated, we can approximate the posterior distribution of each observation using a Laplace approximation. Consider the following example:
 
 ```{r}
-x = Y[1,]
-H_E[1,]
-lN[[1]]$mu
-d0 = dlrnm(x, mu, sigma, B)
+MU = c(0, 2)
+SIGMA = matrix(c(2, -0.8,
+                 -0.8, 0.5), nrow = 2)
+x = c(4,0,1)
 ```
+
+Event with probability
 
 ```{r}
-MU = fit$mu
-SIGMA = fit$sigma
-
-lN = lrnm_posterior_approx(Y, MU, SIGMA, B)
-h_max = lN[[1]]$mu
-
-
-eig = eigen(lN[[1]]$sigma)
-V = 1
-h1_ = h_max + eig$vectors[,1,drop=F] * sqrt(eig$values[1]) * V
-h2_ = h_max + eig$vectors[,2,drop=F] * sqrt(eig$values[2]) * V
-
-exp(log_join_lrnm(x, h_max, MU, SIGMA, B)) / d0
-exp(log_join_lrnm(x, h1_, MU, SIGMA, B))/d0
-exp(log_join_lrnm(x, h2_, MU, SIGMA, B))/d0
+(p0 <- dlrnm(x, MU, SIGMA, B))
 ```
 
-```{r}
-x = c(0,10,0)
-lx = lrnm_posterior_approx(rbind(x), MU, SIGMA, B)
-gH = data.frame(expand.grid(x = seq(-2, 5, length.out = 100), y = seq(0, 6, length.out = 100)))
-gH$z = exp(apply(gH,1,function(h_) log_join_lrnm(x, h_, MU, SIGMA, B))) / d0
+The posterior distribution of the probabilities are approximated using the Laplace method
 
-ggplot() +
-  geom_contour(data = gH, aes(x=x, y=y, z=z), bins = 20) +
-  geom_path(data = ellipse(lx[[1]]$mu, lx[[1]]$sigma, 0.95),  aes(x = V1, y = V2), col = 'red')
-
-set.seed(1)
-rH = data.frame(c_rlrnm_posterior(10000, x, MU, SIGMA, t(MASS::ginv(B))))
-ggplot() +
-  geom_density_2d(data = rH, aes(x = X1, y = X2)) +
-  geom_path(data = ellipse(lx[[1]]$mu, lx[[1]]$sigma, 0.95),  aes(x = V1, y = V2), col = 'red')
+```{r, warning=FALSE, fig.width=4, fig.height=3.6, fig.show='hold'}
+gH = data.frame(expand.grid(h1 = seq(-1, 4, length.out = 100), h2 = seq(-2, 3, length.out = 100)))
+gH$density = exp(apply(gH,1,function(h_) log_join_lrnm(x, h_, MU, SIGMA, B))) / p0
+plt = ggplot() +
+  geom_contour(data = gH, aes(x=h1, y=h2, z=density), bins = 20)
+lNx = lrnm_posterior_approx(rbind(x), MU, SIGMA, B)[[1]]
+plt +
+  geom_point(aes(x=lNx$mu[1], y=lNx$mu[2]), col = 'red') +
+  geom_path(data = ellipse(lNx$mu, lNx$sigma, 0.95),  aes(x = V1, y = V2), col = 'red') +
+  coord_fixed()
 ```
 
-```{r}
-summary(mchain)
-summary(H)
+## Defining a distance between count observations
 
-par(mfrow=c(1,2))
-plot(mchain)
-plot(H, col = 'red')
-
-```
-
-
-```{r}
-out = mcmc::metrop(f, h1_, 1000)
-out$accept
-```
-
+Given the estimated parameters, we calculate the Laplace approximation for each observation:
 
 ```{r}
 lN = lrnm_posterior_approx(Y, fit$mu, fit$sigma, B)
