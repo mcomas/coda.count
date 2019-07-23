@@ -90,9 +90,10 @@ List c_rnormalmultinomial(arma::vec mu, arma::mat sigma, arma::vec size, arma::m
 
 //' @export
 // [[Rcpp::export]]
-arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv){
+arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv, int r = 0){
   // l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv)
   // arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
+  r++;
   int d = x.n_elem - 1;
   arma::mat inv_sigma = arma::inv_sympd(sigma);
   arma::mat N_approx = c_posterior_approximation_vec(x, mu, inv_sigma, Binv);
@@ -102,14 +103,13 @@ arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, a
   double P_next = 0;
   arma::mat sample = arma::mat(d, n);
   int acceptance = 0;
+  arma::mat rN = c_rnormal(n*r, arma::zeros(d), sigma_proposal).t();
+  arma::vec unif = arma::randu(n*r);
   for(int i = 0; i < n; i++){
-    arma::mat rN = c_rnormal(100, arma::zeros(d), sigma_proposal).t();
-    arma::vec unif = arma::randu(100);
-
-    for(int j = 0; j < 100; j++){
-      arma::vec next = current + rN.col(j);
+    for(int j = 0; j < r; j++){
+      arma::vec next = current + rN.col(i * r + j);
       P_next = exp(l_lrnm_join_vec(next, x, mu, inv_sigma, Binv));
-      if(unif(j) <= P_next/P_current){
+      if(unif(i * r + j) <= P_next/P_current){
         acceptance++;
         current = arma::vec(next);
         P_current = P_next;
@@ -117,6 +117,6 @@ arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, a
     }
     sample.col(i) = arma::vec(current);
   }
-  Rcpp::Rcout << "Acceptance rate:" << ((double)acceptance)/(100*n) << std::endl;
+  Rcpp::Rcout << "Acceptance rate:" << ((double)acceptance)/(r*n) << std::endl;
   return(sample.t());
 }

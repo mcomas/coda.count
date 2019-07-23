@@ -127,8 +127,8 @@ c_rnormalmultinomial <- function(mu, sigma, size, Binv) {
 }
 
 #' @export
-c_rlrnm_posterior <- function(n, x, mu, sigma, Binv) {
-    .Call('_coda_count_c_rlrnm_posterior', PACKAGE = 'coda.count', n, x, mu, sigma, Binv)
+c_rlrnm_posterior <- function(n, x, mu, sigma, Binv, r = 0L) {
+    .Call('_coda_count_c_rlrnm_posterior', PACKAGE = 'coda.count', n, x, mu, sigma, Binv, r)
 }
 
 pinv <- function(X) {
