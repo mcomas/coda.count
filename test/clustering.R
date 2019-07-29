@@ -17,7 +17,8 @@ ggtern(data = df) +
   geom_mask() +
   geom_point(aes(x=ind, y=esp_d, z=esp_e, col = factor(g)), alpha = 0.4) +
   theme_minimal()
-
+P = as.data.frame(fit$P)
+names(P) = colnames(X)
 ggtern(data = P) +
   geom_mask() +
   geom_point(aes(x=ind, y=esp_d, z=esp_e), alpha = 0.4) +
