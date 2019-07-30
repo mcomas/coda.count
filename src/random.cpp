@@ -117,6 +117,6 @@ arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, a
     }
     sample.col(i) = arma::vec(current);
   }
-  Rcpp::Rcout << "Acceptance rate:" << ((double)acceptance)/(r*n) << std::endl;
+  //Rcpp::Rcout << "Acceptance rate:" << ((double)acceptance)/(r*n) << std::endl;
   return(sample.t());
 }
