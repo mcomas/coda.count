@@ -8,15 +8,12 @@
 #include "dm.h"
 
 arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
-  unsigned d = x.n_elem - 1;
+  unsigned d = Binv.n_cols;
 
   arma::mat N_posterior(d,d+1);
   N_posterior.col(d) = l_lrnm_join_maximum(x, mu, inv_sigma, Binv, 1e-5, 1000);
-  //Rcpp::Rcout << N_posterior.col(d);
   arma::mat D2 = l_lrnm_join_d2(N_posterior.col(d), x, mu, inv_sigma, Binv);
-  //Rcpp::Rcout << D2;
   N_posterior.head_cols(d) = arma::inv_sympd(-D2);
-
   return(N_posterior);
 }
 
@@ -25,7 +22,7 @@ arma::cube c_posterior_approximation(arma::mat X, arma::vec mu, arma::mat &sigma
   arma::mat Binv = pinv(B).t();
   arma::mat inv_sigma = inv_sympd(sigma);
   arma::mat Xt = X.t();
-  arma::cube approx = arma::cube(mu.n_elem, X.n_cols, X.n_rows);
+  arma::cube approx = arma::cube(mu.n_elem, mu.n_elem+1, X.n_rows);
   for(int i = 0; i < X.n_rows; i++){
     approx.slice(i) = c_posterior_approximation_vec(Xt.col(i), mu, inv_sigma, Binv);
   }

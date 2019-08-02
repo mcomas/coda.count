@@ -81,6 +81,10 @@ l_dnormal_prop_vec <- function(h, mu, inv_sigma) {
     .Call('_coda_count_l_dnormal_prop_vec', PACKAGE = 'coda.count', h, mu, inv_sigma)
 }
 
+l_lrnm_join_no_constant_vec <- function(h, x, mu, inv_sigma, Binv) {
+    .Call('_coda_count_l_lrnm_join_no_constant_vec', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
+}
+
 l_lrnm_join_vec <- function(h, x, mu, inv_sigma, Binv) {
     .Call('_coda_count_l_lrnm_join_vec', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
 }
@@ -129,6 +133,16 @@ c_rnormalmultinomial <- function(mu, sigma, size, Binv) {
 #' @export
 c_rlrnm_posterior <- function(n, x, mu, sigma, Binv, r = 0L) {
     .Call('_coda_count_c_rlrnm_posterior', PACKAGE = 'coda.count', n, x, mu, sigma, Binv, r)
+}
+
+#' @export
+c_rlrnm_2mixture_posterior <- function(n, x, p1, mu1, sigma1, p2, mu2, sigma2, Binv, r = 0L) {
+    .Call('_coda_count_c_rlrnm_2mixture_posterior', PACKAGE = 'coda.count', n, x, p1, mu1, sigma1, p2, mu2, sigma2, Binv, r)
+}
+
+#' @export
+c_rlrnm_mixture_posterior <- function(n, x, p, mu, sigma, Binv, r = 0L) {
+    .Call('_coda_count_c_rlrnm_mixture_posterior', PACKAGE = 'coda.count', n, x, p, mu, sigma, Binv, r)
 }
 
 pinv <- function(X) {

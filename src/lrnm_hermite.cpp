@@ -15,7 +15,7 @@ double c_d_lrnm_hermite(arma::vec x,
                         arma::vec mu_prior, arma::mat sigma_prior,
                         arma::mat Binv, int order){
 
-  unsigned d = x.n_elem - 1;
+  unsigned d = Binv.n_cols;
 
 
   arma::mat inv_sigma_prior = arma::inv_sympd(sigma_prior);
@@ -23,7 +23,6 @@ double c_d_lrnm_hermite(arma::vec x,
   arma::vec mu = N_posterior.col(d);
   arma::mat sigma = N_posterior.head_cols(d);
   arma::mat inv_sigma = arma::inv_sympd(sigma);
-
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
 

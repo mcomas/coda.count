@@ -36,8 +36,12 @@ dlrnm = function(x, mu, sigma, B = NULL,
 }
 
 #' @export
-log_join_lrnm = function(x, h, mu, sigma, B = NULL){
-  l_lrnm_join_vec(h, x, mu, solve(sigma), pinv(t(B)))
+log_join_lrnm = function(x, h, mu, sigma, B = NULL, constant = TRUE){
+  if(constant){
+    l_lrnm_join_vec(h, x, mu, solve(sigma), pinv(t(B)))
+  }else{
+    l_lrnm_join_no_constant_vec(h, x, mu, solve(sigma), pinv(t(B)))
+  }
 }
 
 #' Estimate the parameters of a logratio-normal-multinomial distribution

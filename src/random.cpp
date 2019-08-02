@@ -94,12 +94,13 @@ arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, a
   // l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv)
   // arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   r++;
-  int d = x.n_elem - 1;
+  int d = Binv.n_cols;
   arma::mat inv_sigma = arma::inv_sympd(sigma);
   arma::mat N_approx = c_posterior_approximation_vec(x, mu, inv_sigma, Binv);
   arma::mat sigma_proposal = N_approx.head_cols(d);
   arma::vec current = N_approx.col(d);
-  double P_current = exp(l_lrnm_join_vec(current, x, mu, inv_sigma, Binv));
+  double P_max = l_lrnm_join_no_constant_vec(current, x, mu, inv_sigma, Binv);
+  double P_current = exp(l_lrnm_join_no_constant_vec(current, x, mu, inv_sigma, Binv)-P_max);
   double P_next = 0;
   arma::mat sample = arma::mat(d, n);
   int acceptance = 0;
@@ -108,7 +109,98 @@ arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, a
   for(int i = 0; i < n; i++){
     for(int j = 0; j < r; j++){
       arma::vec next = current + rN.col(i * r + j);
-      P_next = exp(l_lrnm_join_vec(next, x, mu, inv_sigma, Binv));
+      P_next = exp(l_lrnm_join_no_constant_vec(next, x, mu, inv_sigma, Binv)-P_max);
+      if(unif(i * r + j) <= P_next/P_current){
+        acceptance++;
+        current = arma::vec(next);
+        P_current = P_next;
+      }
+    }
+    sample.col(i) = arma::vec(current);
+  }
+  //Rcpp::Rcout << "Acceptance rate:" << ((double)acceptance)/(r*n) << std::endl;
+  return(sample.t());
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::mat c_rlrnm_2mixture_posterior(int n, arma::vec x,
+                                     double p1, arma::vec mu1, arma::mat sigma1,
+                                     double p2, arma::vec mu2, arma::mat sigma2, arma::mat Binv, int r = 0){
+  // l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv)
+  // arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
+  r++;
+  int d = Binv.n_cols;
+  arma::mat inv_sigma1 = arma::inv_sympd(sigma1);
+  arma::mat inv_sigma2 = arma::inv_sympd(sigma2);
+  arma::mat N1_approx = c_posterior_approximation_vec(x, mu1, inv_sigma1, Binv);
+  arma::mat sigma_proposal = N1_approx.head_cols(d);
+  arma::vec current = N1_approx.col(d);
+  double P_max = l_lrnm_join_no_constant_vec(current, x, mu1, inv_sigma1, Binv);
+  double P_current = p1 * exp(l_lrnm_join_no_constant_vec(current, x, mu1, inv_sigma1, Binv)-P_max) +
+    p2 * exp(l_lrnm_join_no_constant_vec(current, x, mu2, inv_sigma2, Binv)-P_max);
+  double P_next = 0;
+  arma::mat sample = arma::mat(d, n);
+  int acceptance = 0;
+  arma::mat rN = c_rnormal(n*r, arma::zeros(d), sigma_proposal).t();
+  arma::vec unif = arma::randu(n*r);
+  for(int i = 0; i < n; i++){
+    for(int j = 0; j < r; j++){
+      arma::vec next = current + rN.col(i * r + j);
+      P_next = p1 * exp(l_lrnm_join_no_constant_vec(next, x, mu1, inv_sigma1, Binv)-P_max) +
+        p2 * exp(l_lrnm_join_no_constant_vec(next, x, mu2, inv_sigma2, Binv)-P_max);
+      if(unif(i * r + j) <= P_next/P_current){
+        acceptance++;
+        current = arma::vec(next);
+        P_current = P_next;
+      }
+    }
+    sample.col(i) = arma::vec(current);
+  }
+  //Rcpp::Rcout << "Acceptance rate:" << ((double)acceptance)/(r*n) << std::endl;
+  return(sample.t());
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::mat c_rlrnm_mixture_posterior(int n, arma::vec x, arma::vec p, arma::mat mu, arma::cube sigma,
+                                    arma::mat Binv, int r = 0){
+  // l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv)
+  // arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
+  r++;
+  int d = Binv.n_cols;
+  int k = p.n_elem;
+  arma::cube inv_sigma = arma::cube(d,d,k);
+  arma::cube N_approx = arma::cube(d,d+1,k);
+  arma::vec current = arma::vec(d);
+  arma::mat sigma_proposal = arma::zeros(d,d);
+  for(int i=0; i<k; i++){
+    inv_sigma.slice(i) = arma::inv_sympd(sigma.slice(i));
+    N_approx.slice(i) = c_posterior_approximation_vec(x, mu.col(i), inv_sigma.slice(i), Binv);
+    sigma_proposal += p(i) * N_approx.slice(i).head_cols(d);
+    current += p(i) * N_approx.slice(i).col(d);
+  }
+  double P_max = -10000000000000;
+  for(int i=0; i<k; i++){
+    double log_dens = l_lrnm_join_no_constant_vec(current, x, mu.col(i), inv_sigma.slice(i), Binv);
+    if(log_dens > P_max) P_max = log_dens;
+  }
+  double P_current = 0;
+  for(int i=0; i<k; i++){
+    P_current += p(i) * exp(l_lrnm_join_no_constant_vec(current, x, mu.col(i), inv_sigma.slice(i), Binv)-P_max);
+  }
+  double P_next = 0;
+  arma::mat sample = arma::mat(d, n);
+  int acceptance = 0;
+  arma::mat rN = c_rnormal(n*r, arma::zeros(d), sigma_proposal).t();
+  arma::vec unif = arma::randu(n*r);
+  for(int i = 0; i < n; i++){
+    for(int j = 0; j < r; j++){
+      arma::vec next = current + rN.col(i * r + j);
+      double P_next = 0;
+      for(int i=0; i<k; i++){
+        P_next += p(i) * exp(l_lrnm_join_no_constant_vec(next, x, mu.col(i), inv_sigma.slice(i), Binv)-P_max);
+      }
       if(unif(i * r + j) <= P_next/P_current){
         acceptance++;
         current = arma::vec(next);
