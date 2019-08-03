@@ -13,7 +13,6 @@ IntegerMatrix c_rmultinomial_Rcpp(NumericMatrix P, NumericVector vsize) {
 
   int n = P.nrow();
   int k = P.ncol();
-
   IntegerMatrix result(n, k);
   for(int i=0; i < n; i++){
     NumericVector prob = P(i, _);
@@ -172,7 +171,7 @@ arma::mat c_rlrnm_mixture_posterior(int n, arma::vec x, arma::vec p, arma::mat m
   int k = p.n_elem;
   arma::cube inv_sigma = arma::cube(d,d,k);
   arma::cube N_approx = arma::cube(d,d+1,k);
-  arma::vec current = arma::vec(d);
+  arma::vec current = arma::zeros(d);
   arma::mat sigma_proposal = arma::zeros(d,d);
   for(int i=0; i<k; i++){
     inv_sigma.slice(i) = arma::inv_sympd(sigma.slice(i));
@@ -180,7 +179,7 @@ arma::mat c_rlrnm_mixture_posterior(int n, arma::vec x, arma::vec p, arma::mat m
     sigma_proposal += p(i) * N_approx.slice(i).head_cols(d);
     current += p(i) * N_approx.slice(i).col(d);
   }
-  double P_max = -10000000000000;
+  double P_max = -1e20;
   for(int i=0; i<k; i++){
     double log_dens = l_lrnm_join_no_constant_vec(current, x, mu.col(i), inv_sigma.slice(i), Binv);
     if(log_dens > P_max) P_max = log_dens;
@@ -197,9 +196,9 @@ arma::mat c_rlrnm_mixture_posterior(int n, arma::vec x, arma::vec p, arma::mat m
   for(int i = 0; i < n; i++){
     for(int j = 0; j < r; j++){
       arma::vec next = current + rN.col(i * r + j);
-      double P_next = 0;
-      for(int i=0; i<k; i++){
-        P_next += p(i) * exp(l_lrnm_join_no_constant_vec(next, x, mu.col(i), inv_sigma.slice(i), Binv)-P_max);
+      P_next = 0;
+      for(int l = 0; l<k; l++){
+        P_next += p(l) * exp(l_lrnm_join_no_constant_vec(next, x, mu.col(l), inv_sigma.slice(l), Binv)-P_max);
       }
       if(unif(i * r + j) <= P_next/P_current){
         acceptance++;
