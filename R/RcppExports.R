@@ -136,11 +136,6 @@ c_rlrnm_posterior <- function(n, x, mu, sigma, Binv, r = 0L) {
 }
 
 #' @export
-c_rlrnm_2mixture_posterior <- function(n, x, p1, mu1, sigma1, p2, mu2, sigma2, Binv, r = 0L) {
-    .Call('_coda_count_c_rlrnm_2mixture_posterior', PACKAGE = 'coda.count', n, x, p1, mu1, sigma1, p2, mu2, sigma2, Binv, r)
-}
-
-#' @export
 c_rlrnm_mixture_posterior <- function(n, x, p, mu, sigma, Binv, r = 0L) {
     .Call('_coda_count_c_rlrnm_mixture_posterior', PACKAGE = 'coda.count', n, x, p, mu, sigma, Binv, r)
 }

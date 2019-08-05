@@ -457,26 +457,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// c_rlrnm_2mixture_posterior
-arma::mat c_rlrnm_2mixture_posterior(int n, arma::vec x, double p1, arma::vec mu1, arma::mat sigma1, double p2, arma::vec mu2, arma::mat sigma2, arma::mat Binv, int r);
-RcppExport SEXP _coda_count_c_rlrnm_2mixture_posterior(SEXP nSEXP, SEXP xSEXP, SEXP p1SEXP, SEXP mu1SEXP, SEXP sigma1SEXP, SEXP p2SEXP, SEXP mu2SEXP, SEXP sigma2SEXP, SEXP BinvSEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    Rcpp::traits::input_parameter< double >::type p1(p1SEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu1(mu1SEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma1(sigma1SEXP);
-    Rcpp::traits::input_parameter< double >::type p2(p2SEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu2(mu2SEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma2(sigma2SEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
-    Rcpp::traits::input_parameter< int >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_rlrnm_2mixture_posterior(n, x, p1, mu1, sigma1, p2, mu2, sigma2, Binv, r));
-    return rcpp_result_gen;
-END_RCPP
-}
 // c_rlrnm_mixture_posterior
 arma::mat c_rlrnm_mixture_posterior(int n, arma::vec x, arma::vec p, arma::mat mu, arma::cube sigma, arma::mat Binv, int r);
 RcppExport SEXP _coda_count_c_rlrnm_mixture_posterior(SEXP nSEXP, SEXP xSEXP, SEXP pSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BinvSEXP, SEXP rSEXP) {
@@ -552,7 +532,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_rnormalSimplex", (DL_FUNC) &_coda_count_c_rnormalSimplex, 4},
     {"_coda_count_c_rnormalmultinomial", (DL_FUNC) &_coda_count_c_rnormalmultinomial, 4},
     {"_coda_count_c_rlrnm_posterior", (DL_FUNC) &_coda_count_c_rlrnm_posterior, 6},
-    {"_coda_count_c_rlrnm_2mixture_posterior", (DL_FUNC) &_coda_count_c_rlrnm_2mixture_posterior, 10},
     {"_coda_count_c_rlrnm_mixture_posterior", (DL_FUNC) &_coda_count_c_rlrnm_mixture_posterior, 7},
     {"_coda_count_pinv", (DL_FUNC) &_coda_count_pinv, 1},
     {"_coda_count_c_simplex_lattice", (DL_FUNC) &_coda_count_c_simplex_lattice, 2},
