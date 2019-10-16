@@ -10,6 +10,7 @@
 
 using namespace Rcpp;
 
+//' @export
 // [[Rcpp::export]]
 double c_d_lrnm_hermite(arma::vec x,
                         arma::vec mu_prior, arma::mat sigma_prior,
@@ -64,7 +65,7 @@ double c_d_lrnm_hermite(arma::vec x,
   return integral;
 }
 
-
+//' @export
 // [[Rcpp::export]]
 arma::mat c_moments_lrnm_hermite(arma::vec x,
                                  arma::vec mu, arma::mat sigma,
@@ -150,6 +151,7 @@ arma::mat c_moments_lrnm_hermite(arma::vec x,
 //   return Rcpp::List::create(M1, M2);
 // }
 
+//' @export
 // [[Rcpp::export]]
 Rcpp::List c_fit_lrnm_lm_hermite(arma::mat Y, arma::mat B, arma::mat X, int order,
                                  double eps, int max_iter){
