@@ -45,14 +45,17 @@ c_fit_lrnm_gaussian_approx <- function(X, B, eps = 0.00001, max_iter = 200L, em_
     .Call('_coda_count_c_fit_lrnm_gaussian_approx', PACKAGE = 'coda.count', X, B, eps, max_iter, em_max_steps)
 }
 
+#' @export
 c_d_lrnm_hermite <- function(x, mu_prior, sigma_prior, Binv, order) {
     .Call('_coda_count_c_d_lrnm_hermite', PACKAGE = 'coda.count', x, mu_prior, sigma_prior, Binv, order)
 }
 
+#' @export
 c_moments_lrnm_hermite <- function(x, mu, sigma, mu_prior, sigma_prior, Binv, order) {
     .Call('_coda_count_c_moments_lrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, Binv, order)
 }
 
+#' @export
 c_fit_lrnm_lm_hermite <- function(Y, B, X, order, eps, max_iter) {
     .Call('_coda_count_c_fit_lrnm_lm_hermite', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter)
 }
