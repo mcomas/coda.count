@@ -155,8 +155,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_moments_lrnm_hermite
-arma::mat c_moments_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::vec mu_prior, arma::mat sigma_prior, arma::mat Binv, int order);
-RcppExport SEXP _coda_count_c_moments_lrnm_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP mu_priorSEXP, SEXP sigma_priorSEXP, SEXP BinvSEXP, SEXP orderSEXP) {
+arma::mat c_moments_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::vec mu_prior, arma::mat sigma_prior, arma::mat Binv, int order, arma::vec mu_centering);
+RcppExport SEXP _coda_count_c_moments_lrnm_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP mu_priorSEXP, SEXP sigma_priorSEXP, SEXP BinvSEXP, SEXP orderSEXP, SEXP mu_centeringSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -167,7 +167,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type sigma_prior(sigma_priorSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
     Rcpp::traits::input_parameter< int >::type order(orderSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_moments_lrnm_hermite(x, mu, sigma, mu_prior, sigma_prior, Binv, order));
+    Rcpp::traits::input_parameter< arma::vec >::type mu_centering(mu_centeringSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_moments_lrnm_hermite(x, mu, sigma, mu_prior, sigma_prior, Binv, order, mu_centering));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -218,8 +219,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_moments_lrnm_montecarlo
-arma::mat c_moments_lrnm_montecarlo(arma::vec x, arma::vec mu, arma::mat sigma, arma::vec mu_prior, arma::mat inv_sigma_prior, arma::mat Binv, arma::mat& Z);
-RcppExport SEXP _coda_count_c_moments_lrnm_montecarlo(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP mu_priorSEXP, SEXP inv_sigma_priorSEXP, SEXP BinvSEXP, SEXP ZSEXP) {
+arma::mat c_moments_lrnm_montecarlo(arma::vec x, arma::vec mu, arma::mat sigma, arma::vec mu_prior, arma::mat inv_sigma_prior, arma::mat Binv, arma::mat& Z, arma::vec mu_centering);
+RcppExport SEXP _coda_count_c_moments_lrnm_montecarlo(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP mu_priorSEXP, SEXP inv_sigma_priorSEXP, SEXP BinvSEXP, SEXP ZSEXP, SEXP mu_centeringSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -230,7 +231,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type inv_sigma_prior(inv_sigma_priorSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type Z(ZSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_moments_lrnm_montecarlo(x, mu, sigma, mu_prior, inv_sigma_prior, Binv, Z));
+    Rcpp::traits::input_parameter< arma::vec >::type mu_centering(mu_centeringSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_moments_lrnm_montecarlo(x, mu, sigma, mu_prior, inv_sigma_prior, Binv, Z, mu_centering));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -511,11 +513,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_posterior_approximation", (DL_FUNC) &_coda_count_c_posterior_approximation, 4},
     {"_coda_count_c_fit_lrnm_gaussian_approx", (DL_FUNC) &_coda_count_c_fit_lrnm_gaussian_approx, 5},
     {"_coda_count_c_d_lrnm_hermite", (DL_FUNC) &_coda_count_c_d_lrnm_hermite, 5},
-    {"_coda_count_c_moments_lrnm_hermite", (DL_FUNC) &_coda_count_c_moments_lrnm_hermite, 7},
+    {"_coda_count_c_moments_lrnm_hermite", (DL_FUNC) &_coda_count_c_moments_lrnm_hermite, 8},
     {"_coda_count_c_fit_lrnm_lm_hermite", (DL_FUNC) &_coda_count_c_fit_lrnm_lm_hermite, 6},
     {"_coda_count_c_fit_lrnm_lm_laplace", (DL_FUNC) &_coda_count_c_fit_lrnm_lm_laplace, 5},
     {"_coda_count_c_d_lrnm_montecarlo", (DL_FUNC) &_coda_count_c_d_lrnm_montecarlo, 5},
-    {"_coda_count_c_moments_lrnm_montecarlo", (DL_FUNC) &_coda_count_c_moments_lrnm_montecarlo, 7},
+    {"_coda_count_c_moments_lrnm_montecarlo", (DL_FUNC) &_coda_count_c_moments_lrnm_montecarlo, 8},
     {"_coda_count_c_fit_lrnm_lm_montecarlo", (DL_FUNC) &_coda_count_c_fit_lrnm_lm_montecarlo, 6},
     {"_coda_count_l_dnormal_vec", (DL_FUNC) &_coda_count_l_dnormal_vec, 3},
     {"_coda_count_l_dnormal_prop_vec", (DL_FUNC) &_coda_count_l_dnormal_prop_vec, 3},

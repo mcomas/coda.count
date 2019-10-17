@@ -51,8 +51,8 @@ c_d_lrnm_hermite <- function(x, mu_prior, sigma_prior, Binv, order) {
 }
 
 #' @export
-c_moments_lrnm_hermite <- function(x, mu, sigma, mu_prior, sigma_prior, Binv, order) {
-    .Call('_coda_count_c_moments_lrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, Binv, order)
+c_moments_lrnm_hermite <- function(x, mu, sigma, mu_prior, sigma_prior, Binv, order, mu_centering) {
+    .Call('_coda_count_c_moments_lrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, Binv, order, mu_centering)
 }
 
 #' @export
@@ -70,8 +70,8 @@ c_d_lrnm_montecarlo <- function(x, mu_prior, sigma_prior, Binv, Z) {
 }
 
 #' @export
-c_moments_lrnm_montecarlo <- function(x, mu, sigma, mu_prior, inv_sigma_prior, Binv, Z) {
-    .Call('_coda_count_c_moments_lrnm_montecarlo', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, inv_sigma_prior, Binv, Z)
+c_moments_lrnm_montecarlo <- function(x, mu, sigma, mu_prior, inv_sigma_prior, Binv, Z, mu_centering) {
+    .Call('_coda_count_c_moments_lrnm_montecarlo', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, inv_sigma_prior, Binv, Z, mu_centering)
 }
 
 #' @export

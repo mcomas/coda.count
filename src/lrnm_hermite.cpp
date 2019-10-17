@@ -70,7 +70,8 @@ double c_d_lrnm_hermite(arma::vec x,
 arma::mat c_moments_lrnm_hermite(arma::vec x,
                                  arma::vec mu, arma::mat sigma,
                                  arma::vec mu_prior, arma::mat sigma_prior,
-                                 arma::mat Binv, int order){
+                                 arma::mat Binv, int order,
+                                 arma::vec mu_centering){
   unsigned d = x.n_elem - 1;
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
@@ -194,7 +195,7 @@ Rcpp::List c_fit_lrnm_lm_hermite(arma::mat Y, arma::mat B, arma::mat X, int orde
       arma::mat moments = c_moments_lrnm_hermite(Y.row(i).t(),
                                                  N_posterior.col(d), N_posterior.head_cols(d),
                                                  mu_i.t(), sigma_lm,
-                                                 Binv, order);
+                                                 Binv, order, mu_i.t());
       H.row(i) = moments.col(d).t();
       M1 += moments.col(d);
       M2 += moments.head_cols(d);
@@ -213,7 +214,7 @@ Rcpp::List c_fit_lrnm_lm_hermite(arma::mat Y, arma::mat B, arma::mat X, int orde
     arma::mat moments = c_moments_lrnm_hermite(Y.row(i).t(),
                                                N_posterior.col(d), N_posterior.head_cols(d),
                                                mu_i.t(), sigma_lm,
-                                               Binv, order);
+                                               Binv, order, mu_i.t());
 
     H.row(i) = moments.col(d).t();
   }
