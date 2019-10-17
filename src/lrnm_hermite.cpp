@@ -107,7 +107,7 @@ arma::mat c_moments_lrnm_hermite(arma::vec x,
                       l_multinomial(x, p/accu(p), l_cmult));
     M0 += dens;
     M1 += h * dens;
-    M2 += (h-mu_prior) * (h-mu_prior).t() * dens;
+    M2 += (h-mu_centering) * (h-mu_centering).t() * dens;
 
     // Calculate next coordinate
     index[position]++;
