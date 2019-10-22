@@ -67,7 +67,7 @@ arma::mat c_moments_lrnm_montecarlo(arma::vec x,
 
   arma::mat INV_SIGMA = inv_sigma_prior - inv_sigma;
   arma::mat MU = inv(INV_SIGMA) * (inv_sigma_prior * mu_prior - inv_sigma * mu);
-  Rcpp::Rcout << "inversed";
+
   for(int i=0; i<n; i++){
     h = Hz.col(i) + mu;
     p = arma::exp(Binv * h);
