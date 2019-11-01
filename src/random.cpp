@@ -89,14 +89,15 @@ List c_rnormalmultinomial(arma::vec mu, arma::mat sigma, arma::vec size, arma::m
 
 //' @export
 // [[Rcpp::export]]
-arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv, int r = 0){
+arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv,
+                            int r = 0, double shrink = 1){
   // l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv)
   // arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   r++;
   int d = Binv.n_cols;
   arma::mat inv_sigma = arma::inv_sympd(sigma);
   arma::mat N_approx = c_posterior_approximation_vec(x, mu, inv_sigma, Binv);
-  arma::mat sigma_proposal = N_approx.head_cols(d);
+  arma::mat sigma_proposal = (shrink/d) * N_approx.head_cols(d);
   arma::vec current = N_approx.col(d);
   double P_max = l_lrnm_join_no_constant_vec(current, x, mu, inv_sigma, Binv);
   double P_current = exp(l_lrnm_join_no_constant_vec(current, x, mu, inv_sigma, Binv)-P_max);
