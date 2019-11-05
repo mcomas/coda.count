@@ -444,8 +444,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_rlrnm_posterior
-arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv, int r);
-RcppExport SEXP _coda_count_c_rlrnm_posterior(SEXP nSEXP, SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BinvSEXP, SEXP rSEXP) {
+arma::mat c_rlrnm_posterior(int n, arma::vec x, arma::vec mu, arma::mat sigma, arma::mat Binv, int r, double shrink);
+RcppExport SEXP _coda_count_c_rlrnm_posterior(SEXP nSEXP, SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BinvSEXP, SEXP rSEXP, SEXP shrinkSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -455,7 +455,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
     Rcpp::traits::input_parameter< int >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_rlrnm_posterior(n, x, mu, sigma, Binv, r));
+    Rcpp::traits::input_parameter< double >::type shrink(shrinkSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_rlrnm_posterior(n, x, mu, sigma, Binv, r, shrink));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -533,7 +534,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_rnormal", (DL_FUNC) &_coda_count_c_rnormal, 3},
     {"_coda_count_c_rnormalSimplex", (DL_FUNC) &_coda_count_c_rnormalSimplex, 4},
     {"_coda_count_c_rnormalmultinomial", (DL_FUNC) &_coda_count_c_rnormalmultinomial, 4},
-    {"_coda_count_c_rlrnm_posterior", (DL_FUNC) &_coda_count_c_rlrnm_posterior, 6},
+    {"_coda_count_c_rlrnm_posterior", (DL_FUNC) &_coda_count_c_rlrnm_posterior, 7},
     {"_coda_count_c_rlrnm_mixture_posterior", (DL_FUNC) &_coda_count_c_rlrnm_mixture_posterior, 7},
     {"_coda_count_pinv", (DL_FUNC) &_coda_count_pinv, 1},
     {"_coda_count_c_simplex_lattice", (DL_FUNC) &_coda_count_c_simplex_lattice, 2},
