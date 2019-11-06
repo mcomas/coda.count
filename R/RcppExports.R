@@ -56,12 +56,12 @@ c_moments_lrnm_hermite <- function(x, mu, sigma, mu_prior, sigma_prior, Binv, or
 }
 
 #' @export
-c_fit_lrnm_lm_hermite <- function(Y, B, X, order, eps, max_iter) {
-    .Call('_coda_count_c_fit_lrnm_lm_hermite', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter)
+c_fit_lrnm_lm_hermite <- function(Y, B, X, order, eps, max_iter, H0) {
+    .Call('_coda_count_c_fit_lrnm_lm_hermite', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter, H0)
 }
 
-c_fit_lrnm_lm_laplace <- function(Y, B, X, eps, max_iter) {
-    .Call('_coda_count_c_fit_lrnm_lm_laplace', PACKAGE = 'coda.count', Y, B, X, eps, max_iter)
+c_fit_lrnm_lm_laplace <- function(Y, B, X, eps, max_iter, H0) {
+    .Call('_coda_count_c_fit_lrnm_lm_laplace', PACKAGE = 'coda.count', Y, B, X, eps, max_iter, H0)
 }
 
 #' @export
@@ -75,8 +75,8 @@ c_moments_lrnm_montecarlo <- function(x, mu, sigma, mu_prior, inv_sigma_prior, B
 }
 
 #' @export
-c_fit_lrnm_lm_montecarlo <- function(Y, B, X, Z, eps, max_iter) {
-    .Call('_coda_count_c_fit_lrnm_lm_montecarlo', PACKAGE = 'coda.count', Y, B, X, Z, eps, max_iter)
+c_fit_lrnm_lm_montecarlo <- function(Y, B, X, Z, eps, max_iter, H0) {
+    .Call('_coda_count_c_fit_lrnm_lm_montecarlo', PACKAGE = 'coda.count', Y, B, X, Z, eps, max_iter, H0)
 }
 
 l_dnormal_vec <- function(h, mu, inv_sigma) {

@@ -55,10 +55,14 @@ log_join_lrnm = function(x, h, mu, sigma, B = NULL, constant = TRUE){
 #' @param max_iter maximum number of iterations for the iterative procedure used to estimate the parameter
 #' @return Estimated parameters mu and sigma
 #' @export
-fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo',
+fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo', H.ini = NULL,
                     montecarlo.n = 500, hermite.order = 5, Z = NULL, eps = NULL, max_iter = 500){
   if(is.null(B)){
     B = coda.base::ilr_basis(ncol(X))
+  }
+  if(is.null(H.ini)){
+    alpha = fit_dm(X)[,1]
+    H.ini = log(t(t(as.matrix(X)) + alpha)) %*% B
   }
   d = ncol(X)-1
   if(method=='hermite'){
@@ -66,14 +70,14 @@ fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo',
       eps = 1e-05
     }
     fit = c_fit_lrnm_lm_hermite(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
-                                order = hermite.order, eps = eps, max_iter = max_iter)
+                                order = hermite.order, eps = eps, max_iter = max_iter, H0 = H.ini)
   }
   if(method=='laplace'){
     if(is.null(eps)){
       eps = 1e-05
     }
     fit = c_fit_lrnm_lm_laplace(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
-                                eps = eps, max_iter = max_iter)
+                                eps = eps, max_iter = max_iter, H0 = H.ini)
   }
   if(method=='montecarlo'){
     if(is.null(eps)){
@@ -84,7 +88,7 @@ fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo',
       Z = rbind(Z,-Z)
     }
     fit = c_fit_lrnm_lm_montecarlo(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
-                                   Z = Z, eps = eps, max_iter = max_iter)
+                                   Z = Z, eps = eps, max_iter = max_iter, H0 = H.ini)
   }
   if(fit[[4]] == max_iter){
     warning("Maximum number of iterations exhausted.")

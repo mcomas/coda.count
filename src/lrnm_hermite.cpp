@@ -155,17 +155,14 @@ arma::mat c_moments_lrnm_hermite(arma::vec x,
 //' @export
 // [[Rcpp::export]]
 Rcpp::List c_fit_lrnm_lm_hermite(arma::mat Y, arma::mat B, arma::mat X, int order,
-                                 double eps, int max_iter){
+                                 double eps, int max_iter, arma::mat H0){
 
   int n = Y.n_rows;
   int k = X.n_cols;
   int d = Y.n_cols - 1;
-  arma::vec alpha = c_dm_fit_alpha(Y);
-  arma::mat Binv = pinv(B).t();
-  arma::mat P = arma::mat(Y);
-  P.each_row() += alpha.t();
 
-  arma::mat H = arma::log(P) * B;
+  arma::mat Binv = pinv(B).t();
+  arma::mat H = H0;
 
   arma::mat beta = arma::inv(X.t() * X) * X.t() * H, beta_prev;
   arma::mat R = H - X * beta;
