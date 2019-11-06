@@ -69,13 +69,18 @@ arma::mat c_moments_lrnm_montecarlo(arma::vec x,
   // arma::mat MU = inv(INV_SIGMA) * (inv_sigma_prior * mu_prior - inv_sigma * mu);
   // Rcpp::Rcout << INV_SIGMA;
   arma::mat MU = solve(INV_SIGMA, inv_sigma_prior * mu_prior - inv_sigma * mu);
-  // Rcpp::Rcout << MU;
+
+  arma::mat p_mu = arma::exp(Binv * mu);
+  // Rcpp::Rcout << p_mu;
+  // Rcpp::Rcout << x;
+  double constant = -arma::dot(log(p_mu/accu(p_mu)),x);
   for(int i=0; i<n; i++){
     h = Hz.col(i) + mu;
     p = arma::exp(Binv * h);
-
+    // Rcpp::Rcout << "(" << l_dnormal_prop_vec(h, MU, INV_SIGMA) << ", " << arma::dot(log(p/accu(p)),x) << ") = ";
+    // Rcpp::Rcout << l_dnormal_prop_vec(h, MU, INV_SIGMA) + arma::dot(log(p/accu(p)),x) + constant << std::endl;
     double dens = exp(l_dnormal_prop_vec(h, MU, INV_SIGMA) +
-                      arma::dot(log(p/accu(p)),x));
+                      arma::dot(log(p/accu(p)),x) + constant);
     // Rcpp::Rcout << dens << " ";
     // double dens = exp(l_dnormal_prop_vec(h, mu_prior, inv_sigma_prior) -
     //                   l_dnormal_prop_vec(h, mu, inv_sigma) +
@@ -86,6 +91,7 @@ arma::mat c_moments_lrnm_montecarlo(arma::vec x,
     M2 += (h-mu_centering) * (h-mu_centering).t() * dens;
     // Rcpp::Rcout << M0 << M1 << M2;
   }
+  // Rcpp::Rcout << std::endl;
 
   arma::mat moments(d, d+1);
   moments.col(d) = M1/M0;
@@ -153,8 +159,9 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
       Rcpp::Rcout << "Covariance matrix is degenerate" << std::endl;
       return Rcpp::List::create(beta, sigma_lm, H, current_iter, eigval, sigma_lm);
     }
+    // Rcpp::Rcout << sigma_lm;
     inv_sigma_lm = arma::inv_sympd(sigma_lm);
-
+    // Rcpp::Rcout << "here";
     beta_prev = arma::mat(beta);
     arma::vec M1 = arma::zeros(d);
     arma::mat M2 = arma::zeros(d, d);
