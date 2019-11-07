@@ -155,25 +155,24 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
     current_iter++;
 
     bool cor = eig_sym(eigval, eigvec, sigma_lm);
-    if(eigval.min() < 1e-10){
+    // Rcpp::Rcout << sigma_lm.is_sympd();
+    if(eigval.min() < 1e-10 | eigval.max() < 1e-5){
       Rcpp::Rcout << "Covariance matrix is degenerate" << std::endl;
       return Rcpp::List::create(beta, sigma_lm, H, current_iter, eigval, sigma_lm);
     }
     // Rcpp::Rcout << sigma_lm;
     inv_sigma_lm = arma::inv_sympd(sigma_lm);
-    // Rcpp::Rcout << "here";
     beta_prev = arma::mat(beta);
     arma::vec M1 = arma::zeros(d);
     arma::mat M2 = arma::zeros(d, d);
     for(int i = 0; i < Y.n_rows; i++){
       arma::mat mu_i =  X.row(i) * beta;
       arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu_i.t(), inv_sigma_lm, Binv);
-      // Rcpp::Rcout << N_posterior;
+      // Rcpp::Rcout << N_posterior.head_cols(d).is_sympd() << "; ";
       arma::mat moments = c_moments_lrnm_montecarlo(Y.row(i).t(),
                                                     N_posterior.col(d), N_posterior.head_cols(d),
                                                     mu_i.t(), inv_sigma_lm,
                                                     Binv, Zt, mu_i.t());
-
       H.row(i) = moments.col(d).t();
       M1 += moments.col(d);
       M2 += moments.head_cols(d);
