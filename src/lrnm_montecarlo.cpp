@@ -166,13 +166,21 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
     arma::vec M1 = arma::zeros(d);
     arma::mat M2 = arma::zeros(d, d);
     for(int i = 0; i < Y.n_rows; i++){
+      if(i % 50 == 0){
+        // Rcpp::Rcout << i << " ";
+        Rcpp::checkUserInterrupt();
+      }
+
       arma::mat mu_i =  X.row(i) * beta;
+      // Rcpp::Rcout << "laplace in" ;
       arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu_i.t(), inv_sigma_lm, Binv);
+      // Rcpp::Rcout << "laplace out";
       // Rcpp::Rcout << N_posterior.head_cols(d).is_sympd() << "; ";
       arma::mat moments = c_moments_lrnm_montecarlo(Y.row(i).t(),
                                                     N_posterior.col(d), N_posterior.head_cols(d),
                                                     mu_i.t(), inv_sigma_lm,
                                                     Binv, Zt, mu_i.t());
+      // Rcpp::Rcout << "moments out";
       H.row(i) = moments.col(d).t();
       M1 += moments.col(d);
       M2 += moments.head_cols(d);
@@ -180,6 +188,7 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
     beta = arma::inv(X.t() * X) * X.t() * H;
     //R = H - X * beta;
     sigma_lm = M2 / n; //R.t() * R / (n-k);
+    Rcpp::Rcout << beta;
     //sigma = M2 / n - mu * mu.t();
   } while ( norm(beta-beta_prev, 2) > eps && current_iter < max_iter);
   // Last iteration
