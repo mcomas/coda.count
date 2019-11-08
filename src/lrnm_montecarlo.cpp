@@ -79,9 +79,8 @@ arma::mat c_moments_lrnm_montecarlo(arma::vec x,
     p = arma::exp(Binv * h);
     // Rcpp::Rcout << "(" << l_dnormal_prop_vec(h, MU, INV_SIGMA) << ", " << arma::dot(log(p/accu(p)),x) << ") = ";
     // Rcpp::Rcout << l_dnormal_prop_vec(h, MU, INV_SIGMA) + arma::dot(log(p/accu(p)),x) + constant << std::endl;
-    double dens = exp(l_dnormal_prop_vec(h, MU, INV_SIGMA) +
+    double dens = exp(l_dnormal_vec(h, MU, INV_SIGMA) +
                       arma::dot(log(p/accu(p)),x) + constant);
-    // Rcpp::Rcout << dens << " ";
     // double dens = exp(l_dnormal_prop_vec(h, mu_prior, inv_sigma_prior) -
     //                   l_dnormal_prop_vec(h, mu, inv_sigma) +
     //                   arma::dot(log(p/accu(p)),x));
@@ -91,7 +90,7 @@ arma::mat c_moments_lrnm_montecarlo(arma::vec x,
     M2 += (h-mu_centering) * (h-mu_centering).t() * dens;
     // Rcpp::Rcout << M0 << M1 << M2;
   }
-  // Rcpp::Rcout << std::endl;
+  // Rcpp::Rcout << M0 << M1 << M2 << std::endl;
 
   arma::mat moments(d, d+1);
   moments.col(d) = M1/M0;
@@ -155,7 +154,7 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
     current_iter++;
 
     bool cor = eig_sym(eigval, eigvec, sigma_lm);
-    // Rcpp::Rcout << sigma_lm.is_sympd();
+    Rcpp::Rcout << eigval;
     if(eigval.min() < 1e-10 | eigval.max() < 1e-5){
       Rcpp::Rcout << "Covariance matrix is degenerate" << std::endl;
       return Rcpp::List::create(beta, sigma_lm, H, current_iter, eigval, sigma_lm);
@@ -175,12 +174,18 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
       // Rcpp::Rcout << "laplace in" ;
       arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu_i.t(), inv_sigma_lm, Binv);
       // Rcpp::Rcout << "laplace out";
-      // Rcpp::Rcout << N_posterior.head_cols(d).is_sympd() << "; ";
+      // Rcpp::Rcout << N_posterior.head_cols(d);
+      if(i == 80){
+        Rcpp::Rcout << N_posterior << mu_i << inv_sigma_lm;
+      }
       arma::mat moments = c_moments_lrnm_montecarlo(Y.row(i).t(),
                                                     N_posterior.col(d), N_posterior.head_cols(d),
                                                     mu_i.t(), inv_sigma_lm,
                                                     Binv, Zt, mu_i.t());
-      // Rcpp::Rcout << "moments out";
+
+      if(i == 80){
+        Rcpp::Rcout << moments;
+      }
       H.row(i) = moments.col(d).t();
       M1 += moments.col(d);
       M2 += moments.head_cols(d);
