@@ -7,12 +7,19 @@
 #include "coda_base.h"
 #include "dm.h"
 
+//' @export
+// [[Rcpp::export]]
 arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   unsigned d = Binv.n_cols;
 
   arma::mat N_posterior(d,d+1);
+  // Rcpp::Rcout << inv_sigma << std::endl;
+  // Rcpp::Rcout << mu << std::endl;
+  // Rcpp::Rcout << x << std::endl;
   N_posterior.col(d) = l_lrnm_join_maximum(x, mu, inv_sigma, Binv, 1e-5, 1000);
   arma::mat D2 = l_lrnm_join_d2(N_posterior.col(d), x, mu, inv_sigma, Binv);
+  // Rcpp::Rcout << N_posterior.col(d);
+  // Rcpp::Rcout << -D2;
   N_posterior.head_cols(d) = arma::inv_sympd(-D2);
   return(N_posterior);
 }

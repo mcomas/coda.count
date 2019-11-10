@@ -110,6 +110,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_posterior_approximation_vec
+arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv);
+RcppExport SEXP _coda_count_c_posterior_approximation_vec(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_posterior_approximation_vec(x, mu, inv_sigma, Binv));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_posterior_approximation
 arma::cube c_posterior_approximation(arma::mat X, arma::vec mu, arma::mat& sigma, arma::mat& B);
 RcppExport SEXP _coda_count_c_posterior_approximation(SEXP XSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP BSEXP) {
@@ -514,6 +528,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_logistic_alr_approximation", (DL_FUNC) &_coda_count_c_logistic_alr_approximation, 1},
     {"_coda_count_c_gaussian_product", (DL_FUNC) &_coda_count_c_gaussian_product, 2},
     {"_coda_count_c_gaussian_division", (DL_FUNC) &_coda_count_c_gaussian_division, 2},
+    {"_coda_count_c_posterior_approximation_vec", (DL_FUNC) &_coda_count_c_posterior_approximation_vec, 4},
     {"_coda_count_c_posterior_approximation", (DL_FUNC) &_coda_count_c_posterior_approximation, 4},
     {"_coda_count_c_fit_lrnm_gaussian_approx", (DL_FUNC) &_coda_count_c_fit_lrnm_gaussian_approx, 5},
     {"_coda_count_c_d_lrnm_hermite", (DL_FUNC) &_coda_count_c_d_lrnm_hermite, 5},
