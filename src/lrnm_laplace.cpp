@@ -54,7 +54,7 @@ Rcpp::List c_fit_lrnm_lm_laplace(arma::mat Y, arma::mat B, arma::mat X,
     R = H - X * beta;
     sigma_lm = R.t() * R / (n-k); // M2 / n;
     //sigma = M2 / n - mu * mu.t();
-  } while ( norm(beta-beta_prev, 2) > eps && current_iter < max_iter);
+  } while ( norm(beta-beta_prev, 1) > eps && current_iter < max_iter);
 
   // Last iteration
   inv_sigma_lm = arma::inv_sympd(sigma_lm);

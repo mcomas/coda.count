@@ -271,9 +271,9 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
     beta = arma::inv(X.t() * X) * X.t() * H;
     //R = H - X * beta;
     sigma_lm = M2 / n; //R.t() * R / (n-k);
-    // Rcpp::Rcout << beta;
+    // Rcpp::Rcout << beta << norm(beta-beta_prev, 2) << " " << norm(beta-beta_prev, 1) << std::endl;
     //sigma = M2 / n - mu * mu.t();
-  } while ( norm(beta-beta_prev, 2) > eps && current_iter < max_iter);
+  } while ( norm(beta-beta_prev, 1) > eps && current_iter < max_iter);
   // Last iteration
   inv_sigma_lm = arma::inv_sympd(sigma_lm);
   for(int i = 0; i < Y.n_rows; i++){
