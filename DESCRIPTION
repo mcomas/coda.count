@@ -1,7 +1,7 @@
 Package: coda.count
 Type: Package
 Title: Tools for Compositional Count Data Distributions
-Version: 0.1.13
+Version: 0.1.14
 Date: 2010-07-09
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu"))
