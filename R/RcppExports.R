@@ -38,12 +38,13 @@ c_gaussian_division <- function(pars1, pars_res) {
 }
 
 #' @export
-c_posterior_approximation_vec <- function(x, mu, inv_sigma, Binv) {
-    .Call('_coda_count_c_posterior_approximation_vec', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv)
+c_posterior_approximation_vec <- function(x, mu, inv_sigma, Binv, eps = 1e-05, niter = 1000L) {
+    .Call('_coda_count_c_posterior_approximation_vec', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv, eps, niter)
 }
 
-c_posterior_approximation <- function(X, mu, sigma, B) {
-    .Call('_coda_count_c_posterior_approximation', PACKAGE = 'coda.count', X, mu, sigma, B)
+#' @export
+c_posterior_approximation <- function(X, mu, sigma, B, eps = 1e-05, niter = 1000L) {
+    .Call('_coda_count_c_posterior_approximation', PACKAGE = 'coda.count', X, mu, sigma, B, eps, niter)
 }
 
 c_fit_lrnm_gaussian_approx <- function(X, B, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {

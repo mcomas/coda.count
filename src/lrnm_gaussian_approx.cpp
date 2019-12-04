@@ -9,14 +9,15 @@
 
 //' @export
 // [[Rcpp::export]]
-arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
+arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma,
+                                        arma::mat &Binv, double eps = 1e-05, int niter = 1000){
   unsigned d = Binv.n_cols;
 
   arma::mat N_posterior(d,d+1);
   // Rcpp::Rcout << inv_sigma << std::endl;
   // Rcpp::Rcout << mu << std::endl;
   // Rcpp::Rcout << x << std::endl;
-  N_posterior.col(d) = l_lrnm_join_maximum(x, mu, inv_sigma, Binv, 1e-5, 1000);
+  N_posterior.col(d) = l_lrnm_join_maximum(x, mu, inv_sigma, Binv, eps, niter);
   arma::mat D2 = l_lrnm_join_d2(N_posterior.col(d), x, mu, inv_sigma, Binv);
   // Rcpp::Rcout << N_posterior.col(d);
   // Rcpp::Rcout << -D2;
@@ -24,14 +25,16 @@ arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &in
   return(N_posterior);
 }
 
+//' @export
 // [[Rcpp::export]]
-arma::cube c_posterior_approximation(arma::mat X, arma::vec mu, arma::mat &sigma, arma::mat &B){
+arma::cube c_posterior_approximation(arma::mat X, arma::vec mu, arma::mat &sigma, arma::mat &B,
+                                     double eps = 1e-05, int niter = 1000){
   arma::mat Binv = pinv(B).t();
   arma::mat inv_sigma = inv_sympd(sigma);
   arma::mat Xt = X.t();
   arma::cube approx = arma::cube(mu.n_elem, mu.n_elem+1, X.n_rows);
   for(int i = 0; i < X.n_rows; i++){
-    approx.slice(i) = c_posterior_approximation_vec(Xt.col(i), mu, inv_sigma, Binv);
+    approx.slice(i) = c_posterior_approximation_vec(Xt.col(i), mu, inv_sigma, Binv, eps, niter);
   }
   return(approx);
 }
