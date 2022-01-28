@@ -4,9 +4,18 @@
 \alias{fit_lrnm}
 \title{Estimate the parameters of a logratio-normal-multinomial distribution}
 \usage{
-fit_lrnm(X, B = NULL, probs = FALSE, method = "montecarlo",
-  H.ini = NULL, montecarlo.n = 500, hermite.order = 5, Z = NULL,
-  eps = NULL, max_iter = 500)
+fit_lrnm(
+  X,
+  B = NULL,
+  probs = FALSE,
+  method = "montecarlo",
+  H.ini = NULL,
+  montecarlo.n = 500,
+  hermite.order = 5,
+  Z = NULL,
+  eps = NULL,
+  max_iter = 500
+)
 }
 \arguments{
 \item{X}{count sample}

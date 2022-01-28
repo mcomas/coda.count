@@ -119,5 +119,29 @@ lrnm_posterior_approx = function(X, mu, sigma, B, method = 'laplace'){
     res = c_posterior_approximation(X, mu, sigma, B)
     res = apply(res, 3, function(x) list(mu = x[,D], sigma = x[,-D]))
   }
+  if(method == 'variational'){
+    res = list()
+    for(i in 1:nrow(X)){
+      x = X[i,]
+      m = coordinates(0.5 * composition(mu, B) + 0.5*x/sum(x), B)
+      V = rep(1, length(m))
+      xi = 1
+      EPS = 1
+      ITER = 1
+      while(ITER < 50 & EPS > 0.0001){
+        opt_pars = optimise_xi_m_V(m, V, xi, x, mu, sigma, B)
+
+        ITER = ITER + 1
+        EPS = max(m - opt_pars$m)^2
+
+        xi = opt_pars$xi
+        m = opt_pars$m
+        V = opt_pars$V
+
+      }
+      res[[i]] = list(mu = m, sigma = V)
+    }
+  }
   res
 }
+

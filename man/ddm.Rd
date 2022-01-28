@@ -23,7 +23,7 @@ sum(p <- apply(X, 1, ddm, c(1.5,2)))
 names(p) = sprintf("(\%d,\%d)", X[,1], X[,2])
 barplot(p, cex.axis = 0.8, cex.names = 0.8, las=2,
         main = paste('Dirichlet-multinomial',
-                     'probability mass function', sep="\\n"),
+                     'probability mass function', sep="\n"),
                      xlab = 'Count', ylab = 'Probability')
 D = 3
 X = simplex_lattice(10,3)
