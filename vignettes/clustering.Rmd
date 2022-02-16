@@ -65,7 +65,7 @@ ggtern() +
   geom_point(data = P, aes(x = V1, y = V2, z = V3))
 ggplot() +
   geom_path(data = ellipse(mu, sigma, 0.95), aes(x = V1, y = V2), col = 'blue') +
-  geom_point(data = H, aes(x = x1, y = x2))
+  geom_point(data = H, aes(x = h1, y = h2))
 ```
 
 * After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution. With the function `rmultinomial()` we can generate that sample:
@@ -116,7 +116,7 @@ ggtern() +
   geom_point(data = E, aes(x = x1, y = x2, z = x3))
 ggplot() +
   geom_path(data = ellipse(fit$mu, fit$sigma, 0.95), aes(x = V1, y = V2), col = 'blue') +
-  geom_point(data = H_E, aes(x = x1, y = x2))
+  geom_point(data = H_E, aes(x = h1, y = h2))
 ```
 
 ## Approximate the posterior distribution using the Laplace method
@@ -172,10 +172,10 @@ ggtern() +
   geom_path(data = coda_ellipse(lN[[J]]$mu, lN[[J]]$sigma, 0.95), aes(x = x1, y = x2, z = x3), col = '#238800')
 ggplot() +
   geom_path(data = ellipse(fit$mu, fit$sigma, 0.95), aes(x = V1, y = V2), col = 'blue') +
-  geom_point(data = H_E, aes(x = x1, y = x2), alpha=0.1) +
-  geom_point(data = H_E[I,,drop=F], aes(x = x1, y = x2), col = '#880023') +
+  geom_point(data = H_E, aes(x = h1, y = h2), alpha=0.1) +
+  geom_point(data = H_E[I,,drop=F], aes(x = h1, y = h2), col = '#880023') +
   geom_path(data = ellipse(lN[[I]]$mu, lN[[I]]$sigma, 0.95), aes(x = V1, y = V2), col = '#880023') +
-  geom_point(data = H_E[J,,drop=F], aes(x = x1, y = x2), col = '#238800') +
+  geom_point(data = H_E[J,,drop=F], aes(x = h1, y = h2), col = '#238800') +
   geom_path(data = ellipse(lN[[J]]$mu, lN[[J]]$sigma, 0.95), aes(x = V1, y = V2), col = '#238800')
 ```
 
