@@ -27,6 +27,97 @@ arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &in
 
 //' @export
 // [[Rcpp::export]]
+arma::mat c_lrnm_cond_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2,
+                                                  arma::mat &Binv, double eps = 1e-05, int niter = 1000){
+  unsigned d = Binv.n_cols - h2.size();
+
+  arma::mat N_posterior(d,d+1);
+  // Rcpp::Rcout << inv_sigma << std::endl;
+  // Rcpp::Rcout << mu << std::endl;
+  // Rcpp::Rcout << x << std::endl;
+  N_posterior.col(d) = l_lrnm_cond_join_maximum(x, mu, inv_sigma, h2, Binv, eps, niter);
+  arma::mat D2 = l_lrnm_cond_join_d2(N_posterior.col(d), x, mu, inv_sigma, h2, Binv);
+  // Rcpp::Rcout << N_posterior.col(d);
+  // Rcpp::Rcout << -D2;
+  N_posterior.head_cols(d) = arma::inv_sympd(-D2);
+  return(N_posterior);
+}
+
+// //' @export
+// // [[Rcpp::export]]
+// arma::mat c_posterior_approximation_vec2(arma::vec x, arma::vec mu, arma::mat &inv_sigma,
+//                                          arma::mat &Binv, double eps = 1e-05, int niter = 1000){
+//   unsigned d = Binv.n_cols;
+//
+//   /*
+//    * https://stackoverflow.com/questions/48348079/applying-the-optim-function-in-r-in-c-with-rcpp
+//    * https://stackoverflow.com/questions/46473895/calling-rs-optim-function-from-within-c-using-rcpp
+//    *
+//    */
+//   arma::mat N_posterior(d,d+1);
+//
+//   // Extract R's optim function
+//   Rcpp::Environment stats("package:stats");
+//   Rcpp::Function optim = stats["optim"];
+//
+//   // Call the optim function from R in C++
+//   Rcpp::List opt_results = optim(Rcpp::_["par"]    = mu,
+//                                  // Make sure this function is not exported!
+//                                  Rcpp::_["fn"]     = Rcpp::InternalFunction(&neg_l_lrnm_join_no_constant_vec),
+//                                  Rcpp::_["method"] = "BFGS",
+//                                  // Pass in the other parameters as everything
+//                                  // is scoped environmentally
+//                                  Rcpp::_["x"] = x,
+//                                  Rcpp::_["mu"] = mu,
+//                                  Rcpp::_["inv_sigma"] = inv_sigma,
+//                                  Rcpp::_["Binv"] = Binv);
+//
+//   // Extract out the estimated parameter values
+//   arma::vec out = Rcpp::as<arma::vec>(opt_results[0]);
+//
+//   // Return estimated values
+//   return out;
+// }
+
+// //' @export
+// // [[Rcpp::export]]
+// arma::mat c_posterior_approximation_vec3(arma::vec x, arma::vec mu, arma::mat &inv_sigma,
+//                                          arma::mat &Binv, double eps = 1e-05, int niter = 1000){
+//   unsigned d = Binv.n_cols;
+//
+//   /*
+//    * https://stackoverflow.com/questions/48348079/applying-the-optim-function-in-r-in-c-with-rcpp
+//    * https://stackoverflow.com/questions/46473895/calling-rs-optim-function-from-within-c-using-rcpp
+//    *
+//    */
+//   arma::mat N_posterior(d,d+1);
+//
+//   // Extract R's optim function
+//   Rcpp::Environment stats("package:stats");
+//   Rcpp::Function optim = stats["optim"];
+//
+//   // Call the optim function from R in C++
+//   Rcpp::List opt_results = optim(Rcpp::_["par"]    = mu,
+//                                  // Make sure this function is not exported!
+//                                  Rcpp::_["fn"]     = Rcpp::InternalFunction(&neg_l_lrnm_join_no_constant_vec),
+//                                  Rcpp::_["gr"]     = Rcpp::InternalFunction(&neg_l_lrnm_join_d1),
+//                                  Rcpp::_["method"] = "BFGS",
+//                                  // Pass in the other parameters as everything
+//                                  // is scoped environmentally
+//                                  Rcpp::_["x"] = x,
+//                                  Rcpp::_["mu"] = mu,
+//                                  Rcpp::_["inv_sigma"] = inv_sigma,
+//                                  Rcpp::_["Binv"] = Binv);
+//
+//   // Extract out the estimated parameter values
+//   arma::vec out = Rcpp::as<arma::vec>(opt_results[0]);
+//
+//   // Return estimated values
+//   return out;
+// }
+
+//' @export
+// [[Rcpp::export]]
 arma::cube c_posterior_approximation(arma::mat X, arma::vec mu, arma::mat &sigma, arma::mat &B,
                                      double eps = 1e-05, int niter = 1000){
   arma::mat Binv = pinv(B).t();

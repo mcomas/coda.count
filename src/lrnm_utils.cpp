@@ -54,7 +54,7 @@ double l_multinomial(arma::vec x, arma::vec p, double lconst){
   return( lconst + arma::dot(log(p),x) );
 }
 
-// [[Rcpp::export]]
+
 double l_lrnm_join_no_constant_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
 
   arma::vec Bh = Binv * h;
@@ -63,6 +63,15 @@ double l_lrnm_join_no_constant_vec(arma::vec h, arma::vec x, arma::vec mu, arma:
 
   return(lmult + lnormal);
 }
+
+// double neg_l_lrnm_join_no_constant_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
+//
+//   arma::vec Bh = Binv * h;
+//   double lmult = arma::accu( x % (Bh - log(arma::accu(exp(Bh))) ) );
+//   double lnormal = l_dnormal_vec(h, mu, inv_sigma);
+//
+//   return(-lmult - lnormal);
+// }
 
 // [[Rcpp::export]]
 double l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
@@ -90,6 +99,34 @@ arma::vec l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_
 
 //' @export
 // [[Rcpp::export]]
+arma::vec l_lrnm_cond_join_d1(arma::vec h1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv){
+  int k = h1.size();
+  arma::vec deriv(k);
+
+
+  arma::vec h = join_cols(h1,h2);
+  arma::vec eBh = exp(Binv * h);
+
+  double  w = arma::accu(eBh);
+
+  arma::vec  wBi = Binv.head_cols(k).t() * eBh;
+
+  return(-inv_sigma * (h1-mu) + Binv.head_cols(k).t() * x - sum(x) * wBi / w);
+}
+
+// arma::vec neg_l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
+//   int k = h.size();
+//   arma::vec deriv(k);
+//
+//   arma::vec eBh = exp(Binv * h);
+//
+//   double  w = arma::accu(eBh);
+//   arma::vec  wBi = Binv.t() * eBh;
+//   return(inv_sigma * (h-mu) - Binv.t() * x + sum(x) * wBi / w);
+// }
+
+//' @export
+// [[Rcpp::export]]
 arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   int k = h.size();
   arma::mat deriv(k,k);
@@ -97,6 +134,26 @@ arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_
   arma::vec eBh = exp(Binv * h);
   double  w = arma::accu(eBh);
   arma::vec wBi = Binv.t() * eBh;
+  arma::mat wBij(k,k);
+  for(int i=0; i<k; i++){
+    for(int j=0; j<k; j++){
+      wBij(i,j) = arma::accu(Binv.col(i) % Binv.col(j) % eBh);
+    }
+  }
+  return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::mat l_lrnm_cond_join_d2(arma::vec h1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv){
+  int k = h1.size();
+  arma::mat deriv(k,k);
+
+  arma::vec h = join_cols(h1,h2);
+  arma::vec eBh = exp(Binv * h);
+  double  w = arma::accu(eBh);
+
+  arma::vec wBi = Binv.head_cols(k).t() * eBh;
   arma::mat wBij(k,k);
   for(int i=0; i<k; i++){
     for(int j=0; j<k; j++){
@@ -133,6 +190,42 @@ arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, a
 
     deriv1 = l_lrnm_join_d1(h, x, mu, inv_sigma, Binv);
     deriv2 = l_lrnm_join_d2(h, x, mu, inv_sigma, Binv);
+
+    // Rcpp::Rcout << h << std::endl << deriv1 << std::endl << deriv2 << std::endl;
+    step = arma::solve(deriv2, deriv1, arma::solve_opts::fast);
+    h = h - 0.9 * step;
+  }while( norm(step, 2) > eps && current_iter < max_iter);
+
+  return h;
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::vec l_lrnm_cond_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv,
+                                   double eps = 1e-8, int max_iter = 1000){
+
+  int k = mu.size();
+  arma::vec h;
+  if(x.min() > 0 & x.max() > 5){
+    h = arma::pinv(Binv.head_cols(k)) * log(x);
+  }else if(accu(x) > 100){
+    h = arma::pinv(Binv.head_cols(k)) * log(x+1);
+  }else{
+    h = arma::vec(mu);
+    h = 0.5 * arma::pinv(Binv.head_cols(k)) * log(x+1) + 0.5 * arma::vec(mu);
+  }
+
+  arma::vec deriv1(k);
+  arma::mat deriv2(k,k);
+  arma::vec step = arma::zeros<arma::vec>(k);
+
+  int current_iter = 0;
+  do{
+
+    current_iter++;
+
+    deriv1 = l_lrnm_cond_join_d1(h, x, mu, inv_sigma, h2, Binv);
+    deriv2 = l_lrnm_cond_join_d2(h, x, mu, inv_sigma, h2, Binv);
 
     // Rcpp::Rcout << h << std::endl << deriv1 << std::endl << deriv2 << std::endl;
     step = arma::solve(deriv2, deriv1, arma::solve_opts::fast);
