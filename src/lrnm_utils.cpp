@@ -114,6 +114,32 @@ arma::vec l_lrnm_cond_join_d1(arma::vec h1, arma::vec x, arma::vec mu, arma::mat
   return(-inv_sigma * (h1-mu) + Binv.head_cols(k).t() * x - sum(x) * wBi / w);
 }
 
+//' @export
+// [[Rcpp::export]]
+arma::vec l_indep_lrnm_cond_join_d1(arma::vec h1, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv){
+  arma::vec h = join_cols(h1,h2);
+  arma::vec eBh = exp(Binv * h);
+
+  double  w = arma::accu(eBh);
+
+  arma::vec  wBi = Binv.col(ih1).t() * eBh;
+
+  return(-inv_sigma * (h1(ih1)-mu) + Binv.col(ih1).t() * x - sum(x) * wBi / w);
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::vec l_lrnm_cond1_join_d1(arma::vec h, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
+
+  arma::vec eBh = exp(Binv * h);
+
+  double  w = arma::accu(eBh);
+
+  arma::vec  wBi = Binv.col(ih1).t() * eBh;
+
+  return(-inv_sigma * (h(ih1)-mu) + Binv.col(ih1).t() * x - sum(x) * wBi / w);
+}
+
 // arma::vec neg_l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
 //   int k = h.size();
 //   arma::vec deriv(k);
@@ -160,6 +186,36 @@ arma::mat l_lrnm_cond_join_d2(arma::vec h1, arma::vec x, arma::vec mu, arma::mat
       wBij(i,j) = arma::accu(Binv.col(i) % Binv.col(j) % eBh);
     }
   }
+  return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::mat l_indep_lrnm_cond_join_d2(arma::vec h1, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv){
+
+
+  arma::vec h = join_cols(h1,h2);
+  arma::vec eBh = exp(Binv * h);
+  double  w = arma::accu(eBh);
+
+  arma::vec wBi = Binv.col(ih1).t() * eBh;
+
+  double wBij = arma::accu(Binv.col(ih1) % Binv.col(ih1) % eBh);
+
+  return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::mat l_lrnm_cond1_join_d2(arma::vec h, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
+
+  arma::vec eBh = exp(Binv * h);
+  double  w = arma::accu(eBh);
+
+  arma::vec wBi = Binv.col(ih1).t() * eBh;
+
+  double wBij = arma::accu(Binv.col(ih1) % Binv.col(ih1) % eBh);
+
   return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
 }
 
@@ -234,3 +290,83 @@ arma::vec l_lrnm_cond_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sig
 
   return h;
 }
+
+//' @export
+// [[Rcpp::export]]
+arma::vec l_indep_lrnm_cond_join_maximum(arma::vec h1, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv,
+                                         double eps = 1e-8, int max_iter = 1000){
+
+
+
+  arma::vec deriv1(1);
+  arma::mat deriv2(1,1);
+  double step = 0;
+  arma::vec h(h1);
+  int current_iter = 0;
+  do{
+
+    current_iter++;
+    // Rcpp::Rcout << h << std::endl;
+    deriv1 = l_indep_lrnm_cond_join_d1(h, ih1, x, mu, inv_sigma, h2, Binv);
+    deriv2 = l_indep_lrnm_cond_join_d2(h, ih1, x, mu, inv_sigma, h2, Binv);
+
+    // Rcpp::Rcout << h << std::endl << deriv1 << std::endl << deriv2 << std::endl;
+    step = deriv1(0) / deriv2(0,0);
+    h(ih1) = h(ih1) - 0.9 * step;
+  }while( step > eps && current_iter < max_iter);
+
+  return h;
+}
+
+//' @export
+// [[Rcpp::export]]
+double l_lrnm_cond1_join_maximum(arma::vec h, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv,
+                                    double eps = 1e-8, int max_iter = 1000){
+
+
+
+  arma::vec deriv1(1);
+  arma::mat deriv2(1,1);
+  double step = 0;
+  int current_iter = 0;
+  do{
+
+    current_iter++;
+    // Rcpp::Rcout << h << std::endl;
+    deriv1 = l_lrnm_cond1_join_d1(h, ih1, x, mu, inv_sigma, Binv);
+    deriv2 = l_lrnm_cond1_join_d2(h, ih1, x, mu, inv_sigma, Binv);
+
+    // Rcpp::Rcout << h << std::endl << deriv1 << std::endl << deriv2 << std::endl;
+    step = deriv1(0) / deriv2(0,0);
+    h(ih1) = h(ih1) - 0.9 * step;
+  }while( step > eps && current_iter < max_iter);
+
+  return h(ih1);
+}
+
+// //' @export
+// // [[Rcpp::export]]
+// arma::vec l_lrnm_cond1_join_maximum(unsigned int ih1, arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv,
+//                                     double eps = 1e-8, int max_iter = 1000){
+//
+//
+//
+//   arma::vec deriv1(1);
+//   arma::mat deriv2(1,1);
+//   double step = 0;
+//   arma::vec h(h1);
+//   int current_iter = 0;
+//   do{
+//
+//     current_iter++;
+//     // Rcpp::Rcout << h << std::endl;
+//     deriv1 = l_indep_lrnm_cond_join_d1(h, ih1, x, mu, inv_sigma, h2, Binv);
+//     deriv2 = l_indep_lrnm_cond_join_d2(h, ih1, x, mu, inv_sigma, h2, Binv);
+//
+//     // Rcpp::Rcout << h << std::endl << deriv1 << std::endl << deriv2 << std::endl;
+//     step = deriv1(0) / deriv2(0,0);
+//     h(ih1) = h(ih1) - 0.9 * step;
+//   }while( step > eps && current_iter < max_iter);
+//
+//   return h;
+// }

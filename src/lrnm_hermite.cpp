@@ -273,6 +273,76 @@ arma::mat c_moments_lrnm_cond_hermite(arma::vec x,
 
 //' @export
 // [[Rcpp::export]]
+arma::mat c_moments_lrnm_cond1_hermite(arma::vec h, int i1,
+                                       arma::vec x, arma::vec mu, double sigma,
+                                       arma::vec mu_prior, arma::mat sigma_prior,
+                                       arma::mat Binv, int order,
+                                       arma::vec mu_centering){
+
+
+  arma::uvec I1(1);
+  I1(0) = i1 - 1;
+  arma::uvec I2(Binv.n_cols-1);
+  for(int i = 0, k = 0; i < Binv.n_cols; i++){
+    if(i + 1 != i1){
+      I2(k) = i;
+      k++;
+    }
+  }
+  // Rcpp::Rcout << I1 << std::endl;
+  // Rcpp::Rcout << I2 << std::endl;
+
+  arma::mat inv_sigma_prior_2 = arma::inv_sympd(sigma_prior(I2,I2));
+
+  arma::mat Mc = mu_prior(I1) + sigma_prior(I1,I2) * inv_sigma_prior_2 * (h(I2)-mu_prior(I2));
+  arma::mat Sc = sigma_prior(I1,I1) - sigma_prior(I1,I2) * inv_sigma_prior_2 * sigma_prior(I2,I1);
+  arma::mat inv_Sc = arma::inv_sympd(Sc);
+
+
+  arma::mat uni_hermite = hermite(order);
+  uni_hermite.col(1) = log(uni_hermite.col(1));
+
+  arma::mat inv_sigma(1,1);
+  inv_sigma(0,0) = 1/sigma;
+
+  arma::mat inv_sigma_prior = arma::inv_sympd(sigma_prior(I2,I2));
+  double l_ph2 = l_dnormal_vec(h(I2), mu_prior(I2), inv_sigma_prior_2);
+
+  double M0 = 0;
+  arma::vec M1 = arma::zeros(1);
+  arma::mat M2 = arma::zeros(1,1);
+  double l_cmult = l_multinomial_const(x);
+
+  // Rcpp::Rcout << uni_hermite << std::endl;
+  double w = 0;
+  arma::vec h1;
+//   arma::vec h = arma::zeros(Binv.n_cols);
+//   h(I2) = h2;
+  for(int i = 0; i < order; i++){
+    h1 = sqrt(sigma) * uni_hermite(i,0) + mu;
+    w = uni_hermite(i,1);
+    h(I1) = h1;
+    arma::vec p = exp(Binv * h);
+
+    double dens = exp(w + l_ph2 + l_dnormal_vec(h1, Mc, inv_Sc) -
+                      l_dnormal_vec(h1, mu, inv_sigma) +
+                      l_multinomial(x, p/accu(p), l_cmult));
+
+    M0 += dens;
+    M1 += h1 * dens;
+    M2 += (h1-mu_centering) * (h1-mu_centering).t() * dens;
+  }
+
+
+
+  arma::mat moments(1, 2);
+  moments.col(1) = M1/M0;
+  moments.col(0) = M2/M0;
+  return moments;
+}
+
+//' @export
+// [[Rcpp::export]]
 arma::mat c_moments_indep_lrnm_cond_hermite(arma::vec x, int i1,
                                             arma::vec mu, double sigma,
                                             arma::vec mu_prior, arma::mat sigma_prior, arma::vec h2,
@@ -336,38 +406,38 @@ arma::mat c_moments_indep_lrnm_cond_hermite(arma::vec x, int i1,
   }
 
   /*
-  do{
-    double w = 0;
-    arma::vec h1(dh1);
-    for(unsigned int i = 0; i < dh1; i++){
-      h1(i) = uni_hermite(index[i],0);
-      w += uni_hermite(index[i],1);
-    }
-    h1 = mu + h1;
-    arma::vec h = join_cols(h1, h2);
-    arma::vec p = exp(Binv * h);
-    // Rcpp::Rcout << "Nh2: " << l_ph2 << std::endl;
-    // Rcpp::Rcout << "Nc: " << l_dnormal_vec(h1, Mc, inv_Sc) << std::endl;
-    // Rcpp::Rcout << "N: " << -l_dnormal_vec(h1, mu, inv_sigma) << std::endl;
-    // Rcpp::Rcout << "Mult: " << l_multinomial(x, p/accu(p), l_cmult) << std::endl << std::endl;
-    double dens = exp(w + l_ph2 + l_dnormal_vec(h1, Mc, inv_Sc) -
-                      l_dnormal_vec(h1, mu, inv_sigma) +
-                      l_multinomial(x, p/accu(p), l_cmult));
-    // Rcpp::Rcout << dens;
-    M0 += dens;
-    M1 += h1 * dens;
-    M2 += (h1-mu_centering) * (h1-mu_centering).t() * dens;
-    // Calculate next coordinate
-    index[position]++;
-    while(index[position] == order){
-      index[position] = 0;
-      position++;
-      index[position]++;
-    }
-    position = 0;
-    k++;
-  } while (index[dh1] == 0);
-  */
+   do{
+   double w = 0;
+   arma::vec h1(dh1);
+   for(unsigned int i = 0; i < dh1; i++){
+   h1(i) = uni_hermite(index[i],0);
+   w += uni_hermite(index[i],1);
+   }
+   h1 = mu + h1;
+   arma::vec h = join_cols(h1, h2);
+   arma::vec p = exp(Binv * h);
+   // Rcpp::Rcout << "Nh2: " << l_ph2 << std::endl;
+   // Rcpp::Rcout << "Nc: " << l_dnormal_vec(h1, Mc, inv_Sc) << std::endl;
+   // Rcpp::Rcout << "N: " << -l_dnormal_vec(h1, mu, inv_sigma) << std::endl;
+   // Rcpp::Rcout << "Mult: " << l_multinomial(x, p/accu(p), l_cmult) << std::endl << std::endl;
+   double dens = exp(w + l_ph2 + l_dnormal_vec(h1, Mc, inv_Sc) -
+   l_dnormal_vec(h1, mu, inv_sigma) +
+   l_multinomial(x, p/accu(p), l_cmult));
+   // Rcpp::Rcout << dens;
+   M0 += dens;
+   M1 += h1 * dens;
+   M2 += (h1-mu_centering) * (h1-mu_centering).t() * dens;
+   // Calculate next coordinate
+   index[position]++;
+   while(index[position] == order){
+   index[position] = 0;
+   position++;
+   index[position]++;
+   }
+   position = 0;
+   k++;
+   } while (index[dh1] == 0);
+   */
 
   arma::mat moments(dh1, dh1+1);
   moments.col(dh1) = M1/M0;
