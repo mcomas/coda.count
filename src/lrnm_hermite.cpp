@@ -143,7 +143,7 @@ arma::mat c_moments_lrnm_hermite(arma::vec x,
                                  arma::vec mu_prior, arma::mat sigma_prior,
                                  arma::mat Binv, int order,
                                  arma::vec mu_centering){
-  unsigned d = x.n_elem - 1;
+  unsigned d = Binv.n_cols;
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
 
