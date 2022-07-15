@@ -1,7 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #define ARMA_DONT_PRINT_ERRORS
 
-#include <RcppArmadillo.h>
+#include <RcppEnsmallen.h>
 #include "lrnm_utils.h"
 #include "coda_base.h"
 #include "lrnm_gaussian_approx.h"
