@@ -32,14 +32,40 @@ arma::mat c_posterior_approximation_vec_sigma_inverse(arma::vec x, arma::vec mu,
   unsigned d = Binv.n_cols;
 
   arma::mat N_posterior(d,d+1);
-  // Rcpp::Rcout << inv_sigma << std::endl;
-  // Rcpp::Rcout << mu << std::endl;
-  // Rcpp::Rcout << x << std::endl;
   N_posterior.col(d) = l_lrnm_join_maximum(x, mu, inv_sigma, Binv, eps, niter);
   arma::mat D2 = l_lrnm_join_d2(N_posterior.col(d), x, mu, inv_sigma, Binv);
-  // Rcpp::Rcout << N_posterior.col(d);
-  // Rcpp::Rcout << -D2;
+
   N_posterior.head_cols(d) = -D2;
+  // if(! N_posterior.head_cols(d).is_sympd() ){
+  //   arma::vec h;
+  //   if(x.min() > 0 & x.max() > 5){
+  //     h = arma::pinv(Binv) * log(x);
+  //   }else if(accu(x) > 100){
+  //     h = arma::pinv(Binv) * log(x+1);
+  //   }else{
+  //     h = arma::vec(mu);
+  //     h = 0.5 * arma::pinv(Binv) * log(x+1) + 0.5 * arma::vec(mu);
+  //   }
+  //   int k = Binv.n_cols;
+  //   arma::vec deriv1(k);
+  //   arma::mat deriv2(k,k);
+  //   arma::vec step = arma::zeros<arma::vec>(k);
+  //
+  //   int current_iter = 0;
+  //   do{
+  //
+  //     current_iter++;
+  //
+  //     deriv1 = l_lrnm_join_d1(h, x, mu, inv_sigma, Binv);
+  //     deriv2 = l_lrnm_join_d2(h, x, mu, inv_sigma, Binv);
+  //
+  //     // Rcpp::Rcout << h << std::endl << deriv1 << std::endl << deriv2 << std::endl;
+  //     step = arma::solve(deriv2, deriv1, arma::solve_opts::fast);
+  //     h = h - 0.5 * step;
+  //     Rcpp::Rcout << std::endl << h << std::endl << std::endl;
+  //   }while( norm(step, 2) > eps && current_iter < 100);
+  //
+  // }
   return(N_posterior);
 }
 
@@ -50,13 +76,8 @@ arma::mat c_lrnm_cond_posterior_approximation_vec(arma::vec x, arma::vec mu, arm
   unsigned d = Binv.n_cols - h2.size();
 
   arma::mat N_posterior(d,d+1);
-  // Rcpp::Rcout << inv_sigma << std::endl;
-  // Rcpp::Rcout << mu << std::endl;
-  // Rcpp::Rcout << x << std::endl;
   N_posterior.col(d) = l_lrnm_cond_join_maximum(x, mu, inv_sigma, h2, Binv, eps, niter);
   arma::mat D2 = l_lrnm_cond_join_d2(N_posterior.col(d), x, mu, inv_sigma, h2, Binv);
-  // Rcpp::Rcout << N_posterior.col(d);
-  // Rcpp::Rcout << -D2;
   N_posterior.head_cols(d) = arma::inv_sympd(-D2, arma::inv_opts::allow_approx);
   return(N_posterior);
 }

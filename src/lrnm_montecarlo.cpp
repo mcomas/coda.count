@@ -293,8 +293,8 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
   arma::mat Binv = pinv(B).t();
 
   arma::mat H = H0;
-
-  arma::mat beta = arma::inv(X.t() * X) * X.t() * H, beta_prev;
+  arma::mat invXtXX = arma::inv_sympd(X.t() * X) * X.t();
+  arma::mat beta = invXtXX * H, beta_prev;
   arma::mat R = H - X * beta;
   arma::mat sigma_lm = R.t() * R / (n-k), inv_sigma_lm;
 
@@ -308,49 +308,38 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
     current_iter++;
 
     bool cor = eig_sym(eigval, eigvec, sigma_lm);
-    // Rcpp::Rcout << eigval;
+
     if(eigval.min() < 1e-10 | eigval.max() < 1e-5){
       Rcpp::Rcout << "Covariance matrix is degenerate" << std::endl;
       return Rcpp::List::create(beta, sigma_lm, H, current_iter, eigval, sigma_lm);
     }
-    // Rcpp::Rcout << sigma_lm;
-    Rcpp::Rcout << "a";
+
     inv_sigma_lm = arma::inv_sympd(sigma_lm);
-    Rcpp::Rcout << "b";
+
     beta_prev = arma::mat(beta);
     arma::vec M1 = arma::zeros(d);
     arma::mat M2 = arma::zeros(d, d);
-    // Rcpp::Rcout << inv_sigma_lm;
+
     for(int i = 0; i < Y.n_rows; i++){
       if(i % 50 == 0){
-        // Rcpp::Rcout << i << " ";
         Rcpp::checkUserInterrupt();
       }
 
       arma::mat mu_i =  X.row(i) * beta;
-      // Rcpp::Rcout << "laplace in" ;
-      arma::mat N_posterior = c_posterior_approximation_vec(Y.row(i).t(), mu_i.t(), inv_sigma_lm, Binv);
-      // Rcpp::Rcout << "laplace out";
-      // Rcpp::Rcout << N_posterior.head_cols(d);
-      // if(i == 80){
-      //   Rcpp::Rcout << "Start info 81" << std::endl;
-      //   // Rcpp::Rcout << Y.row(i) << std::endl << N_posterior << std::endl<< mu_i << std::endl<< inv_sigma_lm;
-      //   Rcpp::Rcout << std::endl << arma::inv_sympd(N_posterior.head_cols(d));
-      //   Rcpp::Rcout << "End info 81" << std::endl;
-      // }
-      arma::mat moments = c_moments_lrnm_montecarlo(Y.row(i).t(),
-                                                    N_posterior.col(d), N_posterior.head_cols(d),
-                                                    mu_i.t(), inv_sigma_lm,
-                                                    Binv, Zt, mu_i.t());
 
-      // if(i == 80){
-      //   Rcpp::Rcout << moments;
-      // }
+      arma::mat N_posterior_si = c_posterior_approximation_vec_sigma_inverse(Y.row(i).t(), mu_i.t(), inv_sigma_lm, Binv);
+
+      arma::mat moments = c_moments_lrnm_montecarlo_sigma_inverse(Y.row(i).t(),
+                                                                  N_posterior_si.col(d), N_posterior_si.head_cols(d),
+                                                                  mu_i.t(), inv_sigma_lm,
+                                                                  Binv, Zt, mu_i.t());
+
+
       H.row(i) = moments.col(d).t();
       M1 += moments.col(d);
       M2 += moments.head_cols(d);
     }
-    beta = arma::inv(X.t() * X) * X.t() * H;
+    beta = invXtXX * H;
     //R = H - X * beta;
     sigma_lm = M2 / n; //R.t() * R / (n-k);
     // Rcpp::Rcout << beta << norm(beta-beta_prev, 2) << " " << norm(beta-beta_prev, 1) << std::endl;
@@ -367,7 +356,7 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
                                                   Binv, Zt, mu_i.t());
     H.row(i) = moments.col(d).t();
   }
-  beta = arma::inv(X.t() * X) * X.t() * H;
+  beta = invXtXX * H;
 
   return Rcpp::List::create(beta, sigma_lm, H, current_iter);
 }
