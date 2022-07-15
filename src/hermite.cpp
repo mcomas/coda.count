@@ -75,6 +75,7 @@ double hermite_integration(unsigned int order, unsigned int d){
   return integral;
 }
 
+// [[Rcpp::export]]
 arma::mat hermite(int order) {
 
   double a = 0;

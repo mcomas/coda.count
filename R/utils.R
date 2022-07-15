@@ -9,3 +9,8 @@
 simplex_lattice = function(n, D){
   c_simplex_lattice(D, n)
 }
+
+#' @export
+w_hermite = function(order){
+  hermite(order)
+}

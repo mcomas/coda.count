@@ -27,6 +27,24 @@ arma::mat c_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &in
 
 //' @export
 // [[Rcpp::export]]
+arma::mat c_posterior_approximation_vec_sigma_inverse(arma::vec x, arma::vec mu, arma::mat &inv_sigma,
+                                                      arma::mat &Binv, double eps = 1e-05, int niter = 1000){
+  unsigned d = Binv.n_cols;
+
+  arma::mat N_posterior(d,d+1);
+  // Rcpp::Rcout << inv_sigma << std::endl;
+  // Rcpp::Rcout << mu << std::endl;
+  // Rcpp::Rcout << x << std::endl;
+  N_posterior.col(d) = l_lrnm_join_maximum(x, mu, inv_sigma, Binv, eps, niter);
+  arma::mat D2 = l_lrnm_join_d2(N_posterior.col(d), x, mu, inv_sigma, Binv);
+  // Rcpp::Rcout << N_posterior.col(d);
+  // Rcpp::Rcout << -D2;
+  N_posterior.head_cols(d) = -D2;
+  return(N_posterior);
+}
+
+//' @export
+// [[Rcpp::export]]
 arma::mat c_lrnm_cond_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2,
                                                   arma::mat &Binv, double eps = 1e-05, int niter = 1000){
   unsigned d = Binv.n_cols - h2.size();
@@ -39,7 +57,25 @@ arma::mat c_lrnm_cond_posterior_approximation_vec(arma::vec x, arma::vec mu, arm
   arma::mat D2 = l_lrnm_cond_join_d2(N_posterior.col(d), x, mu, inv_sigma, h2, Binv);
   // Rcpp::Rcout << N_posterior.col(d);
   // Rcpp::Rcout << -D2;
-  N_posterior.head_cols(d) = arma::inv_sympd(-D2);
+  N_posterior.head_cols(d) = arma::inv_sympd(-D2, arma::inv_opts::allow_approx);
+  return(N_posterior);
+}
+
+//' @export
+// [[Rcpp::export]]
+arma::mat c_lrnm_cond_posterior_approximation_vec_sigma_inverse(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2,
+                                                                arma::mat &Binv, double eps = 1e-05, int niter = 1000){
+  unsigned d = Binv.n_cols - h2.size();
+
+  arma::mat N_posterior(d,d+1);
+  // Rcpp::Rcout << inv_sigma << std::endl;
+  // Rcpp::Rcout << mu << std::endl;
+  // Rcpp::Rcout << x << std::endl;
+  N_posterior.col(d) = l_lrnm_cond_join_maximum(x, mu, inv_sigma, h2, Binv, eps, niter);
+  arma::mat D2 = l_lrnm_cond_join_d2(N_posterior.col(d), x, mu, inv_sigma, h2, Binv);
+  // Rcpp::Rcout << N_posterior.col(d);
+  // Rcpp::Rcout << -D2;
+  N_posterior.head_cols(d) = -D2;
   return(N_posterior);
 }
 

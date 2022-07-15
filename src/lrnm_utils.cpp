@@ -54,7 +54,7 @@ double l_multinomial(arma::vec x, arma::vec p, double lconst){
   return( lconst + arma::dot(log(p),x) );
 }
 
-
+// [[Rcpp::export]]
 double l_lrnm_join_no_constant_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
 
   arma::vec Bh = Binv * h;

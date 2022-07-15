@@ -4,6 +4,11 @@
 
 using namespace Rcpp;
 
+//' @export
+// [[Rcpp::export]]
+arma::mat pinv_sympd(arma::mat X){
+  return arma::inv_sympd(X, arma::inv_opts::allow_approx);
+}
 
 // [[Rcpp::export]]
 arma::mat pinv(arma::mat X){
