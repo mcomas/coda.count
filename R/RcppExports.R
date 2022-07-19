@@ -17,126 +17,9 @@ c_dm_fit <- function(X, eps = 0.0001, maxiter = 5000L) {
     .Call('_coda_count_c_dm_fit', PACKAGE = 'coda.count', X, eps, maxiter)
 }
 
-c_dirichlet_alr_approx <- function(alpha) {
-    .Call('_coda_count_c_dirichlet_alr_approx', PACKAGE = 'coda.count', alpha)
-}
-
-c_logistic_ilr_approximation <- function(d) {
-    .Call('_coda_count_c_logistic_ilr_approximation', PACKAGE = 'coda.count', d)
-}
-
-c_logistic_alr_approximation <- function(d) {
-    .Call('_coda_count_c_logistic_alr_approximation', PACKAGE = 'coda.count', d)
-}
-
-c_gaussian_product <- function(pars1, pars2) {
-    .Call('_coda_count_c_gaussian_product', PACKAGE = 'coda.count', pars1, pars2)
-}
-
-c_gaussian_division <- function(pars1, pars_res) {
-    .Call('_coda_count_c_gaussian_division', PACKAGE = 'coda.count', pars1, pars_res)
-}
-
-hermite <- function(order) {
-    .Call('_coda_count_hermite', PACKAGE = 'coda.count', order)
-}
-
 #' @export
-c_posterior_approximation_vec <- function(x, mu, inv_sigma, Binv, eps = 1e-05, niter = 1000L) {
-    .Call('_coda_count_c_posterior_approximation_vec', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv, eps, niter)
-}
-
-#' @export
-c_posterior_approximation_vec_sigma_inverse <- function(x, mu, inv_sigma, Binv, eps = 1e-05, niter = 1000L) {
-    .Call('_coda_count_c_posterior_approximation_vec_sigma_inverse', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv, eps, niter)
-}
-
-#' @export
-c_lrnm_cond_posterior_approximation_vec <- function(x, mu, inv_sigma, h2, Binv, eps = 1e-05, niter = 1000L) {
-    .Call('_coda_count_c_lrnm_cond_posterior_approximation_vec', PACKAGE = 'coda.count', x, mu, inv_sigma, h2, Binv, eps, niter)
-}
-
-#' @export
-c_lrnm_cond_posterior_approximation_vec_sigma_inverse <- function(x, mu, inv_sigma, h2, Binv, eps = 1e-05, niter = 1000L) {
-    .Call('_coda_count_c_lrnm_cond_posterior_approximation_vec_sigma_inverse', PACKAGE = 'coda.count', x, mu, inv_sigma, h2, Binv, eps, niter)
-}
-
-#' @export
-c_indep_lrnm_cond_posterior_approximation_vec <- function(h1, ih1, x, mu, inv_sigma, h2, Binv, eps = 1e-05, niter = 1000L) {
-    .Call('_coda_count_c_indep_lrnm_cond_posterior_approximation_vec', PACKAGE = 'coda.count', h1, ih1, x, mu, inv_sigma, h2, Binv, eps, niter)
-}
-
-#' @export
-c_posterior_approximation <- function(X, mu, sigma, B, eps = 1e-05, niter = 1000L) {
-    .Call('_coda_count_c_posterior_approximation', PACKAGE = 'coda.count', X, mu, sigma, B, eps, niter)
-}
-
-c_fit_lrnm_gaussian_approx <- function(X, B, eps = 0.00001, max_iter = 200L, em_max_steps = 10L) {
-    .Call('_coda_count_c_fit_lrnm_gaussian_approx', PACKAGE = 'coda.count', X, B, eps, max_iter, em_max_steps)
-}
-
-#' @export
-c_d_lrnm_hermite <- function(x, mu_prior, sigma_prior, Binv, order) {
-    .Call('_coda_count_c_d_lrnm_hermite', PACKAGE = 'coda.count', x, mu_prior, sigma_prior, Binv, order)
-}
-
-#' @export
-c_d_lrnm_cond_hermite <- function(x, mu_prior, sigma_prior, h2, Binv, order) {
-    .Call('_coda_count_c_d_lrnm_cond_hermite', PACKAGE = 'coda.count', x, mu_prior, sigma_prior, h2, Binv, order)
-}
-
-#' @export
-c_moments_lrnm_hermite <- function(x, mu, sigma, mu_prior, sigma_prior, Binv, order, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_hermite', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, Binv, order, mu_centering)
-}
-
-#' @export
-c_moments_lrnm_hermite_sigma_inverse <- function(x, mu, inv_sigma, mu_prior, inv_sigma_prior, Binv, order, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_hermite_sigma_inverse', PACKAGE = 'coda.count', x, mu, inv_sigma, mu_prior, inv_sigma_prior, Binv, order, mu_centering)
-}
-
-#' @export
-c_moments_lrnm_cond_hermite_1d <- function(x, mu, sigma, Mc, inv_Sc, h2, Binv, order, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_cond_hermite_1d', PACKAGE = 'coda.count', x, mu, sigma, Mc, inv_Sc, h2, Binv, order, mu_centering)
-}
-
-#' @export
-c_moments_lrnm_cond_hermite <- function(x, mu, sigma, mu_prior, sigma_prior, h2, Binv, order, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_cond_hermite', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, h2, Binv, order, mu_centering)
-}
-
-#' @export
-c_moments_lrnm_cond_hermite2 <- function(x, mu, sigma, mu_prior, sigma_prior, h2, Binv, order, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_cond_hermite2', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, h2, Binv, order, mu_centering)
-}
-
-#' @export
-c_moments_lrnm_cond1_hermite <- function(h, i1, x, mu, sigma, mu_prior, sigma_prior, Binv, order, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_cond1_hermite', PACKAGE = 'coda.count', h, i1, x, mu, sigma, mu_prior, sigma_prior, Binv, order, mu_centering)
-}
-
-#' @export
-c_moments_indep_lrnm_cond_hermite <- function(x, i1, mu, sigma, mu_prior, sigma_prior, h2, Binv, order, mu_centering) {
-    .Call('_coda_count_c_moments_indep_lrnm_cond_hermite', PACKAGE = 'coda.count', x, i1, mu, sigma, mu_prior, sigma_prior, h2, Binv, order, mu_centering)
-}
-
-#' @export
-c_fit_lrnm_lm_hermite <- function(Y, B, X, order, eps, max_iter, H0) {
-    .Call('_coda_count_c_fit_lrnm_lm_hermite', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter, H0)
-}
-
-c_fit_lrnm_lm_laplace <- function(Y, B, X, eps, max_iter, H0) {
-    .Call('_coda_count_c_fit_lrnm_lm_laplace', PACKAGE = 'coda.count', Y, B, X, eps, max_iter, H0)
-}
-
-#' @export
-c_d_lrnm_montecarlo <- function(x, mu_prior, sigma_prior, Binv, Z) {
-    .Call('_coda_count_c_d_lrnm_montecarlo', PACKAGE = 'coda.count', x, mu_prior, sigma_prior, Binv, Z)
-}
-
-#' @export
-c_moments_lrnm_montecarlo <- function(x, mu, sigma, mu_prior, inv_sigma_prior, Binv, Z, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_montecarlo', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, inv_sigma_prior, Binv, Z, mu_centering)
+c_posterior_approximation_vec_sigma_inverse <- function(x, mu, inv_sigma, Binv) {
+    .Call('_coda_count_c_posterior_approximation_vec_sigma_inverse', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv)
 }
 
 #' @export
@@ -145,27 +28,16 @@ c_moments_lrnm_montecarlo_sigma_inverse <- function(x, mu, inv_sigma, mu_prior, 
 }
 
 #' @export
-c_moments_lrnm_cond_montecarlo <- function(x, mu, sigma, mu_prior, sigma_prior, h2, Binv, Z, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_cond_montecarlo', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, h2, Binv, Z, mu_centering)
-}
-
-#' @export
 c_fit_lrnm_lm_montecarlo <- function(Y, B, X, Z, eps, max_iter, H0) {
     .Call('_coda_count_c_fit_lrnm_lm_montecarlo', PACKAGE = 'coda.count', Y, B, X, Z, eps, max_iter, H0)
 }
 
-l_dnormal_vec <- function(h, mu, inv_sigma) {
-    .Call('_coda_count_l_dnormal_vec', PACKAGE = 'coda.count', h, mu, inv_sigma)
-}
-
-l_dnormal_prop_vec <- function(h, mu, inv_sigma) {
-    .Call('_coda_count_l_dnormal_prop_vec', PACKAGE = 'coda.count', h, mu, inv_sigma)
-}
-
+#' @export
 l_lrnm_join_no_constant_vec <- function(h, x, mu, inv_sigma, Binv) {
     .Call('_coda_count_l_lrnm_join_no_constant_vec', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
 }
 
+#' @export
 l_lrnm_join_vec <- function(h, x, mu, inv_sigma, Binv) {
     .Call('_coda_count_l_lrnm_join_vec', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
 }
@@ -176,58 +48,13 @@ l_lrnm_join_d1 <- function(h, x, mu, inv_sigma, Binv) {
 }
 
 #' @export
-l_lrnm_cond_join_d1 <- function(h1, x, mu, inv_sigma, h2, Binv) {
-    .Call('_coda_count_l_lrnm_cond_join_d1', PACKAGE = 'coda.count', h1, x, mu, inv_sigma, h2, Binv)
-}
-
-#' @export
-l_indep_lrnm_cond_join_d1 <- function(h1, ih1, x, mu, inv_sigma, h2, Binv) {
-    .Call('_coda_count_l_indep_lrnm_cond_join_d1', PACKAGE = 'coda.count', h1, ih1, x, mu, inv_sigma, h2, Binv)
-}
-
-#' @export
-l_lrnm_cond1_join_d1 <- function(h, ih1, x, mu, inv_sigma, Binv) {
-    .Call('_coda_count_l_lrnm_cond1_join_d1', PACKAGE = 'coda.count', h, ih1, x, mu, inv_sigma, Binv)
-}
-
-#' @export
 l_lrnm_join_d2 <- function(h, x, mu, inv_sigma, Binv) {
     .Call('_coda_count_l_lrnm_join_d2', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
 }
 
 #' @export
-l_lrnm_cond_join_d2 <- function(h1, x, mu, inv_sigma, h2, Binv) {
-    .Call('_coda_count_l_lrnm_cond_join_d2', PACKAGE = 'coda.count', h1, x, mu, inv_sigma, h2, Binv)
-}
-
-#' @export
-l_indep_lrnm_cond_join_d2 <- function(h1, ih1, x, mu, inv_sigma, h2, Binv) {
-    .Call('_coda_count_l_indep_lrnm_cond_join_d2', PACKAGE = 'coda.count', h1, ih1, x, mu, inv_sigma, h2, Binv)
-}
-
-#' @export
-l_lrnm_cond1_join_d2 <- function(h, ih1, x, mu, inv_sigma, Binv) {
-    .Call('_coda_count_l_lrnm_cond1_join_d2', PACKAGE = 'coda.count', h, ih1, x, mu, inv_sigma, Binv)
-}
-
-#' @export
-l_lrnm_join_maximum <- function(x, mu, inv_sigma, Binv, eps = 1e-8, max_iter = 1000L) {
-    .Call('_coda_count_l_lrnm_join_maximum', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv, eps, max_iter)
-}
-
-#' @export
-l_lrnm_cond_join_maximum <- function(x, mu, inv_sigma, h2, Binv, eps = 1e-8, max_iter = 1000L) {
-    .Call('_coda_count_l_lrnm_cond_join_maximum', PACKAGE = 'coda.count', x, mu, inv_sigma, h2, Binv, eps, max_iter)
-}
-
-#' @export
-l_indep_lrnm_cond_join_maximum <- function(h1, ih1, x, mu, inv_sigma, h2, Binv, eps = 1e-8, max_iter = 1000L) {
-    .Call('_coda_count_l_indep_lrnm_cond_join_maximum', PACKAGE = 'coda.count', h1, ih1, x, mu, inv_sigma, h2, Binv, eps, max_iter)
-}
-
-#' @export
-l_lrnm_cond1_join_maximum <- function(h, ih1, x, mu, inv_sigma, Binv, eps = 1e-8, max_iter = 1000L) {
-    .Call('_coda_count_l_lrnm_cond1_join_maximum', PACKAGE = 'coda.count', h, ih1, x, mu, inv_sigma, Binv, eps, max_iter)
+l_lrnm_join_maximum <- function(x, mu, inv_sigma, Binv) {
+    .Call('_coda_count_l_lrnm_join_maximum', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv)
 }
 
 c_rmultinomial_Rcpp <- function(P, vsize) {
@@ -256,28 +83,5 @@ c_rnormalSimplex <- function(n, mu, sigma, Binv) {
 
 c_rnormalmultinomial <- function(mu, sigma, size, Binv) {
     .Call('_coda_count_c_rnormalmultinomial', PACKAGE = 'coda.count', mu, sigma, size, Binv)
-}
-
-#' @export
-c_rlrnm_posterior <- function(n, x, mu, sigma, Binv, r = 0L, shrink = 1) {
-    .Call('_coda_count_c_rlrnm_posterior', PACKAGE = 'coda.count', n, x, mu, sigma, Binv, r, shrink)
-}
-
-#' @export
-c_rlrnm_mixture_posterior <- function(n, x, p, mu, sigma, Binv, r = 0L) {
-    .Call('_coda_count_c_rlrnm_mixture_posterior', PACKAGE = 'coda.count', n, x, p, mu, sigma, Binv, r)
-}
-
-#' @export
-pinv_sympd <- function(X) {
-    .Call('_coda_count_pinv_sympd', PACKAGE = 'coda.count', X)
-}
-
-pinv <- function(X) {
-    .Call('_coda_count_pinv', PACKAGE = 'coda.count', X)
-}
-
-c_simplex_lattice <- function(K, SIZE) {
-    .Call('_coda_count_c_simplex_lattice', PACKAGE = 'coda.count', K, SIZE)
 }
 
