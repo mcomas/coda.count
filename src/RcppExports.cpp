@@ -59,9 +59,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// c_posterior_approximation_vec_sigma_inverse
-arma::mat c_posterior_approximation_vec_sigma_inverse(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv);
-RcppExport SEXP _coda_count_c_posterior_approximation_vec_sigma_inverse(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
+// hermite
+arma::mat hermite(int order);
+RcppExport SEXP _coda_count_hermite(SEXP orderSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    rcpp_result_gen = Rcpp::wrap(hermite(order));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_lrnm_posterior_approximation_vec
+arma::mat c_lrnm_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv, double eps, int niter);
+RcppExport SEXP _coda_count_c_lrnm_posterior_approximation_vec(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP, SEXP epsSEXP, SEXP niterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -69,7 +80,98 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
-    rcpp_result_gen = Rcpp::wrap(c_posterior_approximation_vec_sigma_inverse(x, mu, inv_sigma, Binv));
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type niter(niterSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_lrnm_posterior_approximation_vec(x, mu, inv_sigma, Binv, eps, niter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_lrnm_posterior_approximation_vec_sigma_inverse
+arma::mat c_lrnm_posterior_approximation_vec_sigma_inverse(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv, double eps, int niter);
+RcppExport SEXP _coda_count_c_lrnm_posterior_approximation_vec_sigma_inverse(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP, SEXP epsSEXP, SEXP niterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type niter(niterSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_lrnm_posterior_approximation_vec_sigma_inverse(x, mu, inv_sigma, Binv, eps, niter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_lrnm_cond_posterior_approximation_vec
+arma::mat c_lrnm_cond_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::vec h2, arma::mat& Binv, double eps, int niter);
+RcppExport SEXP _coda_count_c_lrnm_cond_posterior_approximation_vec(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP h2SEXP, SEXP BinvSEXP, SEXP epsSEXP, SEXP niterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type h2(h2SEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type niter(niterSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_lrnm_cond_posterior_approximation_vec(x, mu, inv_sigma, h2, Binv, eps, niter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_moments_lrnm_hermite
+arma::mat c_moments_lrnm_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::vec mu_prior, arma::mat sigma_prior, arma::mat Binv, int order, arma::vec mu_centering);
+RcppExport SEXP _coda_count_c_moments_lrnm_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP mu_priorSEXP, SEXP sigma_priorSEXP, SEXP BinvSEXP, SEXP orderSEXP, SEXP mu_centeringSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_prior(mu_priorSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma_prior(sigma_priorSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_centering(mu_centeringSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_moments_lrnm_hermite(x, mu, sigma, mu_prior, sigma_prior, Binv, order, mu_centering));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_moments_lrnm_cond_hermite_1d
+arma::mat c_moments_lrnm_cond_hermite_1d(arma::vec x, arma::vec mu, double sigma, arma::vec Mc, arma::mat inv_Sc, arma::vec h2, arma::mat Binv, int order, double mu_centering);
+RcppExport SEXP _coda_count_c_moments_lrnm_cond_hermite_1d(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP McSEXP, SEXP inv_ScSEXP, SEXP h2SEXP, SEXP BinvSEXP, SEXP orderSEXP, SEXP mu_centeringSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Mc(McSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type inv_Sc(inv_ScSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type h2(h2SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< double >::type mu_centering(mu_centeringSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_moments_lrnm_cond_hermite_1d(x, mu, sigma, Mc, inv_Sc, h2, Binv, order, mu_centering));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_moments_lrnm_cond_hermite
+arma::mat c_moments_lrnm_cond_hermite(arma::vec x, arma::vec mu, arma::mat sigma, arma::vec mu_prior, arma::mat sigma_prior, arma::vec h2, arma::mat Binv, int order, arma::vec mu_centering);
+RcppExport SEXP _coda_count_c_moments_lrnm_cond_hermite(SEXP xSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP mu_priorSEXP, SEXP sigma_priorSEXP, SEXP h2SEXP, SEXP BinvSEXP, SEXP orderSEXP, SEXP mu_centeringSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_prior(mu_priorSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma_prior(sigma_priorSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type h2(h2SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_centering(mu_centeringSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_moments_lrnm_cond_hermite(x, mu, sigma, mu_prior, sigma_prior, h2, Binv, order, mu_centering));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -91,6 +193,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_moments_lrnm_cond_montecarlo_sigma_inverse
+arma::mat c_moments_lrnm_cond_montecarlo_sigma_inverse(arma::vec x, arma::vec mu, arma::mat inv_sigma, arma::vec Mc, arma::mat inv_Sc, arma::vec h2, arma::mat Binv, arma::mat& Z, arma::vec mu_centering);
+RcppExport SEXP _coda_count_c_moments_lrnm_cond_montecarlo_sigma_inverse(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP McSEXP, SEXP inv_ScSEXP, SEXP h2SEXP, SEXP BinvSEXP, SEXP ZSEXP, SEXP mu_centeringSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Mc(McSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type inv_Sc(inv_ScSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type h2(h2SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Binv(BinvSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu_centering(mu_centeringSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_moments_lrnm_cond_montecarlo_sigma_inverse(x, mu, inv_sigma, Mc, inv_Sc, h2, Binv, Z, mu_centering));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_fit_lrnm_lm_montecarlo
 Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma::mat& Z, double eps, int max_iter, arma::mat H0);
 RcppExport SEXP _coda_count_c_fit_lrnm_lm_montecarlo(SEXP YSEXP, SEXP BSEXP, SEXP XSEXP, SEXP ZSEXP, SEXP epsSEXP, SEXP max_iterSEXP, SEXP H0SEXP) {
@@ -109,14 +230,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // l_lrnm_join_no_constant_vec
-double l_lrnm_join_no_constant_vec(arma::vec h, arma::vec& x, arma::vec& mu, arma::mat& inv_sigma, arma::mat& Binv);
+double l_lrnm_join_no_constant_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv);
 RcppExport SEXP _coda_count_l_lrnm_join_no_constant_vec(SEXP hSEXP, SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
     rcpp_result_gen = Rcpp::wrap(l_lrnm_join_no_constant_vec(h, x, mu, inv_sigma, Binv));
@@ -168,9 +289,41 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// l_lrnm_cond_join_d1
+arma::vec l_lrnm_cond_join_d1(arma::vec h1, arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::vec h2, arma::mat& Binv);
+RcppExport SEXP _coda_count_l_lrnm_cond_join_d1(SEXP h1SEXP, SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP h2SEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h1(h1SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type h2(h2SEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(l_lrnm_cond_join_d1(h1, x, mu, inv_sigma, h2, Binv));
+    return rcpp_result_gen;
+END_RCPP
+}
+// l_lrnm_cond_join_d2
+arma::mat l_lrnm_cond_join_d2(arma::vec h1, arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::vec h2, arma::mat& Binv);
+RcppExport SEXP _coda_count_l_lrnm_cond_join_d2(SEXP h1SEXP, SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP h2SEXP, SEXP BinvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h1(h1SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type h2(h2SEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
+    rcpp_result_gen = Rcpp::wrap(l_lrnm_cond_join_d2(h1, x, mu, inv_sigma, h2, Binv));
+    return rcpp_result_gen;
+END_RCPP
+}
 // l_lrnm_join_maximum
-arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv);
-RcppExport SEXP _coda_count_l_lrnm_join_maximum(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP) {
+arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv, double eps, int max_iter);
+RcppExport SEXP _coda_count_l_lrnm_join_maximum(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP BinvSEXP, SEXP epsSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -178,7 +331,26 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
-    rcpp_result_gen = Rcpp::wrap(l_lrnm_join_maximum(x, mu, inv_sigma, Binv));
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(l_lrnm_join_maximum(x, mu, inv_sigma, Binv, eps, max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// l_lrnm_cond_join_maximum
+arma::vec l_lrnm_cond_join_maximum(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::vec h2, arma::mat& Binv, double eps, int max_iter);
+RcppExport SEXP _coda_count_l_lrnm_cond_join_maximum(SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP h2SEXP, SEXP BinvSEXP, SEXP epsSEXP, SEXP max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type h2(h2SEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Binv(BinvSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(l_lrnm_cond_join_maximum(x, mu, inv_sigma, h2, Binv, eps, max_iter));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -271,20 +443,64 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pinv_sympd
+arma::mat pinv_sympd(arma::mat X);
+RcppExport SEXP _coda_count_pinv_sympd(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(pinv_sympd(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pinv
+arma::mat pinv(arma::mat X);
+RcppExport SEXP _coda_count_pinv(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(pinv(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_simplex_lattice
+NumericMatrix c_simplex_lattice(int K, int SIZE);
+RcppExport SEXP _coda_count_c_simplex_lattice(SEXP KSEXP, SEXP SIZESEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< int >::type SIZE(SIZESEXP);
+    rcpp_result_gen = Rcpp::wrap(c_simplex_lattice(K, SIZE));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_H", (DL_FUNC) &_coda_count_H, 1},
     {"_coda_count_F", (DL_FUNC) &_coda_count_F, 1},
     {"_coda_count_c_ddm", (DL_FUNC) &_coda_count_c_ddm, 2},
     {"_coda_count_c_dm_fit", (DL_FUNC) &_coda_count_c_dm_fit, 3},
-    {"_coda_count_c_posterior_approximation_vec_sigma_inverse", (DL_FUNC) &_coda_count_c_posterior_approximation_vec_sigma_inverse, 4},
+    {"_coda_count_hermite", (DL_FUNC) &_coda_count_hermite, 1},
+    {"_coda_count_c_lrnm_posterior_approximation_vec", (DL_FUNC) &_coda_count_c_lrnm_posterior_approximation_vec, 6},
+    {"_coda_count_c_lrnm_posterior_approximation_vec_sigma_inverse", (DL_FUNC) &_coda_count_c_lrnm_posterior_approximation_vec_sigma_inverse, 6},
+    {"_coda_count_c_lrnm_cond_posterior_approximation_vec", (DL_FUNC) &_coda_count_c_lrnm_cond_posterior_approximation_vec, 7},
+    {"_coda_count_c_moments_lrnm_hermite", (DL_FUNC) &_coda_count_c_moments_lrnm_hermite, 8},
+    {"_coda_count_c_moments_lrnm_cond_hermite_1d", (DL_FUNC) &_coda_count_c_moments_lrnm_cond_hermite_1d, 9},
+    {"_coda_count_c_moments_lrnm_cond_hermite", (DL_FUNC) &_coda_count_c_moments_lrnm_cond_hermite, 9},
     {"_coda_count_c_moments_lrnm_montecarlo_sigma_inverse", (DL_FUNC) &_coda_count_c_moments_lrnm_montecarlo_sigma_inverse, 8},
+    {"_coda_count_c_moments_lrnm_cond_montecarlo_sigma_inverse", (DL_FUNC) &_coda_count_c_moments_lrnm_cond_montecarlo_sigma_inverse, 9},
     {"_coda_count_c_fit_lrnm_lm_montecarlo", (DL_FUNC) &_coda_count_c_fit_lrnm_lm_montecarlo, 7},
     {"_coda_count_l_lrnm_join_no_constant_vec", (DL_FUNC) &_coda_count_l_lrnm_join_no_constant_vec, 5},
     {"_coda_count_l_lrnm_join_vec", (DL_FUNC) &_coda_count_l_lrnm_join_vec, 5},
     {"_coda_count_l_lrnm_join_d1", (DL_FUNC) &_coda_count_l_lrnm_join_d1, 5},
     {"_coda_count_l_lrnm_join_d2", (DL_FUNC) &_coda_count_l_lrnm_join_d2, 5},
-    {"_coda_count_l_lrnm_join_maximum", (DL_FUNC) &_coda_count_l_lrnm_join_maximum, 4},
+    {"_coda_count_l_lrnm_cond_join_d1", (DL_FUNC) &_coda_count_l_lrnm_cond_join_d1, 6},
+    {"_coda_count_l_lrnm_cond_join_d2", (DL_FUNC) &_coda_count_l_lrnm_cond_join_d2, 6},
+    {"_coda_count_l_lrnm_join_maximum", (DL_FUNC) &_coda_count_l_lrnm_join_maximum, 6},
+    {"_coda_count_l_lrnm_cond_join_maximum", (DL_FUNC) &_coda_count_l_lrnm_cond_join_maximum, 7},
     {"_coda_count_c_rmultinomial_Rcpp", (DL_FUNC) &_coda_count_c_rmultinomial_Rcpp, 2},
     {"_coda_count_c_rmultinomial", (DL_FUNC) &_coda_count_c_rmultinomial, 2},
     {"_coda_count_c_rdirichlet", (DL_FUNC) &_coda_count_c_rdirichlet, 2},
@@ -292,6 +508,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_c_rnormal", (DL_FUNC) &_coda_count_c_rnormal, 3},
     {"_coda_count_c_rnormalSimplex", (DL_FUNC) &_coda_count_c_rnormalSimplex, 4},
     {"_coda_count_c_rnormalmultinomial", (DL_FUNC) &_coda_count_c_rnormalmultinomial, 4},
+    {"_coda_count_pinv_sympd", (DL_FUNC) &_coda_count_pinv_sympd, 1},
+    {"_coda_count_pinv", (DL_FUNC) &_coda_count_pinv, 1},
+    {"_coda_count_c_simplex_lattice", (DL_FUNC) &_coda_count_c_simplex_lattice, 2},
     {NULL, NULL, 0}
 };
 
