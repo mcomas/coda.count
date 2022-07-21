@@ -3,8 +3,8 @@ sinv = function(S){
 }
 
 #' @export
-fit_mv_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, hermite.order = 5,
-                                   eps = NULL, max_iter = 500){
+fit_mv_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, sobol.d_length = 100,
+                                   eps = 0.001, max_iter = 500){
   Y = X
   isZero = X==0
   Y[isZero] = 1
@@ -26,18 +26,18 @@ fit_mv_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, he
   ITER = 1
   mu_prev = Inf
   sigma_prev = Inf
-  while(max(abs(mu_prev - mu)) > 1e-8 | max(abs(sigma_prev - sigma)) > 1e-8){
-    print(ITER)
+  while(max(abs(mu_prev - mu)) > eps){
+    # print(ITER)
     mu_prev = mu
     sigma_prev = sigma
-    pars = mv_conditional_lrnm_EMstep(X, mu, sigma, B, hermite.order)
+    pars = mv_conditional_lrnm_EMstep(X, mu, sigma, B, sobol.d_length)
     mu = pars$mu
     sigma = pars$sigma
     inv_sigma = sinv(sigma)
     ITER = ITER + 1
   }
 
-  Moments = mv_conditional_lrnm_Estep(X, mu, sigma, B, hermite.order)
+  Moments = mv_conditional_lrnm_Estep(X, mu, sigma, B, sobol.d_length)
 
   H = sapply(Moments, function(m) m[,1+length(mu)]) |> t()
 
@@ -45,9 +45,9 @@ fit_mv_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, he
   return(list(mu = mu, sigma = sigma, P = Ximp, B1sub = B1sub))
 }
 #' @export
-mv_conditional_lrnm_EMstep = function(X, mu, sigma, B, hermite.order = 10){
+mv_conditional_lrnm_EMstep = function(X, mu, sigma, B, sobol.d_length = 100){
   d = length(mu)
-  moments = mv_conditional_lrnm_Estep(X, mu, sigma, B, hermite.order)
+  moments = mv_conditional_lrnm_Estep(X, mu, sigma, B, sobol.d_length)
   moments_sum = Reduce(`+`, moments)
   mu = moments_sum[,d+1] / nrow(X)
   sigma = moments_sum[,1:d] / (nrow(X)) - mu %*% t(mu)
@@ -55,13 +55,13 @@ mv_conditional_lrnm_EMstep = function(X, mu, sigma, B, hermite.order = 10){
 }
 
 #' @export
-mv_conditional_lrnm_Estep = function(X, mu, sigma, B, hermite.order = 10){
+mv_conditional_lrnm_Estep = function(X, mu, sigma, B, sobol.d_length = 100){
   zPatterns = apply(X==0, 1, function(i) paste(as.integer(i), collapse=''))
   lPatterns = split(1:nrow(X), zPatterns)
   lMoments = lapply(lPatterns, function(I){
-    print(I)
+    # print(I)
     # degenerate_conditional_trunc_posterior_moments_hermite_one_pattern
-    mv_conditional_lrnm_Estep_OnePattern(X[I,,drop=FALSE], mu, sigma, B, X[I[1],] == 0, hermite.order)
+    mv_conditional_lrnm_Estep_OnePattern(X[I,,drop=FALSE], mu, sigma, B, X[I[1],] == 0, sobol.d_length)
     # Xs = X[I,,drop=FALSE]; mu1 = mu; sigma1 = sigma; B1 = B; iZ = X[I[1],] == 0
   })
   lMomentsOrd = list()
@@ -82,7 +82,7 @@ mv_conditional_lrnm_Estep = function(X, mu, sigma, B, hermite.order = 10){
 #   })
 # }
 
-mv_conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, hermite.order){
+mv_conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, sobol.d_length){
   sZ = sum(iZ)
   sNZ = ncol(Xs) - sZ
   if(sZ == 0){
@@ -120,7 +120,7 @@ mv_conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, hermite
   d = ncol(B2)
   library(randtoolbox)
   if(sNZ == 1){
-    Z = sobol((d+1) * 100, dim = d, normal = TRUE) |> t()
+    Z = sobol((d+1) * sobol.d_length, dim = d, normal = TRUE) |> t()
     return(lapply(1:nrow(Xs), function(i){
       x = Xs[i,]
 
@@ -142,7 +142,7 @@ mv_conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, hermite
   inv_sigma2_i2 = sinv(sigma2[i2,i2])
   # inv_sigma2_i2 = MASS::ginv(sigma2[i2,i2])
   # inv_sigma2_i2b = pinv_sympd(sigma2[i2,i2])
-  Z = sobol((sZ+1) * 100, dim = sZ, normal = TRUE) |> t()
+  Z = sobol((sZ+1) * sobol.d_length, dim = sZ, normal = TRUE) |> t()
   lapply(1:nrow(Xs), function(i){
     h2 = H2[i,]
     x = Xs[i,]
