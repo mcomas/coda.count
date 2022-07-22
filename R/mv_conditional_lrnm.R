@@ -26,7 +26,7 @@ fit_mv_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, so
   ITER = 1
   mu_prev = Inf
   sigma_prev = Inf
-  while(max(abs(mu_prev - mu)) > eps){
+  while(max(abs(mu_prev - mu)) > eps & ITER < max_iter){
     # print(ITER)
     mu_prev = mu
     sigma_prev = sigma
