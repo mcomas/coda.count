@@ -1,6 +1,6 @@
 #' @export
 fit_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, hermite.order = 5,
-                                eps = NULL, max_iter = 500){
+                                eps = 1e-4, max_iter = 500){
   Y = X
   isZero = X==0
   Y[isZero] = 1
@@ -22,7 +22,7 @@ fit_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, hermi
   ITER = 1
   mu_prev = Inf
   sigma_prev = Inf
-  while(max(abs(mu_prev - mu)) > 1e-8 | max(abs(sigma_prev - sigma)) > 1e-8){
+  while(max(abs(mu_prev - mu)) > eps){
     print(ITER)
     mu_prev = mu
     sigma_prev = sigma
