@@ -57,6 +57,10 @@ log_join_lrnm = function(x, h, mu, sigma, B = NULL, constant = TRUE){
 #' @export
 fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo', H.ini = NULL,
                     montecarlo.n = 500, hermite.order = 5, Z = NULL, eps = NULL, max_iter = 500){
+  jmax = apply(X, 2, max)
+  if(min(jmax) == 0){
+    stop(sprintf("All observation have zero in part %d", which.min(jmax)), call. = FALSE)
+  }
   if(is.null(B)){
     B = coda.base::ilr_basis(ncol(X))
   }

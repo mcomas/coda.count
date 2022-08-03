@@ -3,7 +3,7 @@ fit_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, hermi
                                 eps = 1e-4, max_iter = 500){
   Y = X
   isZero = X==0
-  Y[isZero] = 1
+  Y[isZero] = 0.66
 
   H1 = coordinates(Y, B1)
   pca = prcomp(H1, center = FALSE)
