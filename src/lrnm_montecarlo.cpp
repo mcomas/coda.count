@@ -125,6 +125,7 @@ Rcpp::List c_fit_lrnm_lm_montecarlo(arma::mat Y, arma::mat B, arma::mat X, arma:
   arma::mat eigvec;
 
   ens::L_BFGS lbfgs;
+  lbfgs.Factr() = 1e-10;
 
   arma::vec x = Y.row(0).t();
   arma::vec mu = (X.row(0) * beta).t();
