@@ -1,12 +1,33 @@
+optimise_xi_m_V = function(m, V, xi, x, mu, sigma, B){
+  xi = xi_optimise(m, V, xi, x, mu, sigma, B)
+
+
+  m = m_Newton_Step(m, V, xi, x, mu, sigma, B)
+
+
+
+  V = V_Newton_Step(m, V, xi, x, mu, sigma, B)
+  list(xi = xi, m = m, V = V)
+}
+m_Newton_Step = function(m, V, xi, x, mu, sigma, B){
+  Der = DF_m(m, V, xi, x, mu, sigma, B)
+  Hes = HF_m(m, V, xi, x, mu, sigma, B)
+  m - solve(Hes) %*% Der
+}
+V_Newton_Step = function(m, V, xi, x, mu, sigma, B){
+  d1 = d1v(m, V, xi, x, mu, sigma, B)
+  d2 = d2v(m, V, xi, x, mu, sigma, B)
+  V - 0.1 * d1/d2
+}
 #' @export
-fit_vem_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, hermite.order = 5,
+fit_vem_lrnm = function(X, B1 = coda.base::ilr_basis(ncol(X)), probs = FALSE, hermite.order = 5,
                         eps = NULL, max_iter = 500){
   P = t(t(X) + fit_dm(X)[,1])
   P = P / rowSums(P)
-  B = alr_basis(ncol(X))
+  B = coda.base::alr_basis(ncol(X))
 
-  mu = colMeans(coordinates(P, 'alr'))
-  sigma = cov(coordinates(P, 'alr'))
+  mu = colMeans(coda.base::coordinates(P, 'alr'))
+  sigma = stats::cov(coda.base::coordinates(P, 'alr'))
   d = length(mu)
 
   EM_ITER = TRUE
@@ -16,31 +37,12 @@ fit_vem_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, hermite.order
     res = list()
     for (i in 1:nrow(X)) {
       x = X[i, ]
-      m = coordinates(P[i,], 'alr')
+      m = coda.base::coordinates(P[i,], 'alr')
       V = rep(1, length(m))
       xi = 1
       EPS = 1
       ITER = 1
       while (ITER < 100 & EPS > 1e-05) {
-        optimise_xi_m_V = function(m, V, xi, x, mu, sigma, B){
-          xi = xi_optimise(m, V, xi, x, mu, sigma, B)
-
-          m_Newton_Step = function(m, V, xi, x, mu, sigma, B){
-            Der = DF_m(m, V, xi, x, mu, sigma, B)
-            Hes = HF_m(m, V, xi, x, mu, sigma, B)
-            m - solve(Hes) %*% Der
-          }
-          m = m_Newton_Step(m, V, xi, x, mu, sigma, B)
-
-          V_Newton_Step = function(m, V, xi, x, mu, sigma, B){
-            d1 = d1v(m, V, xi, x, mu, sigma, B)
-            d2 = d2v(m, V, xi, x, mu, sigma, B)
-            V - 0.1 * d1/d2
-          }
-
-          V = V_Newton_Step(m, V, xi, x, mu, sigma, B)
-          list(xi = xi, m = m, V = V)
-        }
         opt_pars = optimise_xi_m_V(m, V, xi, x, mu, sigma, B)
         # print(opt_pars$V)
         ITER = ITER + 1
@@ -63,5 +65,5 @@ fit_vem_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, hermite.order
     sigma = sigma_new
   }
 
-  P.rpl = composition(t(sapply(res, function(x)x$mu)), 'alr')
+  P.rpl = coda.base::composition(t(sapply(res, function(x)x$mu)), 'alr')
 }

@@ -8,7 +8,7 @@
 //' @export
 // [[Rcpp::export]]
 arma::mat c_lrnm_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma,
-                                        arma::mat &Binv, double eps = 1e-05, int niter = 1000){
+                                        arma::mat &Binv, double eps, int niter){
   unsigned d = Binv.n_cols;
 
   arma::mat N_posterior(d,d+1);

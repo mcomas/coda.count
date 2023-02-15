@@ -24,9 +24,15 @@ fit_lrnm(
 
 \item{probs}{boolean indicating if expected posterior probabilities are returned.}
 
+\item{method}{Method to use to estimate the parameters: 'hermite', 'laplace', 'montecarlo' (default)}
+
+\item{H.ini}{Coordinates used to initialise the expected posterior compositions given count data}
+
 \item{montecarlo.n}{number of samples in the Montecarlo integration process.}
 
 \item{hermite.order}{order of Hermite polynomials}
+
+\item{Z}{matrix used to evaluate the montecarlo method, if not defined, gaussian random variables generated with R are used.}
 
 \item{eps}{precision used for the final estimates. 1e-5 for hermite method and 1e-3 for montecarlo method.}
 

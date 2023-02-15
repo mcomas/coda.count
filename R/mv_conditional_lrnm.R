@@ -3,20 +3,20 @@ sinv = function(S){
 }
 
 #' @export
-fit_mv_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, sobol.d_length = 100,
+fit_mv_conditional_lrnm = function(X, B1 = coda.base::ilr_basis(ncol(X)), probs = FALSE, sobol.d_length = 100,
                                    eps = 0.001, max_iter = 500){
   Y = X
   isZero = X==0
   Y[isZero] = 0.66
 
-  H1 = coordinates(Y, B1)
-  pca = prcomp(H1, center = FALSE)
+  H1 = coda.base::coordinates(Y, B1)
+  pca = stats::prcomp(H1, center = FALSE)
 
   B1sub = pca$rotation
 
-  H1sub = coordinates(Y, as.matrix(B1 %*% B1sub))
+  H1sub = coda.base::coordinates(Y, as.matrix(B1 %*% B1sub))
 
-  Moments = cov.wt(H1sub)
+  Moments = stats::cov.wt(H1sub)
 
   B = B1 %*% B1sub
   mu = Moments$center
@@ -41,7 +41,7 @@ fit_mv_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, so
 
   H = sapply(Moments, function(m) m[,1+length(mu)]) |> t()
 
-  Ximp = composition(H, B)
+  Ximp = coda.base::composition(H, B)
   return(list(mu = mu, sigma = sigma, P = Ximp, B1sub = B1sub))
 }
 #' @export
@@ -86,7 +86,7 @@ mv_conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, sobol.d
   sZ = sum(iZ)
   sNZ = ncol(Xs) - sZ
   if(sZ == 0){
-    lMom = apply(coordinates(Xs, B1), 1, function(h){
+    lMom = apply(coda.base::coordinates(Xs, B1), 1, function(h){
       unname(cbind(h %*% t(h), h))
       # M2 = h %*% t(h)
       # eig = eigen(M2)
@@ -96,13 +96,13 @@ mv_conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, sobol.d
   }
 
   B2 = matrix(0, nrow = ncol(Xs), ncol = ncol(Xs)-1)
-  B2[,sZ] = as.matrix(sbp_basis(matrix(2*iZ - 1, ncol = 1), silent = TRUE))
+  B2[,sZ] = as.matrix(coda.base::sbp_basis(matrix(2*iZ - 1, ncol = 1), silent = TRUE))
   if(sZ>1){
-    BZ = as.matrix(ilr_basis(sZ))
+    BZ = as.matrix(coda.base::ilr_basis(sZ))
     B2[iZ,2:sZ-1] = BZ
   }
   if(sNZ>1){
-    BnZ = as.matrix(ilr_basis(sNZ))
+    BnZ = as.matrix(coda.base::ilr_basis(sNZ))
     B2[!iZ,sZ+2:sNZ-1] = BnZ
     H2 = log(Xs[,!iZ]) %*% BnZ
   }
@@ -118,9 +118,8 @@ mv_conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, sobol.d
   # inv_sigma2 = MASS::ginv(sigma2)
   inv_B2 = t(MASS::ginv(B2))
   d = ncol(B2)
-  library(randtoolbox)
   if(sNZ == 1){
-    Z = sobol((d+1) * sobol.d_length, dim = d, normal = TRUE) |> t()
+    Z = randtoolbox::sobol((d+1) * sobol.d_length, dim = d, normal = TRUE) |> t()
     return(lapply(1:nrow(Xs), function(i){
       x = Xs[i,]
 
@@ -142,7 +141,7 @@ mv_conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, sobol.d
   inv_sigma2_i2 = sinv(sigma2[i2,i2])
   # inv_sigma2_i2 = MASS::ginv(sigma2[i2,i2])
   # inv_sigma2_i2b = pinv_sympd(sigma2[i2,i2])
-  Z = sobol((sZ+1) * sobol.d_length, dim = sZ, normal = TRUE) |> t()
+  Z = randtoolbox::sobol((sZ+1) * sobol.d_length, dim = sZ, normal = TRUE) |> t()
   lapply(1:nrow(Xs), function(i){
     h2 = H2[i,]
     x = Xs[i,]

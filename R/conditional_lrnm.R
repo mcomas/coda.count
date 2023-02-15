@@ -1,18 +1,18 @@
 #' @export
-fit_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, hermite.order = 5,
+fit_conditional_lrnm = function(X, B1 = coda.base::ilr_basis(ncol(X)), probs = FALSE, hermite.order = 5,
                                 eps = 1e-4, max_iter = 500){
   Y = X
   isZero = X==0
   Y[isZero] = 0.66
 
-  H1 = coordinates(Y, B1)
-  pca = prcomp(H1, center = FALSE)
+  H1 = coda.base::coordinates(Y, B1)
+  pca = stats::prcomp(H1, center = FALSE)
 
   B1sub = pca$rotation
 
-  H1sub = coordinates(Y, as.matrix(B1 %*% B1sub))
+  H1sub = coda.base::coordinates(Y, as.matrix(B1 %*% B1sub))
 
-  Moments = cov.wt(H1sub)
+  Moments = stats::cov.wt(H1sub)
 
   B = B1 %*% B1sub
   mu = Moments$center
@@ -36,7 +36,7 @@ fit_conditional_lrnm = function(X, B1 = ilr_basis(ncol(X)), probs = FALSE, hermi
 
   H = sapply(Moments, function(m) m[,1+length(mu)]) |> t()
 
-  Ximp = composition(H, B)
+  Ximp = coda.base::composition(H, B)
   return(list(mu = mu, sigma = sigma, P = Ximp, B1sub = B1sub))
 }
 #' @export
@@ -79,16 +79,16 @@ conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, hermite.or
   sZ = sum(iZ)
   sNZ = ncol(Xs) - sZ
   if(sZ == 0){
-    lMom = apply(coordinates(Xs, B1), 1, function(h){
+    lMom = apply(coda.base::coordinates(Xs, B1), 1, function(h){
       unname(cbind(h %*% t(h), h))
     }, simplify = FALSE)
     return(lMom)
   }
 
   B2 = matrix(0, nrow = ncol(Xs), ncol = sNZ)
-  B2[,1] = as.matrix(sbp_basis(matrix(2*iZ - 1, ncol = 1), silent = TRUE))
+  B2[,1] = as.matrix(coda.base::sbp_basis(matrix(2*iZ - 1, ncol = 1), silent = TRUE))
   if(sNZ>1){
-    BnZ = as.matrix(ilr_basis(sNZ))
+    BnZ = as.matrix(coda.base::ilr_basis(sNZ))
     B2[!iZ,2:sNZ] = BnZ
     H2 = log(Xs[,!iZ]) %*% BnZ
   }

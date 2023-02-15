@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 library(coda.count)
 library(coda.base)
 library(ggtern)
-theme_set(theme_minimal())
 ```
 
 The logratio-normal-multinomial (LRNM) distribution is the distribution obtained from the compounding of a normal distribution defined on the Simplex using log-ratio coordinates with the multinomial distribution.
@@ -36,7 +35,7 @@ sigma = matrix(c(1, -0.8,
                  -0.8, 1), nrow = 2)
 B = ilr_basis(3)
 P = as.data.frame(rlrnormal(n = N, mu, sigma, B))
-H = coordinates(P, B, label = 'ilr')
+H = coordinates(P, B)
 ```
 
 We can visualise either the compositional sample in a Ternary diagram or their coordinates (with respect basis $B$). 
@@ -73,6 +72,7 @@ Yc$freq = as.numeric(tab[match(apply(Yc, 1, key), names(tab))])
 lbls = paste(' ', 0:SIZE, ' ')
 brks = 0:SIZE/SIZE
 ggtern() +
+  geom_mask() +
   geom_point(data = Yc, aes(x = V1, y = V2, z = V3, col = freq), size = 3) +
   theme(tern.axis.arrow.show = T,
         tern.axis.title.show = F,
@@ -91,6 +91,7 @@ SL3 = simplex_lattice(SIZE, 3)
 X = as.data.frame(SL3)
 X$p = apply(X, 1, dlrnm, mu, sigma)
 ggtern() +
+  geom_mask() +
   geom_point(data = X, aes(x = V1, y = V2, z = V3, col = p), size = 3) +
   theme(tern.axis.arrow.show = T,
         tern.axis.title.show = F,
@@ -121,7 +122,7 @@ H_exp$freq = P_exp$freq
 
 ```{r, warning=FALSE, out.width="45%", fig.width=4, fig.height=3.6, fig.show='hold'}
 ggtern() +
-  geom_point(data = P_exp, aes(x = x1, y = x2, z = x3, col = freq)) +
+  geom_point(data = P_exp, aes(x = c1, y = c2, z = c3, col = freq)) +
   scale_color_gradient(low = 'blue', high = 'red')
 ggplot() +
   geom_point(data = H_exp, aes(x = ilr1, y = ilr2, col = freq)) +
@@ -149,7 +150,8 @@ lM = lrnm_posterior_approx(SL3, mu, sigma, B)
 
 H_MAX = as.data.frame(t(sapply(lM, function(l)l$mu)))
 MAX = composition(H_MAX, B)
-H_E = as.data.frame(t(c_obtain_moments_lrnm_hermite(SL3, mu, sigma, ilr_basis(3), order = 10)[[1]]))
+# H_E = as.data.frame(t(c_obtain_moments_lrnm_hermite(SL3, mu, sigma, ilr_basis(3), order = 10)[[1]]))
+H_E = as.data.frame(t(sapply(lM, function(r) r$mu)))
 E = composition(H_E, B)
 
 mu_center = composition(mu, B)
@@ -161,15 +163,15 @@ p = ggtern() +
   geom_point(aes(x = mu_center[1], 
                  y = mu_center[2], 
                  z = mu_center[3]), col = 'blue') +
-  geom_path(data = df_ellip0, aes(x = x1, y = x2, z = x3), col = 'blue') +
-  geom_point(data=MAX,  aes(x = x1, y = x2, z = x3), col = 'red')+
-  geom_point(data=E,  aes(x = x1, y = x2, z = x3))
+  geom_path(data = df_ellip0, aes(x = c1, y = c2, z = c3), col = 'blue') +
+  geom_point(data=MAX,  aes(x = c1, y = c2, z = c3), col = 'red')+
+  geom_point(data=E,  aes(x = c1, y = c2, z = c3))
 for(i in 1:nrow(SL3)){
   df_ellip = coda_ellipse(lM[[i]]$mu, lM[[i]]$sigma, 0.95)
   df_ellip$state = i
   p = p + 
     geom_path(data = df_ellip, 
-              aes(x = x1, y = x2, z = x3), alpha = 0.5, col = 'red')
+              aes(x = c1, y = c2, z = c3), alpha = 0.5, col = 'red')
 }
 p
 ```

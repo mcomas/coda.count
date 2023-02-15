@@ -22,7 +22,7 @@ hermite <- function(order) {
 }
 
 #' @export
-c_lrnm_posterior_approximation_vec <- function(x, mu, inv_sigma, Binv, eps = 1e-05, niter = 1000L) {
+c_lrnm_posterior_approximation_vec <- function(x, mu, inv_sigma, Binv, eps, niter) {
     .Call('_coda_count_c_lrnm_posterior_approximation_vec', PACKAGE = 'coda.count', x, mu, inv_sigma, Binv, eps, niter)
 }
 
@@ -34,6 +34,10 @@ c_lrnm_posterior_approximation_vec_sigma_inverse <- function(x, mu, inv_sigma, B
 #' @export
 c_lrnm_cond_posterior_approximation_vec <- function(x, mu, inv_sigma, h2, Binv, eps = 1e-05, niter = 1000L) {
     .Call('_coda_count_c_lrnm_cond_posterior_approximation_vec', PACKAGE = 'coda.count', x, mu, inv_sigma, h2, Binv, eps, niter)
+}
+
+c_d_lrnm_hermite <- function(x, mu_prior, sigma_prior, Binv, order) {
+    .Call('_coda_count_c_d_lrnm_hermite', PACKAGE = 'coda.count', x, mu_prior, sigma_prior, Binv, order)
 }
 
 #' @export
@@ -49,6 +53,14 @@ c_moments_lrnm_cond_hermite_1d <- function(x, mu, sigma, Mc, inv_Sc, h2, Binv, o
 #' @export
 c_moments_lrnm_cond_hermite <- function(x, mu, sigma, mu_prior, sigma_prior, h2, Binv, order, mu_centering) {
     .Call('_coda_count_c_moments_lrnm_cond_hermite', PACKAGE = 'coda.count', x, mu, sigma, mu_prior, sigma_prior, h2, Binv, order, mu_centering)
+}
+
+c_fit_lrnm_lm_hermite <- function(Y, B, X, order, eps, max_iter, H0) {
+    .Call('_coda_count_c_fit_lrnm_lm_hermite', PACKAGE = 'coda.count', Y, B, X, order, eps, max_iter, H0)
+}
+
+c_fit_lrnm_lm_laplace <- function(Y, B, X, eps, max_iter, H0) {
+    .Call('_coda_count_c_fit_lrnm_lm_laplace', PACKAGE = 'coda.count', Y, B, X, eps, max_iter, H0)
 }
 
 #' @export

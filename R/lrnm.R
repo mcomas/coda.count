@@ -49,8 +49,11 @@ log_join_lrnm = function(x, h, mu, sigma, B = NULL, constant = TRUE){
 #' @param X count sample
 #' @param B clr-basis in which mu and sigma are interpreted with. Default basis is given by coda.base::ilr_basis(length(x))
 #' @param probs boolean indicating if expected posterior probabilities are returned.
+#' @param method Method to use to estimate the parameters: 'hermite', 'laplace', 'montecarlo' (default)
+#' @param H.ini Coordinates used to initialise the expected posterior compositions given count data
 #' @param montecarlo.n number of samples in the Montecarlo integration process.
 #' @param hermite.order order of Hermite polynomials
+#' @param Z matrix used to evaluate the montecarlo method, if not defined, gaussian random variables generated with R are used.
 #' @param eps precision used for the final estimates. 1e-5 for hermite method and 1e-3 for montecarlo method.
 #' @param max_iter maximum number of iterations for the iterative procedure used to estimate the parameter
 #' @return Estimated parameters mu and sigma
@@ -88,7 +91,7 @@ fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo', H.ini = N
       eps = 1e-3
     }
     if(is.null(Z)){
-      Z = matrix(rnorm(montecarlo.n*d), ncol = d)
+      Z = matrix(stats::rnorm(montecarlo.n*d), ncol = d)
       Z = rbind(Z,-Z)
     }
     fit = c_fit_lrnm_lm_montecarlo(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
@@ -120,14 +123,15 @@ fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'montecarlo', H.ini = N
 lrnm_posterior_approx = function(X, mu, sigma, B, method = 'laplace'){
   D = length(mu) + 1
   if(method == 'laplace'){
-    res = c_posterior_approximation(X, mu, sigma, B)
-    res = apply(res, 3, function(x) list(mu = x[,D], sigma = x[,-D]))
+    res = apply(X, 1, c_lrnm_posterior_approximation_vec, mu, sigma, B, eps = 0.001, niter = 100,
+          simplify = FALSE)
+    res = lapply(res, function(x) list(mu = x[,D], sigma = x[,-D]))
   }
   if(method == 'variational'){
     res = list()
     for(i in 1:nrow(X)){
       x = X[i,]
-      m = coordinates(0.5 * composition(mu, B) + 0.5*x/sum(x), B)
+      m = coda.base::coordinates(0.5 * coda.base::composition(mu, B) + 0.5*x/sum(x), B)
       V = rep(1, length(m))
       xi = 1
       EPS = 1

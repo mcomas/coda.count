@@ -31,10 +31,10 @@ ellipse = function(mu, sigma, p){
 coda_ellipse = function(mu, sigma, p, B = ilr_basis(length(mu) + 1)){
   composition(ellipse(mu, sigma, p), B)
 }
-theme_set(theme_minimal() +
-  theme(tern.axis.arrow.show = T,
-        tern.axis.title.show = F,
-        tern.axis.arrow.text = element_text(face = 'bold')))
+# +
+#   theme(tern.axis.arrow.show = T,
+#         tern.axis.title.show = F,
+#         tern.axis.arrow.text = element_text(face = 'bold')))
 ```
 
 # The log-ratio-normal-multinomial distribution
@@ -60,12 +60,12 @@ H = coordinates(P, B)
 We can visualise either the compositional sample in a Ternary diagram or their coordinates (with respect basis $B$) in the real space. 
 
 ```{r, warning=FALSE, out.width="45%", fig.width=4, fig.height=3.6, fig.show='hold'}
-ggtern() +
-  geom_path(data = coda_ellipse(mu, sigma, 0.95), aes(x = x1, y = x2, z = x3), col = 'blue') +
+ggtern(data = coda_ellipse(mu, sigma, 0.95)) +
+  geom_path(aes(x = c1, y = c2, z = c3), col = 'blue') +
   geom_point(data = P, aes(x = V1, y = V2, z = V3))
 ggplot() +
   geom_path(data = ellipse(mu, sigma, 0.95), aes(x = V1, y = V2), col = 'blue') +
-  geom_point(data = H, aes(x = h1, y = h2))
+  geom_point(data = H, aes(x = ilr1, y = ilr2))
 ```
 
 * After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution. With the function `rmultinomial()` we can generate that sample:
@@ -112,11 +112,11 @@ Together with the expected a posteri probabilities for the multinomial distribut
 E = as.data.frame(fit$P)
 H_E = coordinates(E, B)
 ggtern() +
-  geom_path(data = coda_ellipse(fit$mu, fit$sigma, 0.95), aes(x = x1, y = x2, z = x3), col = 'blue') +
-  geom_point(data = E, aes(x = x1, y = x2, z = x3))
+  geom_path(data = coda_ellipse(fit$mu, fit$sigma, 0.95), aes(x = c1, y = c2, z = c3), col = 'blue') +
+  geom_point(data = E, aes(x = c1, y = c2, z = c3))
 ggplot() +
   geom_path(data = ellipse(fit$mu, fit$sigma, 0.95), aes(x = V1, y = V2), col = 'blue') +
-  geom_point(data = H_E, aes(x = h1, y = h2))
+  geom_point(data = H_E, aes(x = ilr1, y = ilr2))
 ```
 
 ## Approximate the posterior distribution using the Laplace method
@@ -164,22 +164,22 @@ For example, the Laplace approximation for the posterior distribution of the fir
 I = 1
 J = 2
 ggtern() +
-  geom_path(data = coda_ellipse(fit$mu, fit$sigma, 0.95), aes(x = x1, y = x2, z = x3), col = 'blue') +
-  geom_point(data = E, aes(x = x1, y = x2, z = x3), alpha=0.1) +
-  geom_point(data = E[I,,drop=F], aes(x = x1, y = x2, z = x3), col = '#880023') +
-  geom_path(data = coda_ellipse(lN[[I]]$mu, lN[[I]]$sigma, 0.95), aes(x = x1, y = x2, z = x3), col = '#880023') +
-  geom_point(data = E[J,,drop=F], aes(x = x1, y = x2, z = x3), col = '#238800') +
-  geom_path(data = coda_ellipse(lN[[J]]$mu, lN[[J]]$sigma, 0.95), aes(x = x1, y = x2, z = x3), col = '#238800')
+  geom_path(data = coda_ellipse(fit$mu, fit$sigma, 0.95), aes(x = c1, y = c2, z = c3), col = 'blue') +
+  geom_point(data = E, aes(x = c1, y = c2, z = c3), alpha=0.1) +
+  geom_point(data = E[I,,drop=F], aes(x = c1, y = c2, z = c3), col = '#880023') +
+  geom_path(data = coda_ellipse(lN[[I]]$mu, lN[[I]]$sigma, 0.95), aes(x = c1, y = c2, z = c3), col = '#880023') +
+  geom_point(data = E[J,,drop=F], aes(x = c1, y = c2, z = c3), col = '#238800') +
+  geom_path(data = coda_ellipse(lN[[J]]$mu, lN[[J]]$sigma, 0.95), aes(x = c1, y = c2, z = c3), col = '#238800')
 ggplot() +
   geom_path(data = ellipse(fit$mu, fit$sigma, 0.95), aes(x = V1, y = V2), col = 'blue') +
-  geom_point(data = H_E, aes(x = h1, y = h2), alpha=0.1) +
-  geom_point(data = H_E[I,,drop=F], aes(x = h1, y = h2), col = '#880023') +
+  geom_point(data = H_E, aes(x = ilr1, y = ilr2), alpha=0.1) +
+  geom_point(data = H_E[I,,drop=F], aes(x = ilr1, y = ilr2), col = '#880023') +
   geom_path(data = ellipse(lN[[I]]$mu, lN[[I]]$sigma, 0.95), aes(x = V1, y = V2), col = '#880023') +
-  geom_point(data = H_E[J,,drop=F], aes(x = h1, y = h2), col = '#238800') +
+  geom_point(data = H_E[J,,drop=F], aes(x = ilr1, y = ilr2), col = '#238800') +
   geom_path(data = ellipse(lN[[J]]$mu, lN[[J]]$sigma, 0.95), aes(x = V1, y = V2), col = '#238800')
 ```
 
-This approximation allows to define a distance between two multivariate count observations as the distance between their repective posterior distributions approximations. Because the approximation is Gaussian, it seems natural to use the well-known Bhattacharyya distance.
+This approximation allows to define a distance between two multivariate count observations as the distance between their respective posterior distributions approximations. Because the approximation is Gaussian, it seems natural to use the well-known Bhattacharyya distance.
 
 \[
 D_{\text{Bhattacharyya}}(N(\mu_1, \Sigma_1), N(\mu_2, \Sigma_2)) = \frac{1}{8}(\mu_1-\mu_2)^T \Sigma^{-1} (\mu_1-\mu_2) + \frac{1}{2} \log( \frac{\text{det}(\Sigma)}{\sqrt{\text{det}(\Sigma_1) \text{det}(\Sigma_2)}})
