@@ -2,7 +2,7 @@
 title: "The logratio-normal-multinomial distribution"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{lrnm}
+  %\VignetteIndexEntry{The logratio-normal-multinomial distribution}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

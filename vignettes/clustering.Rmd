@@ -2,7 +2,7 @@
 title: "Clustering multivariate count data using the log-ratio-normal-multinomial distribution"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{clustering}
+  %\VignetteIndexEntry{Clustering multivariate count data using the log-ratio-normal-multinomial distribution}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -61,6 +61,7 @@ We can visualise either the compositional sample in a Ternary diagram or their c
 
 ```{r, warning=FALSE, out.width="45%", fig.width=4, fig.height=3.6, fig.show='hold'}
 ggtern(data = coda_ellipse(mu, sigma, 0.95)) +
+  geom_mask() +
   geom_path(aes(x = c1, y = c2, z = c3), col = 'blue') +
   geom_point(data = P, aes(x = V1, y = V2, z = V3))
 ggplot() +
@@ -86,6 +87,7 @@ Yc$freq = as.numeric(tab[match(apply(Yc, 1, key), names(tab))])
 lbls = paste(' ', 0:SIZE, ' ')
 brks = 0:SIZE/SIZE
 ggtern() +
+  geom_mask() +
   geom_point(data = Yc, aes(x = V1, y = V2, z = V3, col = freq), size = 3) +
   theme(tern.axis.arrow.show = T,
         tern.axis.title.show = F,

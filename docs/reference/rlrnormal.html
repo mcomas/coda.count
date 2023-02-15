@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.count</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.17</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -57,47 +57,56 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">rlrnormal</span><span class="op">(</span><span class="va">n</span>, <span class="va">mu</span>, <span class="va">sigma</span>, B <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rlrnormal</span><span class="op">(</span><span class="va">n</span>, <span class="va">mu</span>, <span class="va">sigma</span>, B <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n</dt>
 <dd><p>sample size</p></dd>
+
+
 <dt>mu</dt>
 <dd><p>logratio-normal-multinomial mu parameter</p></dd>
+
+
 <dt>sigma</dt>
 <dd><p>logratio-normal-multinomial mu parameter</p></dd>
+
+
 <dt>B</dt>
 <dd><p>basis in which the parameters are expressed with</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>logratio-normal-multinomial random sample</p>
+    
+
+<p>logratio-normal-multinomial random sample</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">mu</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sigma</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">P.ilr</span> <span class="op">&lt;-</span> <span class="fu">rlrnormal</span><span class="op">(</span><span class="fl">100</span>, <span class="va">mu</span>, <span class="va">sigma</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.github.io/coda.base/reference/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">P.ilr</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">mu</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sigma</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">P.ilr</span> <span class="op">&lt;-</span> <span class="fu">rlrnormal</span><span class="op">(</span><span class="fl">100</span>, <span class="va">mu</span>, <span class="va">sigma</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.net/coda.base/reference/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">P.ilr</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      ilr1      ilr2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.0751012 1.0298288 </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.github.io/coda.base/reference/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">P.ilr</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.net/coda.base/reference/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">P.ilr</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            ilr1       ilr2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ilr1 0.84269896 0.05247464</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ilr2 0.05247464 1.01129935</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">B</span> <span class="op">=</span> <span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.github.io/coda.base/reference/alr_basis.html" class="external-link">alr_basis</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">P.alr</span> <span class="op">&lt;-</span> <span class="fu">rlrnormal</span><span class="op">(</span><span class="fl">100</span>, <span class="va">mu</span>, <span class="va">sigma</span>, <span class="va">B</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.github.io/coda.base/reference/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">P.alr</span>, <span class="va">B</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        h1        h2 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">B</span> <span class="op">=</span> <span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.net/coda.base/reference/alr_basis.html" class="external-link">alr_basis</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">P.alr</span> <span class="op">&lt;-</span> <span class="fu">rlrnormal</span><span class="op">(</span><span class="fl">100</span>, <span class="va">mu</span>, <span class="va">sigma</span>, <span class="va">B</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.net/coda.base/reference/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">P.alr</span>, <span class="va">B</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      alr1      alr2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.1055562 1.0092546 </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.github.io/coda.base/reference/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">P.alr</span>, <span class="va">B</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           h1        h2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> h1 1.0667591 0.1237954</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> h2 0.1237954 0.7982327</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="fu">coda.base</span><span class="fu">::</span><span class="fu"><a href="https://mcomas.net/coda.base/reference/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">P.alr</span>, <span class="va">B</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           alr1      alr2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alr1 1.0667591 0.1237954</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alr2 0.1237954 0.7982327</span>
 </code></pre></div>
     </div>
   </div>
@@ -112,7 +121,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

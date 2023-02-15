@@ -20,7 +20,7 @@ distribution."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/li
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.count</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.17</span>
       </span>
     </div>
 
@@ -29,7 +29,7 @@ distribution."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/li
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -62,25 +62,36 @@ distribution.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">lrnm_posterior_approx</span><span class="op">(</span><span class="va">X</span>, <span class="va">mu</span>, <span class="va">sigma</span>, <span class="va">B</span>, method <span class="op">=</span> <span class="st">"laplace"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lrnm_posterior_approx</span><span class="op">(</span><span class="va">X</span>, <span class="va">mu</span>, <span class="va">sigma</span>, <span class="va">B</span>, method <span class="op">=</span> <span class="st">"laplace"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>X</dt>
 <dd><p>matrix of counts</p></dd>
+
+
 <dt>mu</dt>
 <dd><p>mean parameter</p></dd>
+
+
 <dt>sigma</dt>
 <dd><p>covariance parameter</p></dd>
+
+
 <dt>B</dt>
 <dd><p>compositional basis</p></dd>
+
+
 <dt>method</dt>
 <dd><p>Default 'laplace'</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A cube with the parameters</p>
+    
+
+<p>A cube with the parameters</p>
     </div>
 
   </div>
@@ -95,7 +106,7 @@ distribution.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
