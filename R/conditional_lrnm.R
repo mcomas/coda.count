@@ -23,7 +23,7 @@ fit_conditional_lrnm = function(X, B1 = coda.base::ilr_basis(ncol(X)), probs = F
   mu_prev = Inf
   sigma_prev = Inf
   while(max(abs(mu_prev - mu)) > eps){
-    print(ITER)
+    # print(ITER)
     mu_prev = mu
     sigma_prev = sigma
     pars = conditional_lrnm_EMstep(X, mu, sigma, B, hermite.order)
@@ -108,7 +108,7 @@ conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, hermite.or
     return(lapply(1:nrow(Xs), function(i){
       x = Xs[i,]
 
-      N_approx = c_lrnm_posterior_approximation_vec(x, mu2, inv_sigma2, inv_B2)
+      N_approx = c_lrnm_posterior_approximation_vec(x, mu2, inv_sigma2, inv_B2, 1e-05, 1000)
       MomentsH1 = c_moments_lrnm_hermite(x, N_approx[,2], N_approx[,1,drop=FALSE],
                                          mu2, inv_sigma2,
                                          inv_B2, mu_centering = rep(0,1), order = hermite.order)
@@ -135,7 +135,7 @@ conditional_lrnm_Estep_OnePattern = function(Xs, mu1, sigma1, B1, iZ, hermite.or
     sigma_c = 1e-10 + abs(sigma2[i1,i1] - sigma2[i1,i2] %*% inv_sigma2_i2 %*% sigma2[i2,i1])
     inv_sigma_c = MASS::ginv(sigma_c)
 
-    N_approx = c_lrnm_cond_posterior_approximation_vec(x, mu_c, inv_sigma_c, h2, inv_B2)
+    N_approx = c_lrnm_cond_posterior_approximation_vec(x, mu_c, inv_sigma_c, h2, inv_B2, 1e-05, 1000)
     MomentsH1 = c_moments_lrnm_cond_hermite_1d(x, N_approx[,2], N_approx[,1,drop=FALSE],
                                                mu_c, inv_sigma_c, h2,
                                                inv_B2, mu_centering = rep(0,1), order = hermite.order)

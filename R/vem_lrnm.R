@@ -59,8 +59,8 @@ fit_vem_lrnm = function(X, B1 = coda.base::ilr_basis(ncol(X)), probs = FALSE, he
 
     tol = max(abs(sigma - sigma_new))
     EM_ITER = tol > 1e-03
-    print(tol)
-    print(mu)
+    # print(tol)
+    # print(mu)
     mu = mu_new
     sigma = sigma_new
   }
