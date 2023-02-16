@@ -66,4 +66,5 @@ fit_vem_lrnm = function(X, B1 = coda.base::ilr_basis(ncol(X)), probs = FALSE, he
   }
 
   P.rpl = coda.base::composition(t(sapply(res, function(x)x$mu)), 'alr')
+  P.rpl
 }
