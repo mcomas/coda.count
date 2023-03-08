@@ -24,7 +24,6 @@ fit_pc1_conditional_lrnm = function(X, B0 = coda.base::ilr_basis(ncol(X))){
       sigma_ = sigma_next
 
       lMoments = lapply(zPatterns_unique, function(zPattern) {
-        print(zPattern)
         X_ = X[zPatterns == zPattern, , drop = FALSE]
         x = X_[1, ]
         n0 = sum(x == 0)
@@ -97,7 +96,6 @@ fit_pc1_conditional_lrnm = function(X, B0 = coda.base::ilr_basis(ncol(X))){
       sumMoments = sumMoments_nonzero + Reduce(`+`, lMoments)
       mu_next = sumMoments[,d+1] / nrow(X)
       sigma_next = sumMoments[,1:d, drop=FALSE] / nrow(X) - mu_next %*% t(mu_next)
-      print(mu_next)
     }
   }else{
     sumMoments = sumMoments_nonzero
