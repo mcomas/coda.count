@@ -23,61 +23,76 @@ fit_pc1_conditional_lrnm = function(X, B0 = coda.base::ilr_basis(ncol(X))){
       mu_ = mu_next
       sigma_ = sigma_next
 
-      lMoments = lapply(zPatterns_unique, function(zPattern){
-        X_ = X[zPatterns == zPattern,,drop=FALSE]
-
-        x = X_[1,]
+      lMoments = lapply(zPatterns_unique, function(zPattern) {
+        print(zPattern)
+        X_ = X[zPatterns == zPattern, , drop = FALSE]
+        x = X_[1, ]
         n0 = sum(x == 0)
-
-        B = sbp_basis(2*cbind(x == 0)-1, fill = TRUE)
-        if(FALSE){
+        B = sbp_basis(2 * cbind(x == 0) - 1, fill = TRUE)
+        if (FALSE) {
           colnames(B) = sprintf("b%d", 1:d)
-          rownames(B) = sprintf("x%d", 1:(d+1))
-          plot_balance(B, main = sprintf("B(x=[%s])", paste(x, collapse=',')))
+          rownames(B) = sprintf("x%d", 1:(d + 1))
+          plot_balance(B, main = sprintf("B(x=[%s])",
+                                         paste(x, collapse = ",")))
         }
         Bt = t(B0) %*% B
-
         mu_B = mu_ %*% Bt
         sigma_B = t(Bt) %*% sigma_ %*% Bt
-
         I1 = 1:n0
         I2 = -(1:n0)
-
-        H2 = coordinates(X_, B[,I2])
-
-        inv_sigma_B_I2 = pinv_sympd(sigma_B[I2,I2])
-        sigma_c = 0.00001 + (sigma_B[I1,I1] - sigma_B[I1,I2] %*% inv_sigma_B_I2 %*% sigma_B[I2,I1])
-
-        eig = eigen(sigma_c)
-        h_pc1 = B[,I1,drop=FALSE] %*% eig$vectors[,1]
-        B_ = cbind(h_pc1, B[,I2])
-        inv_B0_ = MASS::ginv(MASS::ginv(B0) %*% B_)
-
-
-        MU_c = apply(H2, 1, function(h2) as.vector(mu_B[I1] + sigma_B[I1,I2] %*% inv_sigma_B_I2 %*% (h2-mu_B[I2])))
-
-        MU_pc1 = as.vector(eig$vectors[,1] * MU_c)
-        sigma_pc1 = t(eig$vectors[,1,drop=FALSE]) %*% sigma_c %*% eig$vectors[,1,drop=FALSE]
-        inv_sigma_pc1 = pinv_sympd(sigma_pc1)
-
-        d1 = 1
-        Moments = lapply(1:nrow(X_), function(i){
-          N_h1.x = c_lrnm_cond_posterior_approximation_vec(X_[i,], MU_pc1[i], inv_sigma_pc1, H2[i,], cbind(h_pc1, B[,I2]))
-          MomentsH1 = c_moments_lrnm_cond_hermite_1d(X_[i,], N_h1.x[,d1+1], N_h1.x[1:d1,1:d1,drop=FALSE],
-                                                     MU_pc1[i], inv_sigma_pc1, H2[i,],
-                                                     cbind(h_pc1, B[,I2]), 100, mu_centering = rep(0,d1))
-          list(
-            M1 = as.vector(c(MomentsH1[,2], H2[i,]) %*% inv_B0_),
-            M2 = t(inv_B0_) %*% rbind(
-              cbind(MomentsH1[,1], MomentsH1[,2] %*% t(H2[i,])),
-              cbind(H2[i,] %*% t(MomentsH1[,2]), H2[i,] %*% t(H2[i,]))) %*% inv_B0_)
-
-        })
-
+        if(n0 < d){
+          H2 = coordinates(X_, B[, I2])
+          inv_sigma_B_I2 = pinv_sympd(sigma_B[I2, I2, drop=FALSE])
+          sigma_c = 1e-05 + (sigma_B[I1, I1] - sigma_B[I1,
+                                                       I2] %*% inv_sigma_B_I2 %*% sigma_B[I2, I1])
+          eig = eigen(sigma_c)
+          h_pc1 = B[, I1, drop = FALSE] %*% eig$vectors[,
+                                                        1]
+          B_ = cbind(h_pc1, B[, I2])
+          inv_B0_ = MASS::ginv(MASS::ginv(B0) %*% B_)
+          MU_c = apply(H2, 1, function(h2) as.vector(mu_B[I1] +
+                                                       sigma_B[I1, I2] %*% inv_sigma_B_I2 %*% (h2 -
+                                                                                                 mu_B[I2])))
+          MU_pc1 = as.vector(eig$vectors[, 1] * MU_c)
+          sigma_pc1 = t(eig$vectors[, 1, drop = FALSE]) %*%
+            sigma_c %*% eig$vectors[, 1, drop = FALSE]
+          inv_sigma_pc1 = pinv_sympd(sigma_pc1)
+          d1 = 1
+          Moments = lapply(1:nrow(X_), function(i) {
+            N_h1.x = c_lrnm_cond_posterior_approximation_vec(X_[i,
+            ], MU_pc1[i], inv_sigma_pc1, H2[i, ], cbind(h_pc1,
+                                                        B[, I2]))
+            MomentsH1 = c_moments_lrnm_cond_hermite_1d(X_[i,
+            ], N_h1.x[, d1 + 1], N_h1.x[1:d1, 1:d1,
+                                        drop = FALSE], MU_pc1[i], inv_sigma_pc1,
+            H2[i, ], cbind(h_pc1, B[, I2]), 100, mu_centering = rep(0,
+                                                                    d1))
+            list(M1 = as.vector(c(MomentsH1[, 2], H2[i,
+            ]) %*% inv_B0_), M2 = t(inv_B0_) %*% rbind(cbind(MomentsH1[,
+                                                                       1], MomentsH1[, 2] %*% t(H2[i, ])), cbind(H2[i,
+                                                                       ] %*% t(MomentsH1[, 2]), H2[i, ] %*% t(H2[i,
+                                                                       ]))) %*% inv_B0_)
+          })
+        }else{
+          eig = eigen(sigma_B)
+          h_pc1 = B[, I1, drop = FALSE] %*% eig$vectors[, 1]
+          B_ = cbind(h_pc1)
+          inv_B0_ = MASS::ginv(MASS::ginv(B0) %*% B_)
+          MU_pc1 = as.vector(eig$vectors[, 1] * mu_B)
+          sigma_pc1 = t(eig$vectors[, 1, drop = FALSE]) %*%
+            sigma_B %*% eig$vectors[, 1, drop = FALSE]
+          inv_sigma_pc1 = pinv_sympd(sigma_pc1)
+          d1 = 1
+          Moments = lapply(1:nrow(X_), function(i) {
+            N_h1.x = c_lrnm_posterior_approximation_vec(X_[i,], MU_pc1[i], inv_sigma_pc1, B_, 0.0001, niter = 1000)
+            MomentsH1 = c_moments_lrnm_hermite(X_[i,], N_h1.x[, d1 + 1], N_h1.x[1:d1, 1:d1,
+                                                                                drop = FALSE], MU_pc1[i], inv_sigma_pc1,B_, 100, mu_centering = rep(0,d1))
+            list(M1 = as.vector(MomentsH1[, 2] %*% inv_B0_), M2 = t(inv_B0_) %*% MomentsH1[,1,drop=FALSE] %*% inv_B0_)
+          })
+        }
 
         cbind(Reduce(`+`, lapply(Moments, function(m) m$M2)),
               Reduce(`+`, lapply(Moments, function(m) m$M1)))
-
       })
       sumMoments = sumMoments_nonzero + Reduce(`+`, lMoments)
       mu_next = sumMoments[,d+1] / nrow(X)
