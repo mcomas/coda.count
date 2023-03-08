@@ -1,3 +1,4 @@
+#' @export
 fit_pc1_conditional_lrnm = function(X, B0 = coda.base::ilr_basis(ncol(X))){
 
   mu0 = coordinates(colSums(X), B0)
