@@ -51,9 +51,10 @@ arma::mat c_moments_lrnm_cond_montecarlo_sigma_inverse(arma::vec x,
                                                        arma::vec Mc, arma::mat inv_Sc, arma::vec h2,
                                                        arma::mat Binv, arma::mat &Z,
                                                        arma::vec mu_centering){
-  unsigned d = x.n_elem - 1;
-  unsigned d1 = d - h2.size();
+
+  unsigned d1 = mu.size();
   unsigned d2 = h2.size();
+  unsigned d = d1+d2;
   unsigned n = Z.n_cols;
 
   arma::span I1 = arma::span(0, d1-1);
@@ -74,7 +75,6 @@ arma::mat c_moments_lrnm_cond_montecarlo_sigma_inverse(arma::vec x,
   arma::vec h = arma::vec(d);
   arma::vec h1(d1);
   h(I2) = h2;
-
   double l_cmult = l_multinomial_const(x);
   for(int i=0; i<n; i++){
     h1 = Hz.col(i) + mu;
