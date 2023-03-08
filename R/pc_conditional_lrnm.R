@@ -1,5 +1,5 @@
 #' @export
-fit_pc1_conditional_lrnm = function(X, B0 = coda.base::ilr_basis(ncol(X))){
+fit_pc1_conditional_lrnm = function(X, B0 = coda.base::ilr_basis(ncol(X)), hermite.order = 50){
 
   mu0 = coordinates(colSums(X), B0)
   sigma0 = cov(coordinates(X+0.5, B0))
@@ -64,7 +64,7 @@ fit_pc1_conditional_lrnm = function(X, B0 = coda.base::ilr_basis(ncol(X))){
             MomentsH1 = c_moments_lrnm_cond_hermite_1d(X_[i,
             ], N_h1.x[, d1 + 1], N_h1.x[1:d1, 1:d1,
                                         drop = FALSE], MU_pc1[i], inv_sigma_pc1,
-            H2[i, ], cbind(h_pc1, B[, I2]), 100, mu_centering = rep(0,
+            H2[i, ], cbind(h_pc1, B[, I2]), hermite.order, mu_centering = rep(0,
                                                                     d1))
             list(M1 = as.vector(c(MomentsH1[, 2], H2[i,
             ]) %*% inv_B0_), M2 = t(inv_B0_) %*% rbind(cbind(MomentsH1[,
@@ -83,9 +83,9 @@ fit_pc1_conditional_lrnm = function(X, B0 = coda.base::ilr_basis(ncol(X))){
           inv_sigma_pc1 = pinv_sympd(sigma_pc1)
           d1 = 1
           Moments = lapply(1:nrow(X_), function(i) {
-            N_h1.x = c_lrnm_posterior_approximation_vec(X_[i,], MU_pc1[i], inv_sigma_pc1, B_, 0.0001, niter = 1000)
+            N_h1.x = c_lrnm_posterior_approximation_vec(X_[i,], MU_pc1[i], inv_sigma_pc1, B_, 1e-05, niter = 1000)
             MomentsH1 = c_moments_lrnm_hermite(X_[i,], N_h1.x[, d1 + 1], N_h1.x[1:d1, 1:d1,
-                                                                                drop = FALSE], MU_pc1[i], inv_sigma_pc1,B_, 100, mu_centering = rep(0,d1))
+                                                                                drop = FALSE], MU_pc1[i], inv_sigma_pc1,B_, hermite.order, mu_centering = rep(0,d1))
             list(M1 = as.vector(MomentsH1[, 2] %*% inv_B0_), M2 = t(inv_B0_) %*% MomentsH1[,1,drop=FALSE] %*% inv_B0_)
           })
         }
