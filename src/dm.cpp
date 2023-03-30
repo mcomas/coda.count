@@ -17,60 +17,46 @@ double c_ddm(arma::vec x, arma::vec alpha){
   return( exp(left + right ) );
 }
 
-
-arma::vec dm_iter(arma::mat X, arma::vec alpha){
-  int K = X.n_cols;
-  int n = X.n_rows;
-  double alpha_total = 0;
-  for(int j=0; j<K; j++){
-    alpha_total += alpha(j);
-  }
-  double psi_alpha_total = R::digamma(alpha_total);
-  arma::vec N = arma::vec(n);
-  for(int i=0; i<n; i++){
-    N(i) = 0;
-    for(int j=0; j<K; j++){
-      N(i) += X(i,j);
-    }
-  }
-  for(int j=0; j<K; j++){
-    double numerator = 0, denominator = 0;
-    for(int i=0; i<n; i++){
-      numerator += (R::digamma(X(i,j) + alpha(j)) - R::digamma(alpha(j)));
-      denominator += (R::digamma(N(i) + alpha_total) - psi_alpha_total);
-    }
-    alpha[j] = alpha[j] * numerator / denominator;
-  }
-  return(alpha);
-}
-
 // [[Rcpp::export]]
-Rcpp::List c_dm_fit(arma::mat X, double eps = 0.0001, int maxiter = 5000){
-  int K = X.n_cols;
-  arma::vec alpha_prev = arma::ones<arma::vec>(K);
-  arma::vec alpha;
+Rcpp::List c_dm_fit(arma::mat& X, double eps, int maxiter){
+
+  int K = X.n_rows;
+  int n = X.n_cols;
+
+  arma::rowvec N = arma::sum(X, 0);
+
+  arma::mat P(K,n);
+  for(int i=0;i<n;i++){
+    P.col(i) = X.col(i) / arma::accu(X.col(i));
+  }
+  arma::vec alpha_prev = mean(P,1);
+  arma::vec m2 = mean(P % P,1);
+  double s = arma::median( (alpha_prev - m2) / (m2 - arma::square(alpha_prev)) );
+  alpha_prev *= s;
+
+  arma::vec alpha(K);
   int iter = 0;
   double err = eps + 1;
   while(err > eps & iter < maxiter){
-    alpha = dm_iter(X, alpha_prev);
+    double alpha_total = arma::accu(alpha_prev);
+    double psi_alpha_total = R::digamma(alpha_total);
+
+    for(int j=0; j<K; j++){
+      double numerator = 0, denominator = 0;
+      for(int i=0; i<n; i++){
+        numerator += (R::digamma(X(j,i) + alpha_prev(j)) - R::digamma(alpha_prev(j)));
+        denominator += (R::digamma(N(i) + alpha_total) - psi_alpha_total);
+      }
+      alpha(j) = alpha_prev(j) * numerator / denominator;
+    }
     err = arma::norm(alpha - alpha_prev);
     alpha_prev = alpha;
+
     iter++;
   }
-  return Rcpp::List::create(alpha, iter);
+  List ret;
+  ret["alpha"] = alpha;
+  ret["iter"] = iter;
+  return ret;
 }
 
-arma::vec c_dm_fit_alpha(arma::mat X, double eps = 0.0001, int maxiter = 5000){
-  int K = X.n_cols;
-  arma::vec alpha_prev = arma::ones<arma::vec>(K);
-  arma::vec alpha;
-  int iter = 0;
-  double err = eps + 1;
-  while(err > eps & iter < maxiter){
-    alpha = dm_iter(X, alpha_prev);
-    err = arma::norm(alpha - alpha_prev);
-    alpha_prev = alpha;
-    iter++;
-  }
-  return alpha;
-}

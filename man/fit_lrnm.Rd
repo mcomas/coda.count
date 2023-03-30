@@ -8,11 +8,10 @@ fit_lrnm(
   X,
   B = NULL,
   probs = FALSE,
-  method = "montecarlo",
-  H.ini = NULL,
-  montecarlo.n = 500,
+  method = "mc",
   hermite.order = 5,
-  Z = NULL,
+  mc.nsim = 500,
+  mc.znorm = NULL,
   eps = NULL,
   max_iter = 500
 )
@@ -26,17 +25,17 @@ fit_lrnm(
 
 \item{method}{Method to use to estimate the parameters: 'hermite', 'laplace', 'montecarlo' (default)}
 
-\item{H.ini}{Coordinates used to initialise the expected posterior compositions given count data}
-
-\item{montecarlo.n}{number of samples in the Montecarlo integration process.}
-
 \item{hermite.order}{order of Hermite polynomials}
 
-\item{Z}{matrix used to evaluate the montecarlo method, if not defined, gaussian random variables generated with R are used.}
+\item{mc.nsim}{number of samples in the Montecarlo integration process.}
 
 \item{eps}{precision used for the final estimates. 1e-5 for hermite method and 1e-3 for montecarlo method.}
 
 \item{max_iter}{maximum number of iterations for the iterative procedure used to estimate the parameter}
+
+\item{H.ini}{Coordinates used to initialise the expected posterior compositions given count data}
+
+\item{Z}{matrix used to evaluate the montecarlo method, if not defined, gaussian random variables generated with R are used.}
 }
 \value{
 Estimated parameters mu and sigma

@@ -10,132 +10,66 @@
 
 using namespace Rcpp;
 
-// //' @export
 // [[Rcpp::export]]
-double c_d_lrnm_hermite(arma::vec x,
-                        arma::vec mu_prior, arma::mat sigma_prior,
-                        arma::mat Binv, int order){
+arma::vec c_d_lrnm_hermite_mat(arma::mat X,
+                               arma::vec mu_prior, arma::mat sigma_prior,
+                               arma::mat Binv, int order){
 
-  unsigned d = Binv.n_cols;
+  unsigned d = X.n_rows - 1;
+  unsigned n = X.n_cols;
 
 
   arma::mat inv_sigma_prior = arma::inv_sympd(sigma_prior);
-  arma::mat N_posterior = c_lrnm_posterior_approximation_vec(x, mu_prior, inv_sigma_prior, Binv);
-  arma::vec mu = N_posterior.col(d);
-  arma::mat sigma = N_posterior.head_cols(d);
-  arma::mat inv_sigma = arma::inv_sympd(sigma);
+  arma::vec dens = arma::zeros(n);
   arma::mat uni_hermite = hermite(order);
   uni_hermite.col(1) = log(uni_hermite.col(1));
 
-  arma::vec eigval;
-  arma::mat eigvec;
+  for(int i=0;i<n;i++){
+    arma::mat N_posterior = c_lrnm_posterior_approximation_vec(X.col(i), mu_prior, inv_sigma_prior, Binv, 1e-5, 1000);
+    arma::vec mu = N_posterior.col(d);
+    arma::mat sigma = N_posterior.head_cols(d);
+    arma::mat inv_sigma = arma::inv_sympd(sigma);
 
-  eig_sym(eigval, eigvec, sigma);
-  arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
 
-  unsigned int index[d+1];
-  for(unsigned int i = 0; i <= d; i++) index[i] = 0;
-  int position = 0, k = 0;
-  double integral = 0;
-  double l_cmult = l_multinomial_const(x);
+    arma::vec eigval;
+    arma::mat eigvec;
 
-  do{
-    double w = 0;
-    arma::vec h(d);
-    for(unsigned int i = 0; i < d; i++){
-      h(i) = uni_hermite(index[i],0);
-      w += uni_hermite(index[i],1);
-    }
-    h = mu + rotation * h;
-    arma::vec p = exp(Binv * h);
-    integral += exp(w + l_dnormal_vec(h, mu_prior, inv_sigma_prior) -
-      l_dnormal_vec(h, mu, inv_sigma) +
-      l_multinomial(x, p/accu(p), l_cmult));
-    // Calculate next coordinate
-    index[position]++;
-    while(index[position] == order){
-      index[position] = 0;
-      position++;
+    eig_sym(eigval, eigvec, sigma);
+    arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
+
+    unsigned int index[d+1];
+    for(unsigned int j = 0; j <= d; j++) index[j] = 0;
+    int position = 0, k = 0;
+
+    double l_cmult = l_multinomial_const(X.col(i));
+
+    do{
+      double w = 0;
+      arma::vec h(d);
+      for(unsigned int j = 0; j < d; j++){
+        h(j) = uni_hermite(index[j],0);
+        w += uni_hermite(index[j],1);
+      }
+      h = mu + rotation * h;
+      arma::vec p = exp(Binv * h);
+      dens(i) += exp(w + l_dnormal_vec(h, mu_prior, inv_sigma_prior) -
+        l_dnormal_vec(h, mu, inv_sigma) +
+        l_multinomial(X.col(i), p/accu(p), l_cmult));
+      // Calculate next coordinate
       index[position]++;
-    }
-    position = 0;
-    k++;
-  } while (index[d] == 0);
-
-  return integral;
+      while(index[position] == order){
+        index[position] = 0;
+        position++;
+        index[position]++;
+      }
+      position = 0;
+      k++;
+    } while (index[d] == 0);
+  }
+  return dens;
 }
-//
-// //' @export
-// // [[Rcpp::export]]
-// double c_d_lrnm_cond_hermite(arma::vec x,
-//                              arma::vec mu_prior, arma::mat sigma_prior,
-//                              arma::vec h2,
-//                              arma::mat Binv, int order){
-//
-//  //unsigned d = Binv.n_cols;
-//   unsigned dh1 =  Binv.n_cols-h2.size();
-//
-//   arma::span I1 = arma::span(0, dh1-1);
-//   arma::span I2 = arma::span(dh1,  Binv.n_cols-1);
-//
-//   arma::mat inv_sigma_prior_2 = arma::inv_sympd(sigma_prior(I2,I2));
-//
-//   arma::mat Mc = mu_prior(I1) + sigma_prior(I1,I2) * inv_sigma_prior_2 * (h2-mu_prior(I2));
-//   arma::mat Sc = sigma_prior(I1,I1) - sigma_prior(I1,I2) * inv_sigma_prior_2 * sigma_prior(I2,I1);
-//   arma::mat inv_Sc = arma::inv_sympd(Sc);
-//
-//
-//   arma::mat N_posterior = c_lrnm_cond_posterior_approximation_vec(x, Mc, inv_Sc, h2, Binv);
-//
-//   arma::vec mu = N_posterior.col(dh1);
-//   arma::mat sigma = N_posterior.head_cols(dh1);
-//   arma::mat inv_sigma = arma::inv_sympd(sigma);
-//
-//   arma::mat uni_hermite = hermite(order);
-//   uni_hermite.col(1) = log(uni_hermite.col(1));
-//
-//   arma::vec eigval;
-//   arma::mat eigvec;
-//
-//   eig_sym(eigval, eigvec, sigma);
-//   arma::mat rotation = fliplr(eigvec) * arma::diagmat(flipud(sqrt(eigval)));
-//
-//   unsigned int index[dh1+1];
-//   for(unsigned int i = 0; i <= dh1; i++) index[i] = 0;
-//   int position = 0, k = 0;
-//   double integral = 0;
-//   double l_cmult = l_multinomial_const(x);
-//
-//   do{
-//     double w = 0;
-//     arma::vec h1(dh1);
-//     for(unsigned int i = 0; i < dh1; i++){
-//       h1(i) = uni_hermite(index[i],0);
-//       w += uni_hermite(index[i],1);
-//     }
-//     h1 = mu + rotation * h1;
-//     arma::vec h = join_cols(h1, h2);
-//
-//     arma::vec p = exp(Binv * h);
-//     integral += exp(w + l_dnormal_vec(h1, Mc, inv_Sc) -
-//       l_dnormal_vec(h1, mu, inv_sigma) +
-//       l_multinomial(x, p/accu(p), l_cmult));
-//
-//     // Calculate next coordinate
-//     index[position]++;
-//     while(index[position] == order){
-//       index[position] = 0;
-//       position++;
-//       index[position]++;
-//     }
-//     position = 0;
-//     k++;
-//   } while (index[dh1] == 0);
-//
-//   arma::mat inv_sigma_prior = arma::inv_sympd(sigma_prior(I2,I2));
-//   return integral * exp(l_dnormal_vec(h2, mu_prior(I2), inv_sigma_prior));
-// }
-//
+
+
 //' @export
 // [[Rcpp::export]]
 arma::mat c_moments_lrnm_hermite(arma::vec x,

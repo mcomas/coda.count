@@ -9,8 +9,10 @@ dlrnm(
   mu,
   sigma,
   B = NULL,
-  method = ifelse(length(mu) \%in\% 1:5, "hermite", "mc"),
-  hermite.order = 10
+  method = ifelse(length(mu) \%in\% 1:4, "hermite", "mc"),
+  hermite.order = 10,
+  mc.nsim = 1000,
+  mc.znorm = NULL
 )
 }
 \arguments{
@@ -34,7 +36,7 @@ Probability mass function of a logratio-normal-multinomial distribution
 }
 \examples{
 X = apply(simplex_lattice(19,2), 2, rev)
-sum(p <- apply(X, 1, dlrnm, -0.5, 0.1))
+sum(p <- dlrnm(X, -0.5, 0.1))
 names(p) = sprintf("(\%d,\%d)", X[,1], X[,2])
 barplot(p, cex.axis = 0.8, cex.names = 0.8, las=2,
         main = paste('Log-ratio-normal-multinomial',

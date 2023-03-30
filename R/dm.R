@@ -51,9 +51,10 @@ ddm <- function(x, alpha) {
 #' fit_dm(X)
 #' @export
 fit_dm = function(X, eps = 0.0001, max_iter = 500){
-  fitting = c_dm_fit(X, eps, max_iter)
-  alpha = fitting[[1]]
-  attr(alpha, 'iter') = fitting[[2]]
-  alpha
+  fitting = c_dm_fit(t(X), eps, max_iter)
+  if(fitting[["iter"]] >= max_iter){
+    warning("Maximum number of iterations reached. Try to increase max_iter.")
+  }
+  fitting[["alpha"]][,1]
 }
 

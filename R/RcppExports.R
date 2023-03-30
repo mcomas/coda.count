@@ -13,7 +13,7 @@ c_ddm <- function(x, alpha) {
     .Call('_coda_count_c_ddm', PACKAGE = 'coda.count', x, alpha)
 }
 
-c_dm_fit <- function(X, eps = 0.0001, maxiter = 5000L) {
+c_dm_fit <- function(X, eps, maxiter) {
     .Call('_coda_count_c_dm_fit', PACKAGE = 'coda.count', X, eps, maxiter)
 }
 
@@ -36,8 +36,8 @@ c_lrnm_cond_posterior_approximation_vec <- function(x, mu, inv_sigma, h2, Binv, 
     .Call('_coda_count_c_lrnm_cond_posterior_approximation_vec', PACKAGE = 'coda.count', x, mu, inv_sigma, h2, Binv, eps, niter)
 }
 
-c_d_lrnm_hermite <- function(x, mu_prior, sigma_prior, Binv, order) {
-    .Call('_coda_count_c_d_lrnm_hermite', PACKAGE = 'coda.count', x, mu_prior, sigma_prior, Binv, order)
+c_d_lrnm_hermite_mat <- function(X, mu_prior, sigma_prior, Binv, order) {
+    .Call('_coda_count_c_d_lrnm_hermite_mat', PACKAGE = 'coda.count', X, mu_prior, sigma_prior, Binv, order)
 }
 
 #' @export
@@ -63,19 +63,18 @@ c_fit_lrnm_lm_laplace <- function(Y, B, X, eps, max_iter, H0) {
     .Call('_coda_count_c_fit_lrnm_lm_laplace', PACKAGE = 'coda.count', Y, B, X, eps, max_iter, H0)
 }
 
-#' @export
-c_moments_lrnm_montecarlo_sigma_inverse <- function(x, mu, inv_sigma, mu_prior, inv_sigma_prior, Binv, Z, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_montecarlo_sigma_inverse', PACKAGE = 'coda.count', x, mu, inv_sigma, mu_prior, inv_sigma_prior, Binv, Z, mu_centering)
+c_d_lrnm_montecarlo <- function(X, mu, sigma, Binv, Z) {
+    .Call('_coda_count_c_d_lrnm_montecarlo', PACKAGE = 'coda.count', X, mu, sigma, Binv, Z)
 }
 
 #' @export
-c_moments_lrnm_cond_montecarlo_sigma_inverse <- function(x, mu, inv_sigma, Mc, inv_Sc, h2, Binv, Z, mu_centering) {
-    .Call('_coda_count_c_moments_lrnm_cond_montecarlo_sigma_inverse', PACKAGE = 'coda.count', x, mu, inv_sigma, Mc, inv_Sc, h2, Binv, Z, mu_centering)
+c_lrnm_posterior_moments_montecarlo <- function(X, clr_mu, clr_sigma, Z) {
+    .Call('_coda_count_c_lrnm_posterior_moments_montecarlo', PACKAGE = 'coda.count', X, clr_mu, clr_sigma, Z)
 }
 
 #' @export
-c_fit_lrnm_lm_montecarlo <- function(Y, B, X, Z, eps, max_iter, H0) {
-    .Call('_coda_count_c_fit_lrnm_lm_montecarlo', PACKAGE = 'coda.count', Y, B, X, Z, eps, max_iter, H0)
+c_lrnm_fit_montecarlo <- function(X, Z, em_eps, em_max_iter) {
+    .Call('_coda_count_c_lrnm_fit_montecarlo', PACKAGE = 'coda.count', X, Z, em_eps, em_max_iter)
 }
 
 #' @export
