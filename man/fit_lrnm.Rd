@@ -29,13 +29,13 @@ fit_lrnm(
 
 \item{mc.nsim}{number of samples in the Montecarlo integration process.}
 
+\item{mc.znorm}{matrix used to evaluate the montecarlo method, if not defined, gaussian random variables generated with R are used.}
+
 \item{eps}{precision used for the final estimates. 1e-5 for hermite method and 1e-3 for montecarlo method.}
 
 \item{max_iter}{maximum number of iterations for the iterative procedure used to estimate the parameter}
 
 \item{H.ini}{Coordinates used to initialise the expected posterior compositions given count data}
-
-\item{Z}{matrix used to evaluate the montecarlo method, if not defined, gaussian random variables generated with R are used.}
 }
 \value{
 Estimated parameters mu and sigma

@@ -54,7 +54,7 @@ dlrnm = function(x, mu, sigma, B = NULL,
 #' @param H.ini Coordinates used to initialise the expected posterior compositions given count data
 #' @param mc.nsim number of samples in the Montecarlo integration process.
 #' @param hermite.order order of Hermite polynomials
-#' @param Z matrix used to evaluate the montecarlo method, if not defined, gaussian random variables generated with R are used.
+#' @param mc.znorm matrix used to evaluate the montecarlo method, if not defined, gaussian random variables generated with R are used.
 #' @param eps precision used for the final estimates. 1e-5 for hermite method and 1e-3 for montecarlo method.
 #' @param max_iter maximum number of iterations for the iterative procedure used to estimate the parameter
 #' @return Estimated parameters mu and sigma
@@ -69,56 +69,48 @@ fit_lrnm = function(X, B = NULL, probs = FALSE, method = 'mc',
   if(is.null(B)){
     B = coda.base::ilr_basis(ncol(X))
   }
-
-  if(is.null(H.ini)){
-    alpha = fit_dm(X)[,1]
-    H.ini = log(t(t(as.matrix(X)) + alpha)) %*% B
-  }
   d = ncol(X)-1
+  if(!method %in% c('mc','laplace','hermite')){
+    stop("Method should be 'mc', 'laplace' or 'hermite'")
+  }
   if(method == 'mc'){
+    if(is.null(eps)){
+      eps = 0.001
+    }
     if(is.null(mc.znorm)){
-      Z = t(randtoolbox::sobol(mc.nsim, dim = length(mu), normal = TRUE))
+      Z = randtoolbox::sobol(mc.nsim, dim = length(mu), normal = TRUE)
     }else{
       Z = mc.znorm
     }
+    fit = c_lrnm_fit_montecarlo(t(X), t(Z), eps, max_iter)
 
-  }
-
-  if(method=='hermite'){
-    if(is.null(eps)){
-      eps = 1e-05
-    }
-    fit = c_fit_lrnm_lm_hermite(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
-                                order = hermite.order, eps = eps, max_iter = max_iter, H0 = H.ini)
   }
   if(method=='laplace'){
     if(is.null(eps)){
       eps = 1e-05
     }
-    fit = c_fit_lrnm_lm_laplace(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
-                                eps = eps, max_iter = max_iter, H0 = H.ini)
+    fit = c_lrnm_fit_laplace(t(X), eps, max_iter)
   }
-  if(method=='montecarlo'){
+  if(method=='hermite'){
     if(is.null(eps)){
-      eps = 1e-3
+      eps = 1e-05
     }
-    if(is.null(Z)){
-      Z = matrix(stats::rnorm(mc.nsim*d), ncol = d)
-      Z = rbind(Z,-Z)
-    }
-    fit = c_fit_lrnm_lm_montecarlo(Y = as.matrix(X), B = B, X = matrix(1, nrow(X)),
-                                   Z = Z, eps = eps, max_iter = max_iter, H0 = H.ini)
-  }
-  if(fit[[4]] == max_iter){
-    warning("Maximum number of iterations exhausted.")
+    fit = c_lrnm_fit_hermite(t(X), hermite.order, eps, max_iter)
   }
   if(probs){
-    return(list('mu' = fit[[1]], 'sigma' = fit[[2]], 'P' = coda.base::composition(fit[[3]], B),
-                iter = fit[[4]], eps = eps))
+    result = list('mu' = (t(B) %*% fit$clr_mu)[,1], 'sigma' = t(B) %*% fit$clr_sigma %*% B,
+                  'P' = coda.base::composition(t(fit$clr_E1), 'clr'),
+                  'iter' = fit$em_iter, eps = eps)
   }else{
-    return(list('mu' = fit[[1]], 'sigma' = fit[[2]],
-                iter = fit[[4]], eps = eps))
+    result = list('mu' = (t(B) %*% fit$clr_mu)[,1], 'sigma' = t(B) %*% fit$clr_sigma %*% B,
+                  'P' = coda.base::composition(t(fit$clr_E1), 'clr'),
+                  'iter' = fit$em_iter, eps = eps)
   }
+
+  if(result$iter == max_iter){
+    warning("Maximum number of iterations exhausted.")
+  }
+  return(result)
 
 }
 
