@@ -5,10 +5,10 @@
 #include "lrnm_gaussian_approx.h"
 #include "lrnm_utils.h"
 
-//' @export
+
 // [[Rcpp::export]]
 arma::mat c_lrnm_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma,
-                                        arma::mat &Binv, double eps, int niter){
+                                             arma::mat &Binv, double eps, int niter){
   unsigned d = Binv.n_cols;
 
   arma::mat N_posterior(d,d+1);
@@ -23,10 +23,9 @@ arma::mat c_lrnm_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::ma
   return(N_posterior);
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat c_lrnm_posterior_approximation_vec_sigma_inverse(arma::vec x, arma::vec mu, arma::mat &inv_sigma,
-                                                      arma::mat &Binv, double eps = 1e-05, int niter = 1000){
+                                                           arma::mat &Binv, double eps = 1e-05, int niter = 1000){
   unsigned d = Binv.n_cols;
 
   arma::mat N_posterior(d,d+1);
@@ -37,7 +36,6 @@ arma::mat c_lrnm_posterior_approximation_vec_sigma_inverse(arma::vec x, arma::ve
   return(N_posterior);
 }
 
-//' @export
 // [[Rcpp::export]]
 arma::mat c_lrnm_cond_posterior_approximation_vec(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2,
                                                   arma::mat &Binv, double eps = 1e-05, int niter = 1000){

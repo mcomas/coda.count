@@ -27,6 +27,12 @@ dlrnm(
 \item{method}{Methods available: 'hermite' for Hermite integration, 'mc' for Monte Carlo integration}
 
 \item{hermite.order}{order of Hermite polynomials}
+
+\item{mc.nsim}{number of low-discrepancy vectors to be generated for
+approximating during the E-step phase}
+
+\item{mc.znorm}{matrix used to evaluate the montecarlo method, if not defined,
+gaussian random variables generated with R are used.}
 }
 \value{
 probability mass function evaluated in x

@@ -1,14 +1,14 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #define ARMA_DONT_PRINT_ERRORS
 
-#include <RcppEnsmallen.h>
+// #include <RcppEnsmallen.h>
 #include "lrnm_utils.h"
 
 using namespace Rcpp;
 
 const double log2pi = std::log(M_2PI);
 
-//' @export
+
 // [[Rcpp::export]]
 double l_lrnm_join_no_constant_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
 
@@ -20,7 +20,7 @@ double l_lrnm_join_no_constant_vec(arma::vec h, arma::vec x, arma::vec mu, arma:
   return(lmult + lnormal);
 }
 
-//' @export
+
 // [[Rcpp::export]]
 double l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
 
@@ -33,7 +33,7 @@ double l_lrnm_join_vec(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_si
   return(lconst + lmult + lnormal);
 }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::vec l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   int k = h.size();
@@ -48,7 +48,7 @@ arma::vec l_lrnm_join_d1(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_
   return(-inv_sigma * (h-mu) + Binv.t() * x - sum(x) * wBi / w);
 }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
   int k = h.size();
@@ -71,7 +71,7 @@ arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_
 
 
 
-// //' @export
+//
 // // [[Rcpp::export]]
 // arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::mat& Binv){
 //   LRNM_join lrnm(x, mu, inv_sigma, Binv);
@@ -127,7 +127,7 @@ double l_multinomial(arma::vec x, arma::vec p, double lconst){
   return( lconst + arma::dot(log(p),x) );
 }
 
-//' @export
+
 // [[Rcpp::export]]
 arma::vec l_lrnm_cond_join_d1(arma::vec h1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv){
   int k = h1.size();
@@ -144,7 +144,7 @@ arma::vec l_lrnm_cond_join_d1(arma::vec h1, arma::vec x, arma::vec mu, arma::mat
   return(-inv_sigma * (h1-mu) + Binv.head_cols(k).t() * x - sum(x) * wBi / w);
 }
 
-// //' @export
+//
 // // [[Rcpp::export]]
 // arma::vec l_indep_lrnm_cond_join_d1(arma::vec h1, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv){
 //   arma::vec h = join_cols(h1,h2);
@@ -158,7 +158,7 @@ arma::vec l_lrnm_cond_join_d1(arma::vec h1, arma::vec x, arma::vec mu, arma::mat
 // }
 
 //
-// //' @export
+//
 // // [[Rcpp::export]]
 // arma::vec l_lrnm_cond1_join_d1(arma::vec h, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
 //
@@ -173,7 +173,7 @@ arma::vec l_lrnm_cond_join_d1(arma::vec h1, arma::vec x, arma::vec mu, arma::mat
 //
 //
 //
-//' @export
+
 // [[Rcpp::export]]
 arma::mat l_lrnm_cond_join_d2(arma::vec h1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv){
   int k = h1.size();
@@ -193,7 +193,7 @@ arma::mat l_lrnm_cond_join_d2(arma::vec h1, arma::vec x, arma::vec mu, arma::mat
   return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
 }
 //
-// //' @export
+//
 // // [[Rcpp::export]]
 // arma::mat l_indep_lrnm_cond_join_d2(arma::vec h1, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv){
 //
@@ -209,7 +209,7 @@ arma::mat l_lrnm_cond_join_d2(arma::vec h1, arma::vec x, arma::vec mu, arma::mat
 //   return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
 // }
 //
-// //' @export
+//
 // // [[Rcpp::export]]
 // arma::mat l_lrnm_cond1_join_d2(arma::vec h, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv){
 //
@@ -223,7 +223,7 @@ arma::mat l_lrnm_cond_join_d2(arma::vec h1, arma::vec x, arma::vec mu, arma::mat
 //   return(-inv_sigma - sum(x) * ( -(wBi * wBi.t())/ (w*w) + wBij / w));
 // }
 //
-//' @export
+
 // [[Rcpp::export]]
 arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv,
                               double eps = 1e-8, int max_iter = 1000){
@@ -259,7 +259,7 @@ arma::vec l_lrnm_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, a
   return h;
 }
 //
-//' @export
+
 // [[Rcpp::export]]
 arma::vec l_lrnm_cond_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv,
                                    double eps = 1e-8, int max_iter = 1000){
@@ -296,7 +296,7 @@ arma::vec l_lrnm_cond_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sig
 }
 
 //
-// //' @export
+//
 // // [[Rcpp::export]]
 // arma::vec l_indep_lrnm_cond_join_maximum(arma::vec h1, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::vec h2, arma::mat &Binv,
 //                                          double eps = 1e-8, int max_iter = 1000){
@@ -323,7 +323,7 @@ arma::vec l_lrnm_cond_join_maximum(arma::vec x, arma::vec mu, arma::mat &inv_sig
 //   return h;
 // }
 //
-// //' @export
+//
 // // [[Rcpp::export]]
 // double l_lrnm_cond1_join_maximum(arma::vec h, unsigned int ih1, arma::vec x, arma::vec mu, arma::mat &inv_sigma, arma::mat &Binv,
 //                                     double eps = 1e-8, int max_iter = 1000){

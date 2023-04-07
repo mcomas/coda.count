@@ -31,10 +31,6 @@ ellipse = function(mu, sigma, p){
 coda_ellipse = function(mu, sigma, p, B = ilr_basis(length(mu) + 1)){
   composition(ellipse(mu, sigma, p), B)
 }
-# +
-#   theme(tern.axis.arrow.show = T,
-#         tern.axis.title.show = F,
-#         tern.axis.arrow.text = element_text(face = 'bold')))
 ```
 
 # The log-ratio-normal-multinomial distribution
@@ -104,7 +100,7 @@ ggtern() +
 To estimate the parameters of a LRNM distribution we need of numerical integration methods. Using Hermite polynomials we can estimate the parameters of the LRNM distribution:
 
 ```{r}
-fit = fit_lrnm(Y, method = 'hermite', probs = TRUE, B = B)
+fit = fit_lrnm(Y, method = 'hermite', B = B)
 fit[1:2]
 ```
 
