@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.count</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -32,9 +32,6 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/clustering.html">Clustering multivariate count data using the log-ratio-normal-multinomial distribution</a>
-    </li>
-    <li>
       <a href="../articles/lrnm.html">The logratio-normal-multinomial distribution</a>
     </li>
   </ul></li>
@@ -62,8 +59,10 @@
 <span>  <span class="va">mu</span>,</span>
 <span>  <span class="va">sigma</span>,</span>
 <span>  B <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="st">"hermite"</span>, <span class="st">"mc"</span><span class="op">)</span>,</span>
-<span>  hermite.order <span class="op">=</span> <span class="fl">10</span></span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="st">"hermite"</span>, <span class="st">"mc"</span><span class="op">)</span>,</span>
+<span>  hermite.order <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  mc.nsim <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  mc.znorm <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -92,6 +91,16 @@
 <dt>hermite.order</dt>
 <dd><p>order of Hermite polynomials</p></dd>
 
+
+<dt>mc.nsim</dt>
+<dd><p>number of low-discrepancy vectors to be generated for
+approximating during the E-step phase</p></dd>
+
+
+<dt>mc.znorm</dt>
+<dd><p>matrix used to evaluate the montecarlo method, if not defined,
+gaussian random variables generated with R are used.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -103,7 +112,7 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="fu"><a href="simplex_lattice.html">simplex_lattice</a></span><span class="op">(</span><span class="fl">19</span>,<span class="fl">2</span><span class="op">)</span>, <span class="fl">2</span>, <span class="va">rev</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">1</span>, <span class="va">dlrnm</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">dlrnm</span><span class="op">(</span><span class="va">X</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"(%d,%d)"</span>, <span class="va">X</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">X</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span><span class="va">p</span>, cex.axis <span class="op">=</span> <span class="fl">0.8</span>, cex.names <span class="op">=</span> <span class="fl">0.8</span>, las<span class="op">=</span><span class="fl">2</span>,</span></span>

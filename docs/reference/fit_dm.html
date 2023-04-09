@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">coda.count</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -32,9 +32,6 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/clustering.html">Clustering multivariate count data using the log-ratio-normal-multinomial distribution</a>
-    </li>
-    <li>
       <a href="../articles/lrnm.html">The logratio-normal-multinomial distribution</a>
     </li>
   </ul></li>
@@ -86,12 +83,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="rdm.html">rdm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, size <span class="op">=</span> <span class="fl">100</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">4</span>,<span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">fit_dm</span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.9938189</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 4.2403105</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.5289884</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"iter")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 173</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9938285 4.2403684 0.5289925</span>
 </code></pre></div>
     </div>
   </div>

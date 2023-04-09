@@ -19,10 +19,16 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/reference/coda.count-package.html</loc>
+  </url>
+  <url>
     <loc>/reference/ddm.html</loc>
   </url>
   <url>
     <loc>/reference/dlrnm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fit_conditional_lrnm.html</loc>
   </url>
   <url>
     <loc>/reference/fit_dm.html</loc>
