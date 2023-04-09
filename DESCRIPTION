@@ -1,8 +1,8 @@
 Package: coda.count
 Type: Package
 Title: Tools for Compositional Count Data Distributions
-Version: 0.3.19
-Date: 2023-02-15
+Version: 0.4.0
+Date: 2023-04-08
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu"))
 Description: Different tools for counting distributions defined on the simplex. Most distributions are based on
@@ -11,7 +11,8 @@ Depends:
     R (>= 3.0.2)
 Imports:
     Rcpp (>= 0.12.12),
-    coda.base (>= 0.2.1)
+    coda.base (>= 0.2.1),
+    randtoolbox (>= 1.30.0)
 LinkingTo: Rcpp, RcppArmadillo
 License: GPL
 Encoding: UTF-8
@@ -21,7 +22,6 @@ RoxygenNote: 7.2.0
 Suggests: 
     knitr,
     rmarkdown,
-    randtoolbox (>= 1.30.0),
     testthat (>= 2.1.0),
     ggtern (>= 3.1.0)
 VignetteBuilder: knitr

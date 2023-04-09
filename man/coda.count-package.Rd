@@ -6,7 +6,17 @@
 \alias{coda.count-package}
 \title{coda.count: Tools for Compositional Count Data Distributions}
 \description{
-coda.count is a package to deal with a multivariate count dataset with the goal of using the dataset for a log-ratio analysis.
+coda.count contains functions to estimate and work with multivariate
+count data models. The package contains functions to deal with the
+Dirichlet-multinomial distributions and, specially, the logratio-normal-multinomial
+distribution (lrnm), or its particular version, the logistic-normal-multinomial.
+
+Different approaches to calculate or approximate the moments of a
+lrnm are available: Montecarlo and quasi-Montecarlo
+simulation, Gauss-Hermite quadrature and variational methods.
+
+To approximate the lrnm distribution the package includes a conditional version
+were certain counts can be fixed during the estimation.
 }
 \author{
 \strong{Maintainer}: Marc Comas-Cufí \email{mcomas@imae.udg.edu}

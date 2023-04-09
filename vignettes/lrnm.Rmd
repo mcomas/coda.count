@@ -34,7 +34,7 @@ mu = c(0,1)
 sigma = matrix(c(1, -0.8, 
                  -0.8, 1), nrow = 2)
 B = ilr_basis(3)
-P = as.data.frame(rlrnormal(n = N, mu, sigma, B))
+P = rlrnormal(n = N, mu, sigma, B)
 H = coordinates(P, B)
 ```
 
@@ -42,33 +42,33 @@ We can visualise either the compositional sample in a Ternary diagram or their c
 
 ```{r, warning=FALSE, out.width="45%", fig.width=4, fig.height=3.6, fig.show='hold'}
 ggtern() +
-  geom_point(data = P, aes(x = V1, y = V2, z = V3))
+  geom_mask() +
+  geom_point(data = as.data.frame(P), aes(x = V1, y = V2, z = V3))
 ggplot() +
-  geom_point(data = H, aes(x = ilr1, y = ilr2))
+  geom_point(data = as.data.frame(H), aes(x = ilr1, y = ilr2))
 ```
 
 * After the logratio-normal random variables are generated, they are used to generate a new sample of counts using the multinomial distribution. With the function `rmultinomial()` we can generate that sample.
 
 ```{r}
 SIZE = 8
-Y = as.data.frame(rmultinomial(size = SIZE, p = as.matrix(P)))
+Y = rmultinomial(size = SIZE, p = P)
 ```
 
 In `coda.count` we can compound this to generations using the function `rlrnm()`:
 
 ```{r}
-sample = rlrnm(n = N, size = SIZE, mu = mu, sigma = sigma, probs = TRUE)
-Y = as.data.frame(sample)
-P = attr(sample, 'probs')
+Y = rlrnm(n = N, size = SIZE, mu = mu, sigma = sigma, probs = TRUE)
+P = attr(Y, 'probs')
 ```
 
-To visualise the counting sample we can use a ternary diagram, but observations will only appear in discrete positions. In general, we call the $(K-D)$-simplex lattice the sapce for the $D$-part count data with size $K$.
+To visualise the counting sample we can use a ternary diagram, but observations will only appear in discrete positions. In general, we call the $(K-D)$-simplex lattice the space for the $D$-part count data with size $K$.
 
 ```{r, fig.width=6, fig.height=4.8, fig.align='center'}
 key = function(x) paste(x, collapse = '-')
 tab = table(apply(Y, 1, key))
-Yc = Y[duplicated(Y),]
-Yc$freq = as.numeric(tab[match(apply(Yc, 1, key), names(tab))])
+Yc = as.data.frame(Y[duplicated(Y),])
+Yc$freq = as.vector(tab[match(apply(Yc, 1, key), names(tab))])
 lbls = paste(' ', 0:SIZE, ' ')
 brks = 0:SIZE/SIZE
 ggtern() +
@@ -106,7 +106,7 @@ ggtern() +
 For the sample `Y` we can
 
 ```{r}
-fitting = fit_lrnm(as.matrix(Y), method = 'hermite', probs = TRUE)
+fitting = fit_lrnm(Y, method = 'hermite')
 ```
 
 Expected estimated posterior probabilities
