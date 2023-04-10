@@ -20,12 +20,12 @@ int simplex_lattice_elements(int K, int SIZE){
 }
 
 // [[Rcpp::export]]
-NumericMatrix c_simplex_lattice(int K, int SIZE) {
+IntegerMatrix c_simplex_lattice(int K, int SIZE) {
   int nrow = simplex_lattice_elements(K,SIZE);
   int k = K - 1;
   int k1 = k - 1;
-  NumericMatrix out(nrow, K);
-  NumericVector x(K);
+  IntegerMatrix out(nrow, K);
+  IntegerVector x(K);
   x(0) = SIZE;
 
   int target = 0;

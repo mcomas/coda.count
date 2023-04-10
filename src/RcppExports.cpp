@@ -570,7 +570,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // c_simplex_lattice
-NumericMatrix c_simplex_lattice(int K, int SIZE);
+IntegerMatrix c_simplex_lattice(int K, int SIZE);
 RcppExport SEXP _coda_count_c_simplex_lattice(SEXP KSEXP, SEXP SIZESEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
