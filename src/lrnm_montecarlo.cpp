@@ -176,7 +176,7 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
   arma::mat Bs_N_mu = arma::zeros(d,n);
   arma::cube Bs_N_sigma = arma::zeros(d,d,n);
 
-  arma::cube Zk = arma::cube(d,nsim,n);
+  // arma::cube Zk = arma::cube(d,nsim,n);
 
   arma::mat clr_E1(clr_H);
   arma::cube clr_E2(D,D,n);
@@ -189,17 +189,21 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
   do{
     em_iter++;
 
+    // Rcpp::Rcout << em_iter << std::endl;
     arma::vec clr_eigval;
     arma::mat clr_eigvec;
     eig_sym(clr_eigval, clr_eigvec, clr_sigma);
+
     arma::mat B = clr_eigvec.cols(arma::find(clr_eigval > 1e-5)).t();
     ds = B.n_rows;
 
     Bs.submat(0, 0, ds-1, D-1) = B;
+
     arma::vec B_mu = B * clr_mu;
     arma::mat B_sigma = B * clr_sigma * B.t();
     arma::mat inv_B_sigma = arma::inv_sympd(B_sigma);
     arma::mat Z_ds = Z.head_rows(ds);
+
     Bs_mu.subvec(0, ds-1) = B_mu;
     Bs_sigma.submat(0, 0, ds-1, ds-1) = B_sigma;
 
@@ -207,7 +211,6 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
     arma::vec deriv1(ds);
     arma::mat deriv2(ds, ds);
     arma::vec step(ds);
-
     for(int k = 0; k<n; k++){
       double eps = 1e-6;
       int max_iter = 100;
@@ -215,7 +218,6 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
       double nMax = norm(h - B_mu);
       //if(k==82) Rcpp::Rcout << k+1 << "|"<< nMax << ":";
       int laplace_iter = 0;
-
       do{
         laplace_iter++;
 
@@ -252,12 +254,20 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
       arma::mat B_N_inv_sigma = -deriv2;
       arma::mat B_N_sigma = arma::inv_sympd(B_N_inv_sigma);
 
+      // if(em_iter>230) Rcpp::Rcout << "Bs_N_mu.col(k).subvec(0, ds-1) = B_N_mu;" << std::endl;
       Bs_N_mu.col(k).subvec(0, ds-1) = B_N_mu;
+      // if(em_iter>230) Rcpp::Rcout << "Bs_N_sigma.slice(k).submat(0, 0, ds-1, ds-1) = B_N_sigma;" << std::endl;
       Bs_N_sigma.slice(k).submat(0, 0, ds-1, ds-1) = B_N_sigma;
+
 
       arma::mat B_Z = chol(B_N_sigma).t() * Z_ds;
       B_Z.each_col() += B_N_mu;
-      Zk.slice(k) = B_Z;
+      // if(em_iter>230) Rcpp::Rcout << "Zk.slice(k) = B_Z;" << std::endl;
+      // if(em_iter>230) Rcpp::Rcout << "Z_ds: " << arma::size(Z_ds) << std::endl;
+      // if(em_iter>230) Rcpp::Rcout << "B_Z: " << arma::size(B_Z) << std::endl;
+      // if(em_iter>230) Rcpp::Rcout << "Zk: " << arma::size(Zk) << std::endl;
+      // Zk.slice(k) = B_Z;
+      // if(em_iter>230) Rcpp::Rcout << "l_multinomial_const(X.col(k));" << std::endl;
       double l_cmult = l_multinomial_const(X.col(k));
       arma::vec l_dens(nsim);
       // double l_dens_max = 0;
@@ -296,7 +306,7 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
 
         // if(l_dens(i) > l_dens_max) l_dens_max = l_dens(i);
       }
-
+      // if(em_iter>230) Rcpp::Rcout << "arma::vec dens = exp(l_dens-l_dens.max());" << std::endl;
       arma::vec dens = exp(l_dens-l_dens.max());
       for(int i=0; i<nsim; i++){
         h = B_Z.col(i);
@@ -304,6 +314,7 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
         M1 += h * dens(i);
         M2 += h * h.t() * dens(i);
       }
+      // if(em_iter>230) Rcpp::Rcout << "clr_E1.col(k) = B.t() * (M1/M0);" << std::endl;
       clr_E1.col(k) = B.t() * (M1/M0);
       clr_E2.slice(k) = B.t() * (M2/M0) * B;
     }
@@ -328,6 +339,6 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
   res["Bs_N_mu"] = Bs_N_mu;
   res["Bs_sigma"] = Bs_sigma;
   res["Bs_N_sigma"] = Bs_N_sigma;
-  res["Zk"] = Zk;
+  // res["Zk"] = Zk;
   return(res);
 }
