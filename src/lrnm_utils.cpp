@@ -93,6 +93,7 @@ arma::mat l_lrnm_join_d2(arma::vec h, arma::vec x, arma::vec mu, arma::mat &inv_
 // }
 
 /////////////////
+// [[Rcpp::export]]
 double l_dnormal_vec(arma::vec h, arma::vec mu, arma::mat& inv_sigma){
   int k = h.n_elem;
 
@@ -110,6 +111,7 @@ double l_dnormal_vec(arma::vec h, arma::vec mu, arma::mat& inv_sigma){
   return(norm_const + log_norm);
 }
 
+// [[Rcpp::export]]
 double l_multinomial_const(arma::vec x){
   int K = x.size();
   double x_total = 0;
