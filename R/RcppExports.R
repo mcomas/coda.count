@@ -21,6 +21,14 @@ c_cond_lrnm_fit_hermite <- function(X, C, order, em_eps, em_max_iter) {
     .Call('_coda_count_c_cond_lrnm_fit_hermite', PACKAGE = 'coda.count', X, C, order, em_eps, em_max_iter)
 }
 
+c_cond_lrnm_one_dim_fit_hermite <- function(X, C, order, em_eps, em_max_iter) {
+    .Call('_coda_count_c_cond_lrnm_one_dim_fit_hermite', PACKAGE = 'coda.count', X, C, order, em_eps, em_max_iter)
+}
+
+c_cond_lrnm_V_fit_hermite <- function(X, C, Vclr, order, em_eps, em_max_iter) {
+    .Call('_coda_count_c_cond_lrnm_V_fit_hermite', PACKAGE = 'coda.count', X, C, Vclr, order, em_eps, em_max_iter)
+}
+
 c_cond_lrnm_posterior_moments_montecarlo <- function(X, clr_mu, clr_sigma, C, Z) {
     .Call('_coda_count_c_cond_lrnm_posterior_moments_montecarlo', PACKAGE = 'coda.count', X, clr_mu, clr_sigma, C, Z)
 }

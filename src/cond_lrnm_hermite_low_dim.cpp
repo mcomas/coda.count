@@ -510,7 +510,7 @@ List c_cond_lrnm_V_fit_hermite(arma::mat& X, arma::mat& C,
         do{
 
           current_iter++;
-          h0_ = B0_mu + V * v;
+          h0_ = h0 + V * v;
           if(d1s(k)>0){
             h = B0s * h0_ + B1s * h1;
           }else{
@@ -554,7 +554,7 @@ List c_cond_lrnm_V_fit_hermite(arma::mat& X, arma::mat& C,
           w = uni_hermite(index[0],dh0_red);
 
 
-          h0_ = B0_mu + V * v;
+          h0_ = h0 + V * v;
           if(d1s(k)>0){
             h = B0s * h0_ + B1s * h1;
           }else{
@@ -609,8 +609,8 @@ List c_cond_lrnm_V_fit_hermite(arma::mat& X, arma::mat& C,
         //     cbind(h1 %*% cbind(I2$EV1[,1]) %*% t(V), h1 %*% t(h1))) %*% t(cbind(B0,B1))
 
 
-        arma::vec Eh0 = B0_mu + V * (M1/M0);
-        arma::mat Eh0h0 = B0_mu * B0_mu.t() + B0_mu * (V * M1/M0).t() + V * (M1/M0) * B0_mu.t() + V * (M2/M0) * V.t();
+        arma::vec Eh0 = h0 + V * (M1/M0);
+        arma::mat Eh0h0 = h0 * h0.t() + h0 * (V * M1/M0).t() + V * (M1/M0) * h0.t() + V * (M2/M0) * V.t();
 
         if(d1s(k)>0){
           arma::mat B = arma::join_rows(B0s,B1s);

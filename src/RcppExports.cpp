@@ -74,6 +74,37 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_cond_lrnm_one_dim_fit_hermite
+List c_cond_lrnm_one_dim_fit_hermite(arma::mat& X, arma::mat& C, int order, double em_eps, int em_max_iter);
+RcppExport SEXP _coda_count_c_cond_lrnm_one_dim_fit_hermite(SEXP XSEXP, SEXP CSEXP, SEXP orderSEXP, SEXP em_epsSEXP, SEXP em_max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type C(CSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< double >::type em_eps(em_epsSEXP);
+    Rcpp::traits::input_parameter< int >::type em_max_iter(em_max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_cond_lrnm_one_dim_fit_hermite(X, C, order, em_eps, em_max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
+// c_cond_lrnm_V_fit_hermite
+List c_cond_lrnm_V_fit_hermite(arma::mat& X, arma::mat& C, arma::mat& Vclr, int order, double em_eps, int em_max_iter);
+RcppExport SEXP _coda_count_c_cond_lrnm_V_fit_hermite(SEXP XSEXP, SEXP CSEXP, SEXP VclrSEXP, SEXP orderSEXP, SEXP em_epsSEXP, SEXP em_max_iterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type C(CSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Vclr(VclrSEXP);
+    Rcpp::traits::input_parameter< int >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< double >::type em_eps(em_epsSEXP);
+    Rcpp::traits::input_parameter< int >::type em_max_iter(em_max_iterSEXP);
+    rcpp_result_gen = Rcpp::wrap(c_cond_lrnm_V_fit_hermite(X, C, Vclr, order, em_eps, em_max_iter));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_cond_lrnm_posterior_moments_montecarlo
 List c_cond_lrnm_posterior_moments_montecarlo(arma::mat& X, arma::vec clr_mu, arma::mat clr_sigma, arma::mat& C, arma::mat& Z);
 RcppExport SEXP _coda_count_c_cond_lrnm_posterior_moments_montecarlo(SEXP XSEXP, SEXP clr_muSEXP, SEXP clr_sigmaSEXP, SEXP CSEXP, SEXP ZSEXP) {
@@ -675,6 +706,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_ilr_basis_default", (DL_FUNC) &_coda_count_ilr_basis_default, 1},
     {"_coda_count_c_cond_lrnm_posterior_moments_hermite", (DL_FUNC) &_coda_count_c_cond_lrnm_posterior_moments_hermite, 5},
     {"_coda_count_c_cond_lrnm_fit_hermite", (DL_FUNC) &_coda_count_c_cond_lrnm_fit_hermite, 5},
+    {"_coda_count_c_cond_lrnm_one_dim_fit_hermite", (DL_FUNC) &_coda_count_c_cond_lrnm_one_dim_fit_hermite, 5},
+    {"_coda_count_c_cond_lrnm_V_fit_hermite", (DL_FUNC) &_coda_count_c_cond_lrnm_V_fit_hermite, 6},
     {"_coda_count_c_cond_lrnm_posterior_moments_montecarlo", (DL_FUNC) &_coda_count_c_cond_lrnm_posterior_moments_montecarlo, 5},
     {"_coda_count_c_cond_lrnm_fit_montecarlo", (DL_FUNC) &_coda_count_c_cond_lrnm_fit_montecarlo, 5},
     {"_coda_count_c_ddm", (DL_FUNC) &_coda_count_c_ddm, 2},
