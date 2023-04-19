@@ -462,7 +462,7 @@ List c_cond_lrnm_fixed_point_expected_hermite(List lrnm_model, int order = 10){
        step = deriv1/deriv2;
        v = v - 0.9 * step;
 
-     }while( step(0) > eps(0) && current_iter < max_iter);
+     }while( std::abs(step(0)) > eps(0) && current_iter < max_iter);
      arma::vec v_n_mu = v;
      arma::mat v_n_sigma = -1/deriv2;
      arma::mat inv_v_n_sigma = -deriv2;
