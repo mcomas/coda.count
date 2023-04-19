@@ -295,25 +295,11 @@ List c_cond_lrnm_posterior_moments_montecarlo(arma::mat& X, arma::vec clr_mu, ar
 List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
                                 double em_eps, int em_max_iter){
 
-  List dm_ini = c_dm_fit(X, 0.001, 1000);
-  arma::vec alpha = dm_ini["alpha"];
-  arma::mat P(X);
-  P.each_col() += alpha;
-
-  // Better to condition P on X, C and alpha
-
   int n = X.n_cols;
   int D = X.n_rows;
   int d = D - 1;
   int dmax = std::min(d,n-1);
   int nsim = Z.n_cols;
-
-  arma::mat clr_H = log(P);
-  arma::rowvec clr_m = arma::mean(clr_H, 0);
-  for(int k=0; k<n; k++) clr_H.col(k) -= clr_m(k);
-
-  arma::vec clr_mu = arma::mean(clr_H, 1);
-  arma::mat clr_sigma = arma::cov(clr_H.t());
 
   arma::vec d0 = arma::vec(n);
   arma::umat I0 = arma::umat(D, n);
@@ -328,6 +314,28 @@ List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
   for(int k=0; k<n; k++){
     I1.col(k).head(D1(k)) = arma::find(C.col(k) > 0);
   }
+
+  List lrnm_ini = c_dm_fit(X, 0.001, 1000);
+  arma::vec alpha = lrnm_ini["alpha"];
+  arma::mat P(X);
+  for(unsigned int k=0;k<n;k++){
+    arma::uvec uk(1);
+    uk[0] = k;
+    arma::vec a_p = X.col(k) + alpha;
+    arma::vec a_p_1 = a_p / arma::accu(a_p);
+    double res = arma::accu(a_p_1(I1.col(k).head(D1(k))));
+    arma::vec a_p_0 = a_p(I0.col(k).head(d0(k)));
+    a_p_0 = a_p_0 / arma::accu(a_p_0) * (1-res);
+    P.col(k) = P.col(k) / arma::accu(P.col(k)) * res;
+    P(I0.col(k).head(d0(k)), uk) = a_p_0;
+  }
+
+  arma::mat clr_H = log(P);
+  arma::rowvec clr_m = arma::mean(clr_H, 0);
+  for(int k=0; k<n; k++) clr_H.col(k) -= clr_m(k);
+
+  arma::vec clr_mu = arma::mean(clr_H, 1);
+  arma::mat clr_sigma = arma::cov(clr_H.t());
 
   arma::cube B = arma::zeros(d,D,n);
   for(int k=0; k<n; k++){
@@ -390,7 +398,7 @@ List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
   arma::mat B0s_N_mu = arma::zeros(d,n);
   arma::cube B0s_N_sigma = arma::zeros(d,d,n);
 
-  arma::mat clr_E1(D,n);
+  arma::mat clr_E1(clr_H);
   arma::cube clr_E2(D,D,n);
 
   arma::vec clr_mu_new;
@@ -399,7 +407,17 @@ List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
   arma::vec Eh(d);
   arma::mat Ehh(d,d);
   int em_iter = 0;
+
   double em_current_eps;
+  if(em_max_iter==0){
+    List M;
+    M["clr_mu"] = clr_mu;
+    M["clr_sigma"] = clr_sigma;
+    M["clr_E1"] = clr_E1;
+    M["em_iter"] = 0;
+    M["B"] = B;
+    return(M);
+  }
   do{
     em_iter++;
 
@@ -459,16 +477,17 @@ List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
           // Finding a Gaussian approximation
           int current_iter = 0;
           int dh0 = d0s(k);
-          arma::vec h0 = B0_mu;
+
           arma::vec deriv1(dh0);
           arma::mat deriv2(dh0, dh0);
           arma::vec step = arma::ones(dh0);
-          double eps = 1e-14;
+          double eps = 1e-6;
           int max_iter = 100;
 
           arma::mat Binv = B.slice(k).t();
           arma::mat T0 = B0 * B.slice(k).head_rows(d0(k));
-
+          arma::vec h0 = T0 * clr_E1.col(k);
+          double nMax = norm(h0 - B0_mu);
           do{
 
             current_iter++;
@@ -498,7 +517,8 @@ List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
             deriv2 = -inv_B0_sigma - sum(X.col(k)) * ( -(wBi * wBi.t())/ (w*w) + wBij / w);
 
             step = arma::solve(deriv2, deriv1, arma::solve_opts::fast);
-            h0 = h0 - 0.9 * step;
+            double n_step = norm(step);
+            h0 = h0 - (std::min(n_step, 0.5*nMax)/n_step) * step;
 
           }while( norm(step, 2) > eps && current_iter < max_iter);
           arma::vec B0_N_mu = h0;
@@ -534,9 +554,8 @@ List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
               l_dnormal_vec(h0, B0_N_mu, B0_N_inv_sigma) +
               arma::dot(log(p/accu(p)), X.col(k)) + l_cmult;
 
-            if(l_dens(i) > l_dens_max) l_dens_max = l_dens(i);
           }
-          arma::vec dens = exp(l_dens-l_dens_max);
+          arma::vec dens = exp(l_dens-l_dens.max());
           for(int i=0; i<nsim; i++){
             h0 = B0_Z.col(i);
 

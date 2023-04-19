@@ -130,6 +130,14 @@ l_lrnm_join_d2 <- function(h, x, mu, inv_sigma, Binv) {
     .Call('_coda_count_l_lrnm_join_d2', PACKAGE = 'coda.count', h, x, mu, inv_sigma, Binv)
 }
 
+l_dnormal_vec <- function(h, mu, inv_sigma) {
+    .Call('_coda_count_l_dnormal_vec', PACKAGE = 'coda.count', h, mu, inv_sigma)
+}
+
+l_multinomial_const <- function(x) {
+    .Call('_coda_count_l_multinomial_const', PACKAGE = 'coda.count', x)
+}
+
 l_lrnm_cond_join_d1 <- function(h1, x, mu, inv_sigma, h2, Binv) {
     .Call('_coda_count_l_lrnm_cond_join_d1', PACKAGE = 'coda.count', h1, x, mu, inv_sigma, h2, Binv)
 }

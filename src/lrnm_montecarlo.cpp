@@ -159,7 +159,7 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
   int n = X.n_cols;
   int D = X.n_rows;
   int d = D - 1;
-  int ds = d;
+  int ds = 0;
   int nsim = Z.n_cols;
 
   arma::mat clr_H = log(P);
@@ -195,9 +195,13 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
     eig_sym(clr_eigval, clr_eigvec, clr_sigma);
 
     arma::mat B = clr_eigvec.cols(arma::find(clr_eigval > 1e-5)).t();
-    ds = B.n_rows;
+    if(B.n_rows != ds){ // Bs is only updated if dimensionality is reduced
+      ds = B.n_rows;
+      Bs.submat(0, 0, ds-1, D-1) = B;
+    }else{
+      B = Bs.submat(0, 0, ds-1, D-1);
+    }
 
-    Bs.submat(0, 0, ds-1, D-1) = B;
 
     arma::vec B_mu = B * clr_mu;
     arma::mat B_sigma = B * clr_sigma * B.t();
@@ -284,29 +288,11 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
         Bh = Bh - Bh.max();
 
         arma::vec p = exp(Bh);
-        // if(k == 2 & i < 5){
-        //   Bh.t().print("After");
-        //   p.t().print("p");
-        // }
-        // if(k == 2){
-        //
-        //   Rcpp::Rcout << l_dnormal_vec(h, B_mu, inv_B_sigma) << " " <<
-        //     l_dnormal_vec(h, B_N_mu, B_N_inv_sigma) << " " <<
-        //       arma::dot(log(p/accu(p)), X.col(k)) << " " <<
-        //         arma::dot(Bh, X.col(k)) - accu(log(accu(p)) * X.col(k)) << std::endl;
-        // }
-
-        // l_dens(i) = l_dnormal_vec(h, B_mu, inv_B_sigma) -
-        //   l_dnormal_vec(h, B_N_mu, B_N_inv_sigma) +
-        //   arma::dot(log(p/accu(p)), X.col(k)) + l_cmult;
-
         l_dens(i) = l_dnormal_vec(h, B_mu, inv_B_sigma) -
           l_dnormal_vec(h, B_N_mu, B_N_inv_sigma) +
           arma::dot(Bh, X.col(k)) - accu(log(accu(p)) * X.col(k)) + l_cmult;
 
-        // if(l_dens(i) > l_dens_max) l_dens_max = l_dens(i);
       }
-      // if(em_iter>230) Rcpp::Rcout << "arma::vec dens = exp(l_dens-l_dens.max());" << std::endl;
       arma::vec dens = exp(l_dens-l_dens.max());
       for(int i=0; i<nsim; i++){
         h = B_Z.col(i);

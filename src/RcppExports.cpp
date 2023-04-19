@@ -443,6 +443,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// l_dnormal_vec
+double l_dnormal_vec(arma::vec h, arma::vec mu, arma::mat& inv_sigma);
+RcppExport SEXP _coda_count_l_dnormal_vec(SEXP hSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type inv_sigma(inv_sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(l_dnormal_vec(h, mu, inv_sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// l_multinomial_const
+double l_multinomial_const(arma::vec x);
+RcppExport SEXP _coda_count_l_multinomial_const(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(l_multinomial_const(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // l_lrnm_cond_join_d1
 arma::vec l_lrnm_cond_join_d1(arma::vec h1, arma::vec x, arma::vec mu, arma::mat& inv_sigma, arma::vec h2, arma::mat& Binv);
 RcppExport SEXP _coda_count_l_lrnm_cond_join_d1(SEXP h1SEXP, SEXP xSEXP, SEXP muSEXP, SEXP inv_sigmaSEXP, SEXP h2SEXP, SEXP BinvSEXP) {
@@ -677,6 +701,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_coda_count_l_lrnm_join_vec", (DL_FUNC) &_coda_count_l_lrnm_join_vec, 5},
     {"_coda_count_l_lrnm_join_d1", (DL_FUNC) &_coda_count_l_lrnm_join_d1, 5},
     {"_coda_count_l_lrnm_join_d2", (DL_FUNC) &_coda_count_l_lrnm_join_d2, 5},
+    {"_coda_count_l_dnormal_vec", (DL_FUNC) &_coda_count_l_dnormal_vec, 3},
+    {"_coda_count_l_multinomial_const", (DL_FUNC) &_coda_count_l_multinomial_const, 1},
     {"_coda_count_l_lrnm_cond_join_d1", (DL_FUNC) &_coda_count_l_lrnm_cond_join_d1, 6},
     {"_coda_count_l_lrnm_cond_join_d2", (DL_FUNC) &_coda_count_l_lrnm_cond_join_d2, 6},
     {"_coda_count_l_lrnm_join_maximum", (DL_FUNC) &_coda_count_l_lrnm_join_maximum, 6},

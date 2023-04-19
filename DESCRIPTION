@@ -1,8 +1,8 @@
 Package: coda.count
 Type: Package
 Title: Tools for Compositional Count Data Distributions
-Version: 0.4.0.2
-Date: 2023-04-08
+Version: 0.4.0.3
+Date: 2023-04-19
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu"))
 Description: Different tools for counting distributions defined on the simplex. Most distributions are based on
