@@ -481,6 +481,7 @@ List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
           arma::vec deriv1(dh0);
           arma::mat deriv2(dh0, dh0);
           arma::vec step = arma::ones(dh0);
+          double n_step;
           double eps = 1e-6;
           int max_iter = 100;
 
@@ -517,10 +518,15 @@ List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
             deriv2 = -inv_B0_sigma - sum(X.col(k)) * ( -(wBi * wBi.t())/ (w*w) + wBij / w);
 
             step = arma::solve(deriv2, deriv1, arma::solve_opts::fast);
-            double n_step = norm(step);
-            h0 = h0 - (std::min(n_step, 0.5*nMax)/n_step) * step;
+            n_step = norm(step, 2);
+            if(n_step < 0.5*nMax){
+              h0 = h0 - step;
+              break;
+            }else{
+              h0 = h0 - 0.5*nMax/n_step * step;
+            }
+          }while(n_step < eps && current_iter < max_iter);
 
-          }while( norm(step, 2) > eps && current_iter < max_iter);
           arma::vec B0_N_mu = h0;
           arma::mat B0_N_inv_sigma = -deriv2;
           arma::mat B0_N_sigma = arma::inv_sympd(B0_N_inv_sigma);
