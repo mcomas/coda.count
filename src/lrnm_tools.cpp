@@ -1,4 +1,3 @@
-// [[Rcpp::depends(RcppParallel)]]
 // [[Rcpp::depends(RcppArmadillo)]]
 #define ARMA_DONT_PRINT_ERRORS
 
@@ -9,7 +8,6 @@
 
 using namespace Rcpp;
 
-//'@export
 // [[Rcpp::export]]
 List c_cond_lrnm_init(arma::mat& X, arma::mat& C, int d1max = 0, int d0max = 0){
   int n = X.n_cols;
@@ -158,7 +156,6 @@ List c_cond_lrnm_init(arma::mat& X, arma::mat& C, int d1max = 0, int d0max = 0){
   return(lrnm_ini);
 }
 
-//'@export
 // [[Rcpp::export]]
 List c_cond_lrnm_laplace(List lrnm_model){
   arma::mat X = lrnm_model["X"];
@@ -237,7 +234,6 @@ List c_cond_lrnm_laplace(List lrnm_model){
 
 }
 
-//'@export
 // [[Rcpp::export]]
 List c_cond_lrnm_pc_expected_hermite(List lrnm_model, int d0red = 1, int order = 10){
   arma::mat X = lrnm_model["X"];
@@ -374,7 +370,6 @@ List c_cond_lrnm_pc_expected_hermite(List lrnm_model, int d0red = 1, int order =
 
 }
 
-//'@export
 // [[Rcpp::export]]
 List c_cond_lrnm_fixed_point_expected_hermite(List lrnm_model, int order = 10){
  arma::mat X = lrnm_model["X"];

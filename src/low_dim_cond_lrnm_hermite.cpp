@@ -436,7 +436,6 @@ List c_low_dim_cond_lrnm_fit_hermite(arma::mat& X, arma::mat& C, int maxd0, int 
   return(M);
 }
 
-//'@export
 // [[Rcpp::export]]
 List c_fixed_one_dim_cond_lrnm_fit_hermite(arma::mat& X, arma::mat& C, arma::mat& V,
                                            int order, double em_eps, int em_max_iter){

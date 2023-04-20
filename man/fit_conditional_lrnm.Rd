@@ -15,7 +15,8 @@ fit_conditional_lrnm(
   mc.nsim = 500,
   mc.znorm = NULL,
   eps = NULL,
-  max_iter = 500
+  max_iter = 500,
+  debug = FALSE
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ and 1e-3 for montecarlo method.}
 
 \item{max_iter}{maximum number of iterations for the iterative procedure
 used to estimate the parameter}
+
+\item{debug}{if set to TRUE full list with debugging parameters is returned (this list is highly possible to change in different versions)}
 }
 \value{
 Estimated parameters mu and sigma

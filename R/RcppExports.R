@@ -53,7 +53,6 @@ c_low_dim_cond_lrnm_fit_hermite <- function(X, C, maxd0, order, em_eps, em_max_i
     .Call('_coda_count_c_low_dim_cond_lrnm_fit_hermite', PACKAGE = 'coda.count', X, C, maxd0, order, em_eps, em_max_iter)
 }
 
-#'@export
 c_fixed_one_dim_cond_lrnm_fit_hermite <- function(X, C, V, order, em_eps, em_max_iter) {
     .Call('_coda_count_c_fixed_one_dim_cond_lrnm_fit_hermite', PACKAGE = 'coda.count', X, C, V, order, em_eps, em_max_iter)
 }
@@ -102,22 +101,18 @@ c_lrnm_fit_montecarlo <- function(X, Z, em_eps, em_max_iter) {
     .Call('_coda_count_c_lrnm_fit_montecarlo', PACKAGE = 'coda.count', X, Z, em_eps, em_max_iter)
 }
 
-#'@export
 c_cond_lrnm_init <- function(X, C, d1max = 0L, d0max = 0L) {
     .Call('_coda_count_c_cond_lrnm_init', PACKAGE = 'coda.count', X, C, d1max, d0max)
 }
 
-#'@export
 c_cond_lrnm_laplace <- function(lrnm_model) {
     .Call('_coda_count_c_cond_lrnm_laplace', PACKAGE = 'coda.count', lrnm_model)
 }
 
-#'@export
 c_cond_lrnm_pc_expected_hermite <- function(lrnm_model, d0red = 1L, order = 10L) {
     .Call('_coda_count_c_cond_lrnm_pc_expected_hermite', PACKAGE = 'coda.count', lrnm_model, d0red, order)
 }
 
-#'@export
 c_cond_lrnm_fixed_point_expected_hermite <- function(lrnm_model, order = 10L) {
     .Call('_coda_count_c_cond_lrnm_fixed_point_expected_hermite', PACKAGE = 'coda.count', lrnm_model, order)
 }

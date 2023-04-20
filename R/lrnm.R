@@ -63,11 +63,13 @@ dlrnm = function(x, mu, sigma, B = NULL,
 #' and 1e-3 for montecarlo method.
 #' @param max_iter maximum number of iterations for the iterative procedure
 #' used to estimate the parameter
+#' @param debug if set to TRUE full list with debugging parameters is returned (this list is highly possible to change in different versions)
 #' @return Estimated parameters mu and sigma
 #' @export
 fit_lrnm = function(X, B = NULL, method = 'mc',
                     hermite.order = 5,
-                    mc.nsim = 500, mc.znorm = NULL, eps = NULL, max_iter = 500){
+                    mc.nsim = 500, mc.znorm = NULL, eps = NULL, max_iter = 500,
+                    debug = FALSE){
   jmax = apply(X, 2, max)
   if(min(jmax) == 0){
     stop(sprintf("All observation have zero in part %d", which.min(jmax)), call. = FALSE)
@@ -89,7 +91,6 @@ fit_lrnm = function(X, B = NULL, method = 'mc',
       Z = mc.znorm
     }
     fit = c_lrnm_fit_montecarlo(t(X), t(Z), eps, max_iter)
-
   }
   if(method=='laplace'){
     if(is.null(eps)){
@@ -109,10 +110,10 @@ fit_lrnm = function(X, B = NULL, method = 'mc',
     }
     fit = c_vem_lrnm_fit(t(X), eps, max_iter)
   }
+  if(debug) return(fit)
   result = list('mu' = (t(B) %*% fit$clr_mu)[,1], 'sigma' = t(B) %*% fit$clr_sigma %*% B,
                 'P' = coda.base::composition(t(fit$clr_E1), 'clr'),
                 'iter' = fit$em_iter, eps = eps)
-
 
   if(result$iter == max_iter){
     warning("Maximum number of iterations exhausted.")

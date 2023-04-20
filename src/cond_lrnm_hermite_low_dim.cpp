@@ -1,4 +1,3 @@
-// [[Rcpp::depends(RcppParallel)]]
 // [[Rcpp::depends(RcppArmadillo)]]
 #define ARMA_DONT_PRINT_ERRORS
 
