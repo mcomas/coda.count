@@ -18,7 +18,7 @@ compare_methods = function(mu,sigma,n,m){
   fit3 = fit_lrnm(X, method = 'laplace')
   fit4 = fit_conditional_lrnm(X, method = 'mc')
   fit5 = fit_conditional_lrnm(X, method = 'hermite')
-  fit6 = fit_conditional_lrnm(X, low.dim = 1)
+  fit6 = fit_one_dimensional_conditional_lrnm(X)
   fit7 = fit_lrnm(X, method = 'vem')
 
   # fit6 = fit_vem_lrnm(X, B)
@@ -42,8 +42,8 @@ lmu = lapply(seq_along(lres), function(i){
   row.names(dres) = NULL
   dres
 })
-dmu = bind_rows(lmu, .id = 'id')
 library(tidyverse)
+dmu = bind_rows(lmu, .id = 'id')
 ggplot(data=dmu) +
   geom_label(aes(x = ilr1, y = ilr2, label = id)) +
   facet_wrap(~method)

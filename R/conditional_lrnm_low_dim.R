@@ -29,7 +29,7 @@ fit_one_dimensional_conditional_lrnm = function(X, C = X > 0, V = NULL, V.direct
     stop("Direction V should be specified or V.direction set to 'center' or 'equal'")
   }
   if(is.null(V)){
-    if('equal'){
+    if(V.direction == 'equal'){
       sel = rowSums(X==0)>0
       PART = 2*t(X==0)-1
       Vclr = matrix(0, nrow = ncol(X), ncol = nrow(X))
