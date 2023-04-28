@@ -21,7 +21,7 @@
 fit_conditional_lrnm = function(X, C = X > 0, B = NULL, method = 'mc',
                                 low.dim = 0, hermite.order = 5,
                                 mc.nsim = 500, mc.znorm = NULL, eps = NULL, max_iter = 500,
-                                debug = FALSE){
+                                B_fixed = FALSE,debug = FALSE){
 
   jmax = apply(X, 2, max)
   if(min(jmax) == 0){
@@ -44,7 +44,12 @@ fit_conditional_lrnm = function(X, C = X > 0, B = NULL, method = 'mc',
       }else{
         Z = mc.znorm
       }
-      fit = c_cond_lrnm_fit_montecarlo(t(X), t(C), t(Z), eps, max_iter)
+      if(B_fixed){
+        fit = c_cond_lrnm_fit_fixed_montecarlo(t(X), t(C), t(Z), eps, max_iter)
+      }else{
+        fit = c_cond_lrnm_fit_montecarlo(t(X), t(C), t(Z), eps, max_iter)
+      }
+
 
     }
     if(method=='laplace'){
@@ -58,7 +63,12 @@ fit_conditional_lrnm = function(X, C = X > 0, B = NULL, method = 'mc',
       if(is.null(eps)){
         eps = 1e-05
       }
-      fit = c_cond_lrnm_fit_hermite(t(X), t(C), hermite.order, eps, max_iter)
+      if(B_fixed){
+        fit = c_cond_lrnm_fit_fixed_hermite(t(X), t(C), hermite.order, eps, max_iter)
+      }else{
+        fit = c_cond_lrnm_fit_hermite(t(X), t(C), hermite.order, eps, max_iter)
+      }
+
     }
   }else{
     if(is.null(eps)){

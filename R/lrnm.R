@@ -69,7 +69,7 @@ dlrnm = function(x, mu, sigma, B = NULL,
 fit_lrnm = function(X, B = NULL, method = 'mc',
                     hermite.order = 5,
                     mc.nsim = 500, mc.znorm = NULL, eps = NULL, max_iter = 500,
-                    debug = FALSE){
+                    B_fixed = FALSE,debug = FALSE){
   jmax = apply(X, 2, max)
   if(min(jmax) == 0){
     stop(sprintf("All observation have zero in part %d", which.min(jmax)), call. = FALSE)
@@ -90,7 +90,12 @@ fit_lrnm = function(X, B = NULL, method = 'mc',
     }else{
       Z = mc.znorm
     }
-    fit = c_lrnm_fit_montecarlo(t(X), t(Z), eps, max_iter)
+    if(B_fixed){
+      fit = c_lrnm_fit_fixed_montecarlo(t(X), t(Z), eps, max_iter)
+    }else{
+      fit = c_lrnm_fit_montecarlo(t(X), t(Z), eps, max_iter)
+    }
+
   }
   if(method=='laplace'){
     if(is.null(eps)){
@@ -102,7 +107,12 @@ fit_lrnm = function(X, B = NULL, method = 'mc',
     if(is.null(eps)){
       eps = 1e-05
     }
-    fit = c_lrnm_fit_hermite(t(X), hermite.order, eps, max_iter)
+    if(B_fixed){
+      fit = c_lrnm_fit_fixed_hermite(t(X), hermite.order, eps, max_iter)
+    }else{
+      fit = c_lrnm_fit_hermite(t(X), hermite.order, eps, max_iter)
+    }
+
   }
   if(method=='vem'){
     if(is.null(eps)){

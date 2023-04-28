@@ -194,15 +194,18 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
     arma::mat clr_eigvec;
     eig_sym(clr_eigval, clr_eigvec, clr_sigma);
 
-    arma::mat B = clr_eigvec.cols(arma::find(clr_eigval > 1e-5)).t();
+    arma::mat B = clr_eigvec.cols(arma::find(clr_eigval > 1e-8)).t();
     if(B.n_rows != ds){ // Bs is only updated if dimensionality is reduced
+      clr_eigval.t().print("eigval");
+      Rcpp::Rcout << ds << " " << arma::size(B) << " " << arma::size(Bs) << std::endl;
+      clr_mu.t().print("clr_mu");
       ds = B.n_rows;
       Bs.submat(0, 0, ds-1, D-1) = B;
     }else{
       B = Bs.submat(0, 0, ds-1, D-1);
     }
-
     arma::vec B_mu = B * clr_mu;
+
     arma::mat B_sigma = B * clr_sigma * B.t();
     arma::mat inv_B_sigma = arma::inv_sympd(B_sigma);
     arma::mat Z_ds = Z.head_rows(ds);
@@ -246,7 +249,6 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
         n_step = norm(step, 2);
         if(n_step < 0.5*nMax){
           h = h - step;
-          break;
         }else{
           h = h - 0.5*nMax/n_step * step;
         }
@@ -259,7 +261,6 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
 
       Bs_N_mu.col(k).subvec(0, ds-1) = B_N_mu;
       Bs_N_sigma.slice(k).submat(0, 0, ds-1, ds-1) = B_N_sigma;
-
 
       arma::mat B_Z = chol(B_N_sigma).t() * Z_ds;
       B_Z.each_col() += B_N_mu;
@@ -299,12 +300,11 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
   } while (em_iter < em_max_iter & em_current_eps > em_eps);
 
   List res;
-  res["clr_H"] = clr_H;
+  res["clr_H"] = clr_E1;
   res["clr_mu"] = clr_mu;
   res["clr_sigma"] = clr_sigma;
   res["ds"] = ds;
   res["Bs"] = Bs;
-  res["clr_E1"] = clr_E1;
   res["em_iter"] = em_iter;
   res["em_final_eps"] = em_current_eps;
   res["Bs_mu"] = Bs_mu;
@@ -312,5 +312,169 @@ List c_lrnm_fit_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max
   res["Bs_sigma"] = Bs_sigma;
   res["Bs_N_sigma"] = Bs_N_sigma;
   // res["Zk"] = Zk;
+  return(res);
+}
+
+// [[Rcpp::export]]
+List c_lrnm_fit_fixed_montecarlo(arma::mat& X, arma::mat& Z, double em_eps, int em_max_iter){
+  List dm_ini = c_dm_fit(X, 0.001, 1000);
+  arma::vec alpha = dm_ini["alpha"];
+  arma::mat P(X);
+  P.each_col() += alpha;
+
+  int n = X.n_cols;
+  int D = X.n_rows;
+  int d = D - 1;
+  int nsim = Z.n_cols;
+
+  arma::mat clr_H = log(P);
+  arma::rowvec clr_m = arma::mean(clr_H, 0);
+  for(int k=0; k<n; k++) clr_H.col(k) -= clr_m(k);
+
+  arma::vec clr_mu = arma::mean(clr_H, 1);
+  arma::mat clr_sigma = arma::cov(clr_H.t());
+
+  if(em_max_iter == 0){
+    List res;
+    res["clr_H"] = clr_H;
+    res["clr_mu"] = clr_mu;
+    res["clr_sigma"] = clr_sigma;
+    return(res);
+  }
+
+  arma::vec clr_eigval;
+  arma::mat clr_eigvec;
+  eig_sym(clr_eigval, clr_eigvec, clr_sigma);
+
+  arma::mat B = clr_eigvec.cols(arma::find(clr_eigval > 1e-8)).t();
+
+  int ds = B.n_rows;
+  arma::mat Z_ds = Z.head_rows(ds);
+
+  arma::vec B_mu(ds);
+  arma::mat B_sigma(ds,ds);
+  arma::mat B_inv_sigma(ds,ds);
+
+  arma::vec B_N_mu(ds);
+  arma::mat B_N_sigma(ds,ds);
+  arma::mat B_inv_N_sigma(ds,ds);
+
+  arma::mat clr_E1(clr_H);
+  arma::cube clr_E2(D,D,n);
+
+  arma::vec clr_mu_new(D);
+  arma::mat clr_sigma_new(D,D);
+
+  arma::vec l_cmult(n), Xsum(n);
+  for(int k = 0; k<n; k++){
+    l_cmult(k) = l_multinomial_const(X.col(k));
+    Xsum(k) = sum(X.col(k));
+  }
+
+  int em_iter = 0;
+  double em_current_eps;
+  do{
+    Rcpp::checkUserInterrupt();
+
+    em_iter++;
+
+    B_mu = B * clr_mu;
+    B_sigma = B * clr_sigma * B.t();
+    B_sigma.diag() += 1e-8; // To avoid non-positive-definite matrices when eigenvalues are close to zero
+    B_inv_sigma = arma::inv_sympd(B_sigma);
+
+
+    arma::vec h(ds);
+    arma::vec deriv1(ds);
+    arma::mat deriv2(ds, ds);
+    arma::vec step(ds);
+    double n_step;
+    arma::mat H = B * clr_E1;
+    for(int k = 0; k<n; k++){
+      double eps = 1e-6;
+      int max_iter = 100;
+      h = H.col(k);
+      double nMax = norm(h - B_mu);
+      int laplace_iter = 0;
+      do{
+        laplace_iter++;
+
+        arma::vec Bh = B.t() * h;
+        Bh = Bh - Bh.max();
+
+        arma::vec eBh = exp(Bh);
+
+        double  w = arma::accu(eBh);
+
+        arma::vec  wBi = B * eBh;
+        deriv1 = -B_inv_sigma  * (h-B_mu) + B * X.col(k) - Xsum(k) * wBi / w;
+
+        arma::mat wBij(ds,ds);
+        for(int i=0; i<ds; i++){
+          for(int j=0; j<ds; j++){
+            wBij(i,j) = arma::accu(B.row(i).t() % B.row(j).t() % eBh);
+          }
+        }
+        deriv2 = -B_inv_sigma - Xsum(k) * ( -(wBi * wBi.t())/ (w*w) + wBij / w);
+
+        step = arma::solve(deriv2, deriv1, arma::solve_opts::fast);
+        n_step = norm(step, 2);
+        if(n_step < 0.5*nMax){
+          h = h - step;
+        }else{
+          h = h - 0.5*nMax/n_step * step;
+        }
+
+      }while( n_step > eps && laplace_iter < max_iter );
+
+      B_N_mu = h;
+      B_inv_N_sigma = -deriv2;
+      B_N_sigma = arma::inv_sympd(B_inv_N_sigma);
+
+      arma::mat B_Z = chol(B_N_sigma).t() * Z_ds;
+      B_Z.each_col() += B_N_mu;
+
+      arma::vec l_dens(nsim);
+      double M0 = 0;
+      arma::vec M1 = arma::zeros(ds);
+      arma::mat M2 = arma::zeros(ds,ds);
+      for(int i=0; i<nsim; i++){
+        h = B_Z.col(i);
+
+        arma::vec Bh = B.t() * h;
+        Bh = Bh - Bh.max();
+
+        arma::vec p = exp(Bh);
+        l_dens(i) = l_dnormal_vec(h, B_mu, B_inv_sigma) -
+          l_dnormal_vec(h, B_N_mu, B_inv_N_sigma) +
+          arma::dot(Bh, X.col(k)) - accu(log(accu(p)) * X.col(k)) + l_cmult(k);
+
+      }
+      arma::vec dens = exp(l_dens-l_dens.max());
+      for(int i=0; i<nsim; i++){
+        h = B_Z.col(i);
+        M0 += dens(i);
+        M1 += h * dens(i);
+        M2 += h * h.t() * dens(i);
+      }
+      clr_E1.col(k) = B.t() * (M1/M0);
+      clr_E2.slice(k) = B.t() * (M2/M0) * B;
+    }
+    clr_mu_new = mean(clr_E1, 1);
+    em_current_eps = norm(clr_mu-clr_mu_new, 1);
+    clr_mu = clr_mu_new;
+    arma::mat M = mean(clr_E2, 2);
+    clr_sigma = M - clr_mu_new * clr_mu_new.t();
+
+  } while (em_iter < em_max_iter & em_current_eps > em_eps);
+
+  List res;
+  res["clr_H"] = clr_E1;
+  res["clr_mu"] = clr_mu;
+  res["clr_sigma"] = clr_sigma;
+  res["B"] = B;
+  res["d"] = ds;
+  res["em_iter"] = em_iter;
+  res["em_final_eps"] = em_current_eps;
   return(res);
 }

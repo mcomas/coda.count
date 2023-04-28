@@ -13,6 +13,7 @@ fit_lrnm(
   mc.znorm = NULL,
   eps = NULL,
   max_iter = 500,
+  B_fixed = FALSE,
   debug = FALSE
 )
 }

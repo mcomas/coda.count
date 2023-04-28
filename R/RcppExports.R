@@ -21,6 +21,10 @@ c_cond_lrnm_fit_hermite <- function(X, C, order, em_eps, em_max_iter) {
     .Call('_coda_count_c_cond_lrnm_fit_hermite', PACKAGE = 'coda.count', X, C, order, em_eps, em_max_iter)
 }
 
+c_cond_lrnm_fit_fixed_hermite <- function(X, C, order, em_eps, em_max_iter) {
+    .Call('_coda_count_c_cond_lrnm_fit_fixed_hermite', PACKAGE = 'coda.count', X, C, order, em_eps, em_max_iter)
+}
+
 c_cond_lrnm_one_dim_fit_hermite <- function(X, C, order, em_eps, em_max_iter) {
     .Call('_coda_count_c_cond_lrnm_one_dim_fit_hermite', PACKAGE = 'coda.count', X, C, order, em_eps, em_max_iter)
 }
@@ -35,6 +39,10 @@ c_cond_lrnm_posterior_moments_montecarlo <- function(X, clr_mu, clr_sigma, C, Z)
 
 c_cond_lrnm_fit_montecarlo <- function(X, C, Z, em_eps, em_max_iter) {
     .Call('_coda_count_c_cond_lrnm_fit_montecarlo', PACKAGE = 'coda.count', X, C, Z, em_eps, em_max_iter)
+}
+
+c_cond_lrnm_fit_fixed_montecarlo <- function(X, C, Z, em_eps, em_max_iter) {
+    .Call('_coda_count_c_cond_lrnm_fit_fixed_montecarlo', PACKAGE = 'coda.count', X, C, Z, em_eps, em_max_iter)
 }
 
 c_ddm <- function(x, alpha) {
@@ -81,6 +89,10 @@ c_lrnm_fit_hermite <- function(X, order, em_eps, em_max_iter) {
     .Call('_coda_count_c_lrnm_fit_hermite', PACKAGE = 'coda.count', X, order, em_eps, em_max_iter)
 }
 
+c_lrnm_fit_fixed_hermite <- function(X, order, em_eps, em_max_iter) {
+    .Call('_coda_count_c_lrnm_fit_fixed_hermite', PACKAGE = 'coda.count', X, order, em_eps, em_max_iter)
+}
+
 c_lrnm_posterior_laplace_approximation <- function(X, clr_mu, clr_sigma) {
     .Call('_coda_count_c_lrnm_posterior_laplace_approximation', PACKAGE = 'coda.count', X, clr_mu, clr_sigma)
 }
@@ -99,6 +111,10 @@ c_lrnm_posterior_moments_montecarlo <- function(X, clr_mu, clr_sigma, Z) {
 
 c_lrnm_fit_montecarlo <- function(X, Z, em_eps, em_max_iter) {
     .Call('_coda_count_c_lrnm_fit_montecarlo', PACKAGE = 'coda.count', X, Z, em_eps, em_max_iter)
+}
+
+c_lrnm_fit_fixed_montecarlo <- function(X, Z, em_eps, em_max_iter) {
+    .Call('_coda_count_c_lrnm_fit_fixed_montecarlo', PACKAGE = 'coda.count', X, Z, em_eps, em_max_iter)
 }
 
 c_cond_lrnm_init <- function(X, C, d1max = 0L, d0max = 0L) {
