@@ -623,7 +623,7 @@ List c_cond_lrnm_fit_montecarlo(arma::mat& X, arma::mat& C, arma::mat& Z,
   M["clr_H"] = clr_H;
   M["clr_mu"] = clr_mu;
   M["clr_sigma"] = clr_sigma;
-  M["clr_E1"] = clr_E1;
+  M["clr_H"] = clr_E1;
   M["em_iter"] = em_iter;
   M["B0s_mu"] = B0s_mu;
   M["B0s_N_mu"] = B0s_N_mu;

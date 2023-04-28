@@ -154,7 +154,7 @@ List c_vem_lrnm_fit(arma::mat& X, double em_eps, int em_max_iter){
   M["m"] = m;
   M["V"] = V;
   M["xi"] = xi;
-  M["clr_E1"] = Bclr * m.head_rows(d);
+  M["clr_H"] = Bclr * m.head_rows(d);
   M["clr_mu"] = Bclr * mu;
   M["clr_sigma"] = Bclr * sigma * Bclr.t();
   M["em_iter"] = em_iter;

@@ -78,7 +78,7 @@ fit_conditional_lrnm = function(X, C = X > 0, B = NULL, method = 'mc',
   }
   if(debug) return(fit)
   result = list('mu' = (t(B) %*% fit$clr_mu)[,1], 'sigma' = t(B) %*% fit$clr_sigma %*% B,
-                'P' = coda.base::composition(t(fit$clr_E1), 'clr'),
+                'P' = coda.base::composition(t(fit$clr_H), 'clr'),
                 'iter' = fit$em_iter, eps = eps)
 
 

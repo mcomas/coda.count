@@ -701,7 +701,7 @@ List c_cond_lrnm_fit_hermite(arma::mat& X, arma::mat& C, int order,
   M["B0s"] = B0s;
   M["clr_mu"] = clr_mu;
   M["clr_sigma"] = clr_sigma;
-  M["clr_E1"] = clr_E1;
+  M["clr_H"] = clr_E1;
   M["em_iter"] = em_iter;
   return(M);
 }

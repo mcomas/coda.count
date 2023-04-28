@@ -318,7 +318,7 @@ List c_cond_lrnm_one_dim_fit_hermite(arma::mat& X, arma::mat& C,
   lrnm_res["B1"] = B1;
   lrnm_res["P"] = P;
   lrnm_res["X"] = X;
-  lrnm_res["clr_H"] = clr_H;
+  lrnm_res["clr_H"] = clr_E1;
   lrnm_res["clr_mu"] = clr_mu;
   lrnm_res["clr_sigma"] = clr_sigma;
   lrnm_res["B0v"] = B0v;
@@ -641,7 +641,7 @@ List c_cond_lrnm_V_fit_hermite(arma::mat& X, arma::mat& C,
   lrnm_res["B1"] = B1;
   lrnm_res["P"] = P;
   lrnm_res["X"] = X;
-  lrnm_res["clr_H"] = clr_H;
+  lrnm_res["clr_H"] = clr_E1;
   lrnm_res["clr_mu"] = clr_mu;
   lrnm_res["clr_sigma"] = clr_sigma;
   lrnm_res["B0v"] = B0v;

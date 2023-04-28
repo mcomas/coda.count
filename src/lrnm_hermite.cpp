@@ -402,7 +402,7 @@ List c_lrnm_fit_hermite(arma::mat& X, int order, double em_eps, int em_max_iter)
   res["clr_mu"] = clr_mu;
   res["clr_sigma"] = clr_sigma;
   res["ds"] = ds;
-  res["clr_E1"] = clr_E1;
+  res["clr_H"] = clr_E1;
   res["em_iter"] = em_iter;
   res["Bs"] = B;
   res["Bs_N_mu"] = Bs_N_mu;
