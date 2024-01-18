@@ -325,10 +325,7 @@ List c_cond_lrnm_posterior_moments_hermite(arma::mat& X, arma::vec clr_mu, arma:
     }
   }
 
-  // M["B0s_mu"] = B0s_mu;
-  // M["B0s_sigma"] = B0s_sigma;
-  // M["B0s_N_mu"] = B0s_N_mu;
-  // M["B0s_N_sigma"] = B0s_N_sigma;
+
   // M["B0s_pc1"] = B0s_pc1;
   // M["B0s_pc1_mu"] = B0s_pc1_mu;
   // M["B0s_pc1_sigma"] = B0s_pc1_sigma;
@@ -347,6 +344,10 @@ List c_cond_lrnm_posterior_moments_hermite(arma::mat& X, arma::vec clr_mu, arma:
   M["d0s"] = d0s;
   M["B1s"] = B1s;
   M["B0s"] = B0s;
+  M["B0s_mu"] = B0s_mu;
+  M["B0s_sigma"] = B0s_sigma;
+  M["B0s_N_mu"] = B0s_N_mu;
+  M["B0s_N_sigma"] = B0s_N_sigma;
   M["clr_E1"] = clr_E1;
   M["clr_E2"] = clr_E2;
   return(M);

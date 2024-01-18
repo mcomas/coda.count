@@ -29,6 +29,10 @@ c_cond_lrnm_one_dim_fit_hermite <- function(X, C, order, em_eps, em_max_iter) {
     .Call('_coda_count_c_cond_lrnm_one_dim_fit_hermite', PACKAGE = 'coda.count', X, C, order, em_eps, em_max_iter)
 }
 
+c_cond_lrnm_full_laplace_one_dim_fit_hermite <- function(X, C, order, em_eps, em_max_iter) {
+    .Call('_coda_count_c_cond_lrnm_full_laplace_one_dim_fit_hermite', PACKAGE = 'coda.count', X, C, order, em_eps, em_max_iter)
+}
+
 c_cond_lrnm_V_fit_hermite <- function(X, C, Vclr, order, em_eps, em_max_iter) {
     .Call('_coda_count_c_cond_lrnm_V_fit_hermite', PACKAGE = 'coda.count', X, C, Vclr, order, em_eps, em_max_iter)
 }

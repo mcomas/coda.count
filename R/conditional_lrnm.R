@@ -87,3 +87,6 @@ fit_conditional_lrnm = function(X, C = X > 0, B = NULL, method = 'mc',
   }
   return(result)
 }
+
+#' @export
+cond_lrnm_posterior_moments_hermite = c_cond_lrnm_posterior_moments_hermite
